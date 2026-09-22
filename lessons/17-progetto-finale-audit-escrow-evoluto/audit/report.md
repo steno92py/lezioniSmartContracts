@@ -41,7 +41,7 @@ policy sugli asset e mostra che F-04 richiede review manuale.
 
 ## Limitazioni
 
-Working tree senza commit, asset/provider giocattolo, niente fork, MEV, proxy/UUPS, storage layout,
+Asset/provider giocattolo, niente fork, MEV, proxy/UUPS, storage layout,
 multisig reale o security operativa. `SafeERC20Lite` serve al laboratorio e non sostituisce una
 dipendenza mantenuta e auditata in produzione.
 

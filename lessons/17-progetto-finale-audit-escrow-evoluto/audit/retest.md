@@ -14,7 +14,7 @@
 - [x] Slither rieseguito su target e remediation, alert esaminati in `static-analysis.md`;
 - [x] coverage riesaminata: fixed 98,57% linee, 56,52% branch;
 - [ ] upgrade/storage validation: non applicabile, upgrade fuori scope;
-- [ ] commit hash: repository non ancora committata.
+- [x] snapshot del codice: commit `c3e4fc3`.
 
 ## Review del fix
 

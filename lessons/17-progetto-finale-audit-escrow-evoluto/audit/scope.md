@@ -4,11 +4,11 @@
 
 - Target: `src/EscrowFinal.sol`.
 - Compilatore: Solidity 0.8.37, EVM Prague, optimizer 200 run.
-- Snapshot: working tree locale; non esiste ancora un commit `HEAD` a cui ancorare lo scope.
+- Snapshot del codice: commit `c3e4fc3` (import iniziale del corso).
 - Ambiente: Foundry/Anvil locale, account e asset fittizi, nessun fork o protocollo reale.
 
-L'assenza di commit è registrata come limitazione. Prima di un audit reale lo scope deve essere
-fissato a repository e hash immutabile.
+Il commit identifica il codice revisionato. In un audit reale occorre inoltre concordare e
+congelare scope, dipendenze e configurazione prima della review.
 
 ## In scope
 
@@ -35,4 +35,3 @@ multisig reale e deploy pubblico.
 - notifier è opzionale;
 - release e refund sono terminali;
 - fee massima 10%; destinazione fee da specificare prima della produzione.
-
