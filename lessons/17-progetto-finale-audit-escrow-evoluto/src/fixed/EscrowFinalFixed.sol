@@ -1,0 +1,157 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.37;
+
+import {IERC20Final, IPriceOracleFinal, INotifierFinal} from "../interfaces/IFinalDependencies.sol";
+import {SafeERC20Lite} from "../libraries/SafeERC20Lite.sol";
+
+/// @notice Remediation didattica sottoposta a regression, fuzz e invariant testing.
+/// @dev Non costituisce una certificazione production-ready.
+contract EscrowFinalFixed {
+    using SafeERC20Lite for IERC20Final;
+
+    enum State {
+        Created,
+        Funded,
+        Released,
+        Refunded
+    }
+
+    IERC20Final public immutable token;
+    address public immutable buyer;
+    address public immutable seller;
+    address public owner;
+    address public emergencyPauser;
+    IPriceOracleFinal public oracle;
+    INotifierFinal public notifier;
+    State public state;
+    uint256 public escrowedAmount;
+    uint256 public feeBps;
+    bool public paused;
+
+    uint256 public constant MAX_ORACLE_AGE = 1 hours;
+
+    error OnlyBuyer();
+    error OnlyOwner();
+    error OnlyPauser();
+    error InvalidState();
+    error ZeroAmount();
+    error ZeroAddress();
+    error Paused();
+    error InvalidPrice();
+    error InvalidTimestamp();
+    error StalePrice();
+    error FeeTooHigh();
+
+    event Deposited(uint256 requestedAmount, uint256 receivedAmount);
+    event Released(uint256 grossAmount, uint256 fee);
+    event Refunded(uint256 amount);
+    event NotificationFailed(bytes reason);
+    event OracleChanged(address indexed oldOracle, address indexed newOracle);
+    event FeeChanged(uint256 oldFeeBps, uint256 newFeeBps);
+    event PauseChanged(bool paused);
+
+    constructor(
+        IERC20Final token_,
+        address buyer_,
+        address seller_,
+        address owner_,
+        address emergencyPauser_,
+        IPriceOracleFinal oracle_,
+        INotifierFinal notifier_
+    ) {
+        if (
+            address(token_) == address(0) || buyer_ == address(0) || seller_ == address(0) || owner_ == address(0)
+                || emergencyPauser_ == address(0) || address(oracle_) == address(0)
+        ) revert ZeroAddress();
+
+        token = token_;
+        buyer = buyer_;
+        seller = seller_;
+        owner = owner_;
+        emergencyPauser = emergencyPauser_;
+        oracle = oracle_;
+        notifier = notifier_;
+        state = State.Created;
+    }
+
+    function deposit(uint256 requestedAmount) external {
+        if (paused) revert Paused();
+        if (msg.sender != buyer) revert OnlyBuyer();
+        if (state != State.Created) revert InvalidState();
+        if (requestedAmount == 0) revert ZeroAmount();
+
+        uint256 beforeBalance = token.balanceOf(address(this));
+        token.safeTransferFrom(buyer, address(this), requestedAmount);
+        uint256 received = token.balanceOf(address(this)) - beforeBalance;
+        if (received == 0) revert ZeroAmount();
+
+        escrowedAmount = received;
+        state = State.Funded;
+        emit Deposited(requestedAmount, received);
+    }
+
+    function release() external {
+        if (paused) revert Paused();
+        if (msg.sender != buyer) revert OnlyBuyer();
+        if (state != State.Funded) revert InvalidState();
+
+        (int256 price, uint256 updatedAt) = oracle.latestPrice();
+        if (price <= 0) revert InvalidPrice();
+        if (updatedAt == 0 || updatedAt > block.timestamp) revert InvalidTimestamp();
+        if (block.timestamp - updatedAt > MAX_ORACLE_AGE) revert StalePrice();
+
+        uint256 gross = escrowedAmount;
+        uint256 fee = gross * feeBps / 10_000;
+        uint256 payout = gross - fee;
+
+        escrowedAmount = 0;
+        state = State.Released;
+        token.safeTransfer(seller, payout);
+
+        if (address(notifier) != address(0)) {
+            try notifier.notifyReleased(seller, payout) {}
+            catch (bytes memory reason) {
+                emit NotificationFailed(reason);
+            }
+        }
+        emit Released(gross, fee);
+    }
+
+    function refund() external {
+        if (msg.sender != buyer) revert OnlyBuyer();
+        if (state != State.Funded) revert InvalidState();
+
+        uint256 amount = escrowedAmount;
+        escrowedAmount = 0;
+        state = State.Refunded;
+        token.safeTransfer(buyer, amount);
+        emit Refunded(amount);
+    }
+
+    function setFee(uint256 newFeeBps) external {
+        if (msg.sender != owner) revert OnlyOwner();
+        if (newFeeBps > 1_000) revert FeeTooHigh();
+        emit FeeChanged(feeBps, newFeeBps);
+        feeBps = newFeeBps;
+    }
+
+    function setOracle(IPriceOracleFinal newOracle) external {
+        if (msg.sender != owner) revert OnlyOwner();
+        if (address(newOracle) == address(0)) revert ZeroAddress();
+        emit OracleChanged(address(oracle), address(newOracle));
+        oracle = newOracle;
+    }
+
+    function pause() external {
+        if (msg.sender != emergencyPauser) revert OnlyPauser();
+        paused = true;
+        emit PauseChanged(true);
+    }
+
+    function unpause() external {
+        if (msg.sender != owner) revert OnlyOwner();
+        paused = false;
+        emit PauseChanged(false);
+    }
+}
+

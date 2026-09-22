@@ -1,0 +1,105 @@
+name: CI
+
+permissions: {}
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: ${{ matrix.project.name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - name: Root Foundry template
+            path: .
+          - name: Lesson 01
+            path: lessons/01-transazioni-account-calldata-storage-revert
+          - name: Lesson 02
+            path: lessons/02-foundry-e-metodo-di-testing
+          - name: Lesson 03
+            path: lessons/03-escrow-e-macchina-a-stati
+          - name: Lesson 04
+            path: lessons/04-ether-receive-fallback-chiamate-esterne-cei
+          - name: Lesson 05
+            path: lessons/05-reentrancy
+          - name: Lesson 06
+            path: lessons/06-access-control
+          - name: Lesson 07
+            path: lessons/07-errori-logici-e-state-machine
+          - name: Lesson 08
+            path: lessons/08-erc20-allowance-e-integrazioni-sicure
+          - name: Lesson 09
+            path: lessons/09-oracoli-prezzi-slippage-mev
+          - name: Lesson 10
+            path: lessons/10-composability-e-dipendenze-esterne
+          - name: Lesson 11
+            path: lessons/11-proxy-delegatecall-upgradeability
+          - name: Lesson 12
+            path: lessons/12-governance-owner-multisig-timelock
+          - name: Lesson 13
+            path: lessons/13-testing-approfondito-con-foundry
+          - name: Lesson 14
+            path: lessons/14-fuzz-e-invariant-testing-con-foundry
+          - name: Lesson 15
+            path: lessons/15-analisi-statica-con-slither
+          - name: Lesson 16
+            path: lessons/16-metodologia-di-audit-completa
+          - name: Lesson 17
+            path: lessons/17-progetto-finale-audit-escrow-evoluto
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Show Forge version
+        run: forge --version
+
+      - name: Run Forge fmt
+        run: forge fmt --root "${{ matrix.project.path }}" --check
+
+      - name: Run Forge build
+        run: forge build --root "${{ matrix.project.path }}" --sizes
+
+      - name: Run Forge tests
+        run: forge test --root "${{ matrix.project.path }}" -vvv
+
+  static-analysis:
+    name: Lesson 15 Slither
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned Slither
+        run: |
+          python3 -m venv /tmp/lesson15-slither
+          /tmp/lesson15-slither/bin/python -m pip install \
+            -r lessons/15-analisi-statica-con-slither/requirements-slither.txt
+          echo "/tmp/lesson15-slither/bin" >> "$GITHUB_PATH"
+
+      - name: Analyze remediated surface
+        working-directory: lessons/15-analisi-statica-con-slither
+        run: bash scripts/slither-fixed.sh
