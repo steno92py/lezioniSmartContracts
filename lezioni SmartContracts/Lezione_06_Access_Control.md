@@ -1640,6 +1640,5 @@ Fonti tecniche consultate per questa lezione:
 
 ---
 
-**Fine Lezione 6.**
+## Fine Lezione 6
 
-La lezione successiva non è inclusa qui, come richiesto dal formato del corso.

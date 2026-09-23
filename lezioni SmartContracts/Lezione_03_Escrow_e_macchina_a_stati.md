@@ -2375,6 +2375,5 @@ Fonti tecniche effettivamente consultate e verificate il **21 settembre 2026**:
 
 ---
 
-### Fine della Lezione 3
+## Fine Lezione 3
 
-La prossima lezione non viene inclusa qui, per rispettare il metodo “una lezione alla volta”.

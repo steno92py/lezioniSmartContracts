@@ -2107,26 +2107,22 @@ Non copiare meccanicamente il rating di un detector.
 
 Dopo remediation:
 
-```text
-[ ] F-01 PoC no longer violates solvency
-[ ] F-02 stale price reverts
-[ ] F-03 false-return token cannot finalize
-[ ] F-04 stranger cannot change oracle
-[ ] F-05 notifier failure is observable
-[ ] full unit suite passes
-[ ] fuzz suite passes
-[ ] invariant suite passes
-[ ] Slither rerun
-[ ] coverage reviewed
-```
+- [ ] F-01 PoC no longer violates solvency
+- [ ] F-02 stale price reverts
+- [ ] F-03 false-return token cannot finalize
+- [ ] F-04 stranger cannot change oracle
+- [ ] F-05 notifier failure is observable
+- [ ] full unit suite passes
+- [ ] fuzz suite passes
+- [ ] invariant suite passes
+- [ ] Slither rerun
+- [ ] coverage reviewed
 
 Se il contratto è upgradeable:
 
-```text
-[ ] storage validation passes
-[ ] migration tested
-[ ] old state preserved
-```
+- [ ] storage validation passes
+- [ ] migration tested
+- [ ] old state preserved
 
 ---
 
@@ -2252,116 +2248,94 @@ Nessuno dei tre sostituisce gli altri.
 
 ## Scope
 
-```text
-[ ] commit fissato
-[ ] compiler/config fissati
-[ ] files in/out of scope
-[ ] dependencies note
-```
+- [ ] commit fissato
+- [ ] compiler/config fissati
+- [ ] files in/out of scope
+- [ ] dependencies note
 
 ## Architecture
 
-```text
-[ ] diagramma
-[ ] assets
-[ ] actors
-[ ] trust boundaries
-```
+- [ ] diagramma
+- [ ] assets
+- [ ] actors
+- [ ] trust boundaries
 
 ## Invariants
 
-```text
-[ ] accounting
-[ ] solvency
-[ ] state machine
-[ ] authorization
-[ ] oracle
-[ ] governance
-[ ] upgrade
-```
+- [ ] accounting
+- [ ] solvency
+- [ ] state machine
+- [ ] authorization
+- [ ] oracle
+- [ ] governance
+- [ ] upgrade
 
 ## Manual review
 
-```text
-[ ] entry points
-[ ] state writes
-[ ] external calls
-[ ] callback/reentrancy
-[ ] zero/boundary
-[ ] error paths
-[ ] terminal states
-```
+- [ ] entry points
+- [ ] state writes
+- [ ] external calls
+- [ ] callback/reentrancy
+- [ ] zero/boundary
+- [ ] error paths
+- [ ] terminal states
 
 ## Asset integration
 
-```text
-[ ] ERC20 return values
-[ ] exact vs received
-[ ] decimals
-[ ] fee/rebase policy
-```
+- [ ] ERC20 return values
+- [ ] exact vs received
+- [ ] decimals
+- [ ] fee/rebase policy
 
 ## Oracle
 
-```text
-[ ] sign
-[ ] timestamp
-[ ] max age
-[ ] pair
-[ ] decimals
-[ ] admin
-```
+- [ ] sign
+- [ ] timestamp
+- [ ] max age
+- [ ] pair
+- [ ] decimals
+- [ ] admin
 
 ## Governance
 
-```text
-[ ] owner
-[ ] role admins
-[ ] multisig threshold
-[ ] timelock
-[ ] bypass
-[ ] emergency powers
-```
+- [ ] owner
+- [ ] role admins
+- [ ] multisig threshold
+- [ ] timelock
+- [ ] bypass
+- [ ] emergency powers
 
 ## Upgradeability
 
-```text
-[ ] initializer
-[ ] implementation lock
-[ ] storage layout
-[ ] authorize upgrade
-[ ] migration
-```
+- [ ] initializer
+- [ ] implementation lock
+- [ ] storage layout
+- [ ] authorize upgrade
+- [ ] migration
 
 ## Tooling
 
-```text
-[ ] forge build
-[ ] forge test
-[ ] coverage
-[ ] fuzz
-[ ] invariant
-[ ] Slither
-```
+- [ ] forge build
+- [ ] forge test
+- [ ] coverage
+- [ ] fuzz
+- [ ] invariant
+- [ ] Slither
 
 ## Findings
 
-```text
-[ ] root cause
-[ ] impact
-[ ] reproduction
-[ ] remediation
-[ ] regression
-```
+- [ ] root cause
+- [ ] impact
+- [ ] reproduction
+- [ ] remediation
+- [ ] regression
 
 ## Retest
 
-```text
-[ ] diff reviewed
-[ ] PoC broken
-[ ] full suite green
-[ ] static tools rerun
-```
+- [ ] diff reviewed
+- [ ] PoC broken
+- [ ] full suite green
+- [ ] static tools rerun
 
 ---
 

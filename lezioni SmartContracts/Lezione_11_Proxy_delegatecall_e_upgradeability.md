@@ -2145,20 +2145,18 @@ devono essere trattati come un'unica transizione logica.
 
 Una buona checklist di test V1 → V2:
 
-```text
-[ ] stato V1 preparato
-[ ] unauthorized upgrade fallisce
-[ ] authorized upgrade riesce
-[ ] storage V1 preservato
-[ ] funzioni V1 ancora corrette
-[ ] nuova funzione V2 corretta
-[ ] nuovo reinitializer eseguito
-[ ] reinitializer non ripetibile
-[ ] invarianti economici ancora veri
-[ ] invalid layout rifiutato
-[ ] ruoli e ownership preservati
-[ ] failure della migration testato
-```
+- [ ] stato V1 preparato
+- [ ] unauthorized upgrade fallisce
+- [ ] authorized upgrade riesce
+- [ ] storage V1 preservato
+- [ ] funzioni V1 ancora corrette
+- [ ] nuova funzione V2 corretta
+- [ ] nuovo reinitializer eseguito
+- [ ] reinitializer non ripetibile
+- [ ] invarianti economici ancora veri
+- [ ] invalid layout rifiutato
+- [ ] ruoli e ownership preservati
+- [ ] failure della migration testato
 
 ---
 
@@ -2340,50 +2338,44 @@ Quando incontri un contratto upgradeable:
 
 ## 62. Checklist storage layout
 
-```text
-[ ] nessuna variabile rimossa
-[ ] nessuna variabile riordinata
-[ ] nessun type change incompatibile
-[ ] nessuna insertion incompatibile
-[ ] inheritance controllata
-[ ] packing verificato
-[ ] storage gaps corretti, se usati
-[ ] ERC-7201 namespace corretti, se usati
-[ ] nuove variabili inizializzate
-[ ] validateUpgrade passa
-[ ] forge inspect esaminato
-```
+- [ ] nessuna variabile rimossa
+- [ ] nessuna variabile riordinata
+- [ ] nessun type change incompatibile
+- [ ] nessuna insertion incompatibile
+- [ ] inheritance controllata
+- [ ] packing verificato
+- [ ] storage gaps corretti, se usati
+- [ ] ERC-7201 namespace corretti, se usati
+- [ ] nuove variabili inizializzate
+- [ ] validateUpgrade passa
+- [ ] forge inspect esaminato
 
 ---
 
 ## 63. Checklist initializer
 
-```text
-[ ] constructor implementation -> _disableInitializers()
-[ ] initialize -> initializer
-[ ] parent initializers chiamati
-[ ] proxy inizializzato al deploy
-[ ] secondo initialize fallisce
-[ ] reinitializer versionato
-[ ] reinitializer eseguito una volta
-[ ] zero address validati dove richiesto
-[ ] owner/buyer/seller corretti
-```
+- [ ] constructor implementation -> _disableInitializers()
+- [ ] initialize -> initializer
+- [ ] parent initializers chiamati
+- [ ] proxy inizializzato al deploy
+- [ ] secondo initialize fallisce
+- [ ] reinitializer versionato
+- [ ] reinitializer eseguito una volta
+- [ ] zero address validati dove richiesto
+- [ ] owner/buyer/seller corretti
 
 ---
 
 ## 64. Checklist authorization upgrade
 
-```text
-[ ] _authorizeUpgrade implementata
-[ ] access control corretto
-[ ] unauthorized upgrade testato
-[ ] authorized upgrade testato
-[ ] owner/upgrader identificato
-[ ] ownership transfer compreso
-[ ] governance process documentato
-[ ] nuovo implementation validato
-```
+- [ ] _authorizeUpgrade implementata
+- [ ] access control corretto
+- [ ] unauthorized upgrade testato
+- [ ] authorized upgrade testato
+- [ ] owner/upgrader identificato
+- [ ] ownership transfer compreso
+- [ ] governance process documentato
+- [ ] nuovo implementation validato
 
 ---
 
@@ -2742,8 +2734,6 @@ Fonti tecniche consultate il **21 settembre 2026**:
 ---
 
 ## Fine Lezione 11
-
-La **Lezione 12** non è inclusa in questo file.
 
 Prossimo argomento:
 

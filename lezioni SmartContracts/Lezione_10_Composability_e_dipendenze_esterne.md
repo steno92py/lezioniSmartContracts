@@ -1814,8 +1814,6 @@ Fonti tecniche consultate il **21 settembre 2026**:
 
 ## Fine Lezione 10
 
-La **Lezione 11** non è inclusa qui.
-
 La progressione successiva sarà:
 
 **Proxy, `delegatecall` e upgradeability: execution context, storage layout, initializer, admin risk, upgrade authorization e test degli upgrade.**

@@ -1332,11 +1332,11 @@ Durante la lettura del feed.
 
 # 36. `quote18To6()`
 
-### Caller
+## Caller
 
 Chiunque.
 
-### Input
+## Input
 
 ```text
 amount18
@@ -1344,24 +1344,24 @@ amount18
 
 controllato dal chiamante.
 
-### Stato letto
+## Stato letto
 
 - oracle;
 - price;
 - decimals.
 
-### Stato modificato
+## Stato modificato
 
 Nessuno.
 
-### External calls
+## External calls
 
 ```text
 readPrice()
 oracle.decimals()
 ```
 
-### Assunzioni
+## Assunzioni
 
 - input usa 18 decimals;
 - output desiderato usa 6 decimals;
@@ -1381,11 +1381,11 @@ return: QUOTE units, 1e6
 
 # 37. `SafeSwapIntent.execute()`
 
-### Caller
+## Caller
 
 Chiunque.
 
-### Input controllati
+## Input controllati
 
 ```text
 amountIn
@@ -1393,20 +1393,20 @@ amountOutMin
 deadline
 ```
 
-### Stato letto
+## Stato letto
 
 ```text
 block.timestamp
 swapper
 ```
 
-### External call
+## External call
 
 ```text
 swapper.swap(...)
 ```
 
-### Assunzioni
+## Assunzioni
 
 - `swapper` esegue la semantica prevista;
 - `amountOutMin` è stato calcolato in modo ragionevole;
@@ -2490,19 +2490,19 @@ prima di proporre una patch.
 
 # 64. Cosa devi ricordare
 
-### 1. Uno smart contract non conosce autonomamente il prezzo del mondo esterno
+## 1. Uno smart contract non conosce autonomamente il prezzo del mondo esterno
 
 Serve un oracle o una sorgente on-chain.
 
 ---
 
-### 2. L'oracle è una trust boundary
+## 2. L'oracle è una trust boundary
 
 Il protocollo eredita le assunzioni della fonte.
 
 ---
 
-### 3. Un dato può essere autentico ma inutile
+## 3. Un dato può essere autentico ma inutile
 
 Per esempio:
 
@@ -2515,7 +2515,7 @@ economically anomalous
 
 ---
 
-### 4. Le unità fanno parte della sicurezza
+## 4. Le unità fanno parte della sicurezza
 
 Annota sempre:
 
@@ -2529,7 +2529,7 @@ output unit
 
 ---
 
-### 5. Il successo tecnico non implica correttezza economica
+## 5. Il successo tecnico non implica correttezza economica
 
 ```text
 swap succeeded
@@ -2543,7 +2543,7 @@ swap price acceptable
 
 ---
 
-### 6. Slippage protection esprime un limite economico
+## 6. Slippage protection esprime un limite economico
 
 ```text
 actualOut >= minOut
@@ -2551,7 +2551,7 @@ actualOut >= minOut
 
 ---
 
-### 7. Deadline e minOut proteggono proprietà differenti
+## 7. Deadline e minOut proteggono proprietà differenti
 
 ```text
 deadline -> tempo
@@ -2560,13 +2560,13 @@ minOut   -> risultato economico
 
 ---
 
-### 8. MEV rende l'ordering una variabile di threat modeling
+## 8. MEV rende l'ordering una variabile di threat modeling
 
 Non assumere ingenuamente che la tua transazione venga eseguita contro lo stato che hai osservato prima di inviarla.
 
 ---
 
-### 9. Price security è business logic security
+## 9. Price security è business logic security
 
 Puoi avere codice memory-safe, access control corretto e nessuna reentrancy, ma perdere comunque le proprietà economiche a causa di un prezzo sbagliato.
 
@@ -2649,9 +2649,7 @@ Fonti tecniche consultate il **21 settembre 2026**:
 
 ---
 
-## Fine Lezione 9
-
-La **Lezione 10** non è inclusa in questo file.
+# Fine Lezione 9
 
 La progressione successiva sarà:
 

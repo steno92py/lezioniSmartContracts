@@ -2665,27 +2665,25 @@ La checklist completa resta manuale.
 
 # 98. Checklist da auditor — static analysis
 
-```text
-[ ] forge build pulito?
-[ ] compiler warnings compresi?
-[ ] Slither compila il progetto?
-[ ] human-summary esaminato?
-[ ] entry points inventariati?
-[ ] inheritance graph compreso?
-[ ] call graph esaminato?
-[ ] vars-and-auth esaminato?
-[ ] detector run completo?
-[ ] high/medium triaged?
-[ ] low/info campionati e compresi?
-[ ] dependencies filtrate con criterio?
-[ ] false positive documentati?
-[ ] suppressions motivate?
-[ ] JSON/SARIF salvato in CI?
-[ ] finding confermati riprodotti in test?
-[ ] fix accompagnati da regressioni?
-[ ] upgradeability verificata con tool dedicati?
-[ ] business logic ancora reviewata manualmente?
-```
+- [ ] forge build pulito?
+- [ ] compiler warnings compresi?
+- [ ] Slither compila il progetto?
+- [ ] human-summary esaminato?
+- [ ] entry points inventariati?
+- [ ] inheritance graph compreso?
+- [ ] call graph esaminato?
+- [ ] vars-and-auth esaminato?
+- [ ] detector run completo?
+- [ ] high/medium triaged?
+- [ ] low/info campionati e compresi?
+- [ ] dependencies filtrate con criterio?
+- [ ] false positive documentati?
+- [ ] suppressions motivate?
+- [ ] JSON/SARIF salvato in CI?
+- [ ] finding confermati riprodotti in test?
+- [ ] fix accompagnati da regressioni?
+- [ ] upgradeability verificata con tool dedicati?
+- [ ] business logic ancora reviewata manualmente?
 
 ---
 
@@ -2941,13 +2939,13 @@ Separali in due colonne.
 
 # 101. Cosa devo ricordare
 
-### 1. Slither trova candidati, non emette verità assolute
+## 1. Slither trova candidati, non emette verità assolute
 
 Ogni finding richiede triage.
 
 ---
 
-### 2. Static analysis e testing sono complementari
+## 2. Static analysis e testing sono complementari
 
 ```text
 static -> dove guardare
@@ -2956,31 +2954,31 @@ dynamic -> dimostra behavior
 
 ---
 
-### 3. Il compiler è parte della security toolchain
+## 3. Il compiler è parte della security toolchain
 
 Non ignorare warning senza capirli.
 
 ---
 
-### 4. Printer come `entry-points`, `vars-and-auth` e `call-graph` sono strumenti da auditor
+## 4. Printer come `entry-points`, `vars-and-auth` e `call-graph` sono strumenti da auditor
 
 Non servono solo i detector.
 
 ---
 
-### 5. Impact e confidence del tool non sono la severity finale
+## 5. Impact e confidence del tool non sono la severity finale
 
 Il contesto economico decide la gravità reale.
 
 ---
 
-### 6. L'assenza di finding non dimostra sicurezza
+## 6. L'assenza di finding non dimostra sicurezza
 
 Business logic, oracle semantics e governance possono essere sbagliati senza alert statici.
 
 ---
 
-### 7. Segui source → sink
+## 7. Segui source → sink
 
 Input utente, oracle e ruoli devono essere tracciati fino a:
 
@@ -2993,17 +2991,17 @@ upgrade
 
 ---
 
-### 8. Ogni finding confermato deve diventare un test di regressione
+## 8. Ogni finding confermato deve diventare un test di regressione
 
 ---
 
-### 9. Documenta i falsi positivi
+## 9. Documenta i falsi positivi
 
 Una suppression senza spiegazione è debito di sicurezza.
 
 ---
 
-### 10. Static analysis è parte di un audit workflow, non il suo sostituto
+## 10. Static analysis è parte di un audit workflow, non il suo sostituto
 
 ---
 
@@ -3087,9 +3085,7 @@ Fonti tecniche consultate il **22 settembre 2026**:
 
 ---
 
-## Fine Lezione 15
-
-La **Lezione 16** non è inclusa in questo file.
+# Fine Lezione 15
 
 Prossimo argomento:
 

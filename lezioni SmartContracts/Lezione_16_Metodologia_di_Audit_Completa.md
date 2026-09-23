@@ -1525,113 +1525,99 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ## 60. Checklist — Scope
 
-```text
-[ ] repository
-[ ] commit
-[ ] compiler
-[ ] config
-[ ] in-scope files
-[ ] out-of-scope
-[ ] dependencies
-[ ] chains
-[ ] proxy pattern
-[ ] deployment assumptions
-```
+- [ ] repository
+- [ ] commit
+- [ ] compiler
+- [ ] config
+- [ ] in-scope files
+- [ ] out-of-scope
+- [ ] dependencies
+- [ ] chains
+- [ ] proxy pattern
+- [ ] deployment assumptions
 
 ---
 
 ## 61. Checklist — Architecture
 
-```text
-[ ] architecture diagram
-[ ] assets
-[ ] actors
-[ ] trust boundaries
-[ ] dependencies
-[ ] governance graph
-[ ] upgrade graph
-```
+- [ ] architecture diagram
+- [ ] assets
+- [ ] actors
+- [ ] trust boundaries
+- [ ] dependencies
+- [ ] governance graph
+- [ ] upgrade graph
 
 ---
 
 ## 62. Checklist — Invariants
 
-```text
-[ ] accounting
-[ ] solvency
-[ ] authorization
-[ ] state machine
-[ ] terminality
-[ ] oracle freshness
-[ ] governance delay
-[ ] upgrade preservation
-[ ] asset-specific assumptions
-```
+- [ ] accounting
+- [ ] solvency
+- [ ] authorization
+- [ ] state machine
+- [ ] terminality
+- [ ] oracle freshness
+- [ ] governance delay
+- [ ] upgrade preservation
+- [ ] asset-specific assumptions
 
 ---
 
 ## 63. Checklist — Manual Review
 
-```text
-[ ] entry points
-[ ] caller control
-[ ] calldata
-[ ] msg.value
-[ ] storage reads
-[ ] storage writes
-[ ] external calls
-[ ] return handling
-[ ] CEI
-[ ] callbacks
-[ ] state transitions
-[ ] zero/boundaries
-```
+- [ ] entry points
+- [ ] caller control
+- [ ] calldata
+- [ ] msg.value
+- [ ] storage reads
+- [ ] storage writes
+- [ ] external calls
+- [ ] return handling
+- [ ] CEI
+- [ ] callbacks
+- [ ] state transitions
+- [ ] zero/boundaries
 
 ---
 
 ## 64. Checklist — Dependencies
 
-```text
-[ ] tokens
-[ ] oracle
-[ ] router
-[ ] proxies
-[ ] admin controllers
-[ ] third-party governance
-[ ] compile-time libs
-[ ] runtime upgradeability
-```
+- [ ] tokens
+- [ ] oracle
+- [ ] router
+- [ ] proxies
+- [ ] admin controllers
+- [ ] third-party governance
+- [ ] compile-time libs
+- [ ] runtime upgradeability
 
 ---
 
 ## 65. Checklist — Governance
 
-```text
-[ ] owner
-[ ] roles
-[ ] role admins
-[ ] multisig threshold
-[ ] timelock
-[ ] bypass paths
-[ ] emergency powers
-[ ] pause scope
-[ ] recovery
-```
+- [ ] owner
+- [ ] roles
+- [ ] role admins
+- [ ] multisig threshold
+- [ ] timelock
+- [ ] bypass paths
+- [ ] emergency powers
+- [ ] pause scope
+- [ ] recovery
 
 ---
 
 ## 66. Checklist — Tooling
 
-```text
-[ ] forge build
-[ ] forge test
-[ ] forge coverage
-[ ] fuzz
-[ ] invariant
-[ ] Slither
-[ ] storage layout
-[ ] upgrade validation
-```
+- [ ] forge build
+- [ ] forge test
+- [ ] forge coverage
+- [ ] fuzz
+- [ ] invariant
+- [ ] Slither
+- [ ] storage layout
+- [ ] upgrade validation
 
 ---
 
@@ -1639,31 +1625,27 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 Per ogni finding:
 
-```text
-[ ] title
-[ ] root cause
-[ ] impact
-[ ] prerequisites
-[ ] reproduction
-[ ] severity reasoning
-[ ] recommendation
-[ ] regression test
-```
+- [ ] title
+- [ ] root cause
+- [ ] impact
+- [ ] prerequisites
+- [ ] reproduction
+- [ ] severity reasoning
+- [ ] recommendation
+- [ ] regression test
 
 ---
 
 ## 68. Checklist — Retest
 
-```text
-[ ] fix diff reviewed
-[ ] PoC no longer succeeds
-[ ] regression passes
-[ ] full tests pass
-[ ] relevant fuzz rerun
-[ ] invariant rerun
-[ ] Slither rerun
-[ ] upgrade compatibility checked
-```
+- [ ] fix diff reviewed
+- [ ] PoC no longer succeeds
+- [ ] regression passes
+- [ ] full tests pass
+- [ ] relevant fuzz rerun
+- [ ] invariant rerun
+- [ ] Slither rerun
+- [ ] upgrade compatibility checked
 
 ---
 
@@ -2109,8 +2091,6 @@ Fonti tecniche consultate il **22 settembre 2026**:
 ---
 
 ## Fine Lezione 16
-
-La **Lezione 17** non è inclusa in questo file.
 
 Prossimo modulo:
 

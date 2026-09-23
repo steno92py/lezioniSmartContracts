@@ -9,7 +9,7 @@
 
 ---
 
-## Collegamento con la Lezione 3
+# Collegamento con la Lezione 3
 
 Nella Lezione 3 abbiamo costruito una macchina a stati deliberatamente incompleta:
 
@@ -2399,7 +2399,7 @@ Non significa automaticamente che esista una vulnerabilità, ma è un punto da i
 
 Quando trovi Ether o external calls, usa questa checklist.
 
-### Ingresso di Ether
+## Ingresso di Ether
 
 - Quali funzioni sono `payable`?
 - Il contratto definisce `receive()`?
@@ -2409,7 +2409,7 @@ Quando trovi Ether o external calls, usa questa checklist.
 - La logica assume erroneamente che tutto l'Ether debba passare da una funzione specifica?
 - Esistono invariant fragili del tipo `address(this).balance == accounting`?
 
-### Uscita di Ether
+## Uscita di Ether
 
 - Dove viene effettuato il value transfer?
 - Viene usata una low-level call?
@@ -2418,7 +2418,7 @@ Quando trovi Ether o external calls, usa questa checklist.
 - Il recipient può bloccare una transizione importante?
 - È più appropriato un pull payment?
 
-### Controllo esterno
+## Controllo esterno
 
 - Qual è l'ultima modifica di storage prima della external call?
 - Tutti gli effetti critici sono già stati applicati?
@@ -2426,13 +2426,13 @@ Quando trovi Ether o external calls, usa questa checklist.
 - Può chiamare un'altra funzione del contratto?
 - Può attraversare altri contratti e tornare indietro?
 
-### API surface
+## API surface
 
 - Selector sconosciuti vengono accettati o rifiutati?
 - `receive()` e `fallback()` fanno più lavoro del necessario?
 - Esiste una seconda strada accidentale per depositare fondi?
 
-### Testing
+## Testing
 
 - Hai testato un recipient EOA?
 - Hai testato un recipient contract?
@@ -2615,31 +2615,31 @@ function release()
 }
 ```
 
-### Passo 1 — entry point
+## Passo 1 — entry point
 
 È `external`.
 
 Surface pubblica.
 
-### Passo 2 — authorization
+## Passo 2 — authorization
 
 ```solidity
 onlyBuyer
 ```
 
-### Passo 3 — state guard
+## Passo 3 — state guard
 
 ```solidity
 onlyState(State.Funded)
 ```
 
-### Passo 4 — effects
+## Passo 4 — effects
 
 ```solidity
 state = State.Released;
 ```
 
-### Passo 5 — trust boundary
+## Passo 5 — trust boundary
 
 ```solidity
 seller.call{value: price}("")
@@ -2651,15 +2651,15 @@ Metti mentalmente un grande segnale:
 ========== EXTERNAL CONTROL ==========
 ```
 
-### Passo 6 — failure semantics
+## Passo 6 — failure semantics
 
 Il risultato viene controllato.
 
-### Passo 7 — rollback reasoning
+## Passo 7 — rollback reasoning
 
 Se `success == false`, il revert annulla anche `state = Released`.
 
-### Passo 8 — domande residue
+## Passo 8 — domande residue
 
 Un auditor non dovrebbe fermarsi qui.
 
@@ -2753,36 +2753,36 @@ Il modello difensivo migliore è:
 
 Se ricordi solo pochi concetti, conserva questi.
 
-### 1. `msg.value` appartiene alla call corrente
+## 1. `msg.value` appartiene alla call corrente
 
 Non è il balance dell'utente né il balance del contratto.
 
-### 2. `payable` abilita l'ingresso di Ether su quella call
+## 2. `payable` abilita l'ingresso di Ether su quella call
 
 Non significa che la funzione debba riceverne.
 
-### 3. `receive()` e `fallback()` fanno parte della superficie di attacco
+## 3. `receive()` e `fallback()` fanno parte della superficie di attacco
 
 Sono entry point e vanno progettati intenzionalmente.
 
-### 4. Raw balance e protocol accounting non sono la stessa cosa
+## 4. Raw balance e protocol accounting non sono la stessa cosa
 
 Non costruire invariant fragili assumendo che ogni wei sia passato dal tuo codice di deposito.
 
-### 5. Una external call è un trasferimento di controllo
+## 5. Una external call è un trasferimento di controllo
 
 ```text
 call = trust boundary
 ```
 
-### 6. Le low-level calls vanno controllate
+## 6. Le low-level calls vanno controllate
 
 ```solidity
 (bool success,) = target.call(...);
 if (!success) revert ...;
 ```
 
-### 7. CEI significa
+## 7. CEI significa
 
 ```text
 Checks -> Effects -> Interactions
@@ -2790,11 +2790,11 @@ Checks -> Effects -> Interactions
 
 Lo stato locale deve essere reso coerente prima di cedere controllo.
 
-### 8. Un revert dopo una interaction fallita può rollbackare gli Effects precedenti
+## 8. Un revert dopo una interaction fallita può rollbackare gli Effects precedenti
 
 È ciò che permette alla nostra `release()` di tornare correttamente a `Funded` se il seller rifiuta Ether.
 
-### 9. CEI è necessario in molti design, ma non è sufficiente per ogni forma di reentrancy
+## 9. CEI è necessario in molti design, ma non è sufficiente per ogni forma di reentrancy
 
 La Lezione 5 partirà esattamente da questa limitazione.
 
@@ -2804,22 +2804,20 @@ La Lezione 5 partirà esattamente da questa limitazione.
 
 Dovresti riuscire a spiegare senza guardare gli appunti:
 
-```text
-[ ] differenza tra msg.value e address(this).balance
-[ ] cosa significa payable
-[ ] quando scatta receive()
-[ ] quando scatta fallback()
-[ ] perché receive() non è una garanzia sul raw balance
-[ ] cosa restituisce una low-level call
-[ ] perché success va controllato
-[ ] perché una call con Ether può eseguire codice
-[ ] cosa significa trust boundary
-[ ] ordine Checks -> Effects -> Interactions
-[ ] perché il rollback salva lo stato se il payout fallisce
-[ ] perché CEI non equivale a "sicuro per definizione"
-[ ] differenza tra push e pull payments
-[ ] perché address(this).balance non dovrebbe definire automaticamente il payout dovuto
-```
+- [ ] differenza tra msg.value e address(this).balance
+- [ ] cosa significa payable
+- [ ] quando scatta receive()
+- [ ] quando scatta fallback()
+- [ ] perché receive() non è una garanzia sul raw balance
+- [ ] cosa restituisce una low-level call
+- [ ] perché success va controllato
+- [ ] perché una call con Ether può eseguire codice
+- [ ] cosa significa trust boundary
+- [ ] ordine Checks -> Effects -> Interactions
+- [ ] perché il rollback salva lo stato se il payout fallisce
+- [ ] perché CEI non equivale a "sicuro per definizione"
+- [ ] differenza tra push e pull payments
+- [ ] perché address(this).balance non dovrebbe definire automaticamente il payout dovuto
 
 Se uno di questi punti non è chiaro, conviene consolidarlo prima della reentrancy.
 
@@ -2829,7 +2827,7 @@ Se uno di questi punti non è chiaro, conviene consolidarlo prima della reentran
 
 Le fonti sotto sono state effettivamente consultate per verificare sintassi e raccomandazioni aggiornate al 21 settembre 2026.
 
-### [S1] Solidity 0.8.37 — Release Announcement
+## [S1] Solidity 0.8.37 — Release Announcement
 
 Solidity Team, 10 settembre 2026.
 
@@ -2837,7 +2835,7 @@ Solidity Team, 10 settembre 2026.
 
 Usata per la baseline del compilatore del corso e per verificare che 0.8.37 sia la release stabile corrente considerata nella lezione.
 
-### [S2] Solidity Documentation — Contracts / Special Functions
+## [S2] Solidity Documentation — Contracts / Special Functions
 
 Sezioni `Receive Ether Function` e `Fallback Function`.
 
@@ -2853,7 +2851,7 @@ Usata per verificare:
 - requisiti `external`/`payable`;
 - stato attuale della deprecazione di `send()` e `transfer()`.
 
-### [S3] Solidity Documentation — Units and Globally Available Variables / Address members
+## [S3] Solidity Documentation — Units and Globally Available Variables / Address members
 
 - https://docs.soliditylang.org/en/latest/units-and-global-variables.html#members-of-address-types
 
@@ -2864,7 +2862,7 @@ Usata per verificare:
 - return values delle low-level calls;
 - deprecazione di `send()` e `transfer()`.
 
-### [S4] Solidity Documentation — Security Considerations
+## [S4] Solidity Documentation — Security Considerations
 
 - https://docs.soliditylang.org/en/latest/security-considerations.html
 
@@ -2876,7 +2874,7 @@ Usata per:
 - failure modes dei trasferimenti Ether;
 - withdrawal/pull pattern come design da considerare.
 
-### [S5] Foundry — Reference e testing
+## [S5] Foundry — Reference e testing
 
 - https://www.getfoundry.sh/reference/
 - https://getfoundry.sh/forge/cheatcodes
@@ -2892,19 +2890,19 @@ Usata per verificare l'uso corrente di:
 - `vm.expectRevert`;
 - comportamento speciale di `expectRevert` con low-level calls, motivo per cui nei test diretti a `receive`/`fallback` controlliamo esplicitamente il boolean `success`.
 
-### [S6] EIP-6780 — SELFDESTRUCT only in same transaction
+## [S6] EIP-6780 — SELFDESTRUCT only in same transaction
 
 - https://eips.ethereum.org/EIPS/eip-6780
 
 Usata per verificare la semantica moderna di `SELFDESTRUCT`: fuori dal caso speciale della creazione nella stessa transaction non elimina più normalmente codice/storage, ma continua a trasferire il balance al target. Nel laboratorio viene usato soltanto per dimostrare in locale che il raw ETH balance può cambiare senza eseguire `receive()`.
 
-### [S7] EIP-7702 — Set Code for EOAs
+## [S7] EIP-7702 — Set Code for EOAs
 
 - https://eips.ethereum.org/EIPS/eip-7702
 
 Usata per aggiornare il modello mentale account/contract: un EOA può installare una delegation indicator e, quando chiamato, eseguire codice delegato. Questo rafforza la regola difensiva di non fondare la sicurezza sull'assunzione "questo address non eseguirà codice".
 
-### [S8] OWASP Smart Contract Security 2026
+## [S8] OWASP Smart Contract Security 2026
 
 - https://scs.owasp.org/sctop10/
 - https://scs.owasp.org/sctop10/SC08-ReentrancyAttacks/
@@ -2918,7 +2916,7 @@ Usata per confrontare la lezione con le raccomandazioni correnti su:
 - pull-based withdrawals quando appropriati;
 - necessità di test focalizzati sulle external interactions.
 
-### [S9] OpenZeppelin Contracts 5.x — Utilities
+## [S9] OpenZeppelin Contracts 5.x — Utilities
 
 - https://docs.openzeppelin.com/contracts/5.x/api/utils
 
@@ -2926,9 +2924,7 @@ Usata come riferimento secondario aggiornato per la gestione di value transfer e
 
 ---
 
-## Fine della Lezione 4
-
-La prossima lezione **non è inclusa qui**.
+# Fine Lezione 4
 
 Quando vorrai continuare, la Lezione 5 partirà dalla riga più importante di oggi:
 

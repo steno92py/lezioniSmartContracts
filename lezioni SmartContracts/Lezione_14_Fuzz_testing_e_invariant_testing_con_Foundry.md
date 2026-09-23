@@ -2001,13 +2001,13 @@ Vuoi fonti indipendenti.
 
 # 61. Esempi di invarianti forti
 
-### Solvibilità
+## Solvibilità
 
 ```text
 asset >= liabilities
 ```
 
-### Conservation
+## Conservation
 
 ```text
 initial + deposits
@@ -2015,19 +2015,19 @@ initial + deposits
 vault balance + withdrawals
 ```
 
-### Authorization state
+## Authorization state
 
 ```text
 owner changes only through authorized path
 ```
 
-### Terminality
+## Terminality
 
 ```text
 once terminal, never non-terminal
 ```
 
-### Supply consistency
+## Supply consistency
 
 ```text
 sum tracked balances
@@ -2936,41 +2936,37 @@ La seconda richiede metodologia più sofisticata.
 
 Quando leggi fuzz test:
 
-```text
-[ ] property dichiarata chiaramente?
-[ ] dominio realistico?
-[ ] bound appropriato?
-[ ] assumptions troppo restrittive?
-[ ] zero/boundary conservati come regression?
-[ ] caller fuzzato quando rilevante?
-[ ] revert preciso?
-[ ] counterexample riproducibile?
-[ ] input normalizzati senza cambiare la property?
-[ ] overflow del test stesso considerato?
-[ ] reference model indipendente?
-```
+- [ ] property dichiarata chiaramente?
+- [ ] dominio realistico?
+- [ ] bound appropriato?
+- [ ] assumptions troppo restrittive?
+- [ ] zero/boundary conservati come regression?
+- [ ] caller fuzzato quando rilevante?
+- [ ] revert preciso?
+- [ ] counterexample riproducibile?
+- [ ] input normalizzati senza cambiare la property?
+- [ ] overflow del test stesso considerato?
+- [ ] reference model indipendente?
 
 ---
 
 # 99. Checklist da auditor — invariant tests
 
-```text
-[ ] invariante economicamente significativo?
-[ ] non tautologico?
-[ ] state space realistico?
-[ ] handler raggiunge stati interessanti?
-[ ] troppe call sono no-op?
-[ ] actor set adeguato?
-[ ] selectors corretti?
-[ ] ghost variables affidabili?
-[ ] fail_on_revert scelto consapevolmente?
-[ ] runs/depth ragionevoli?
-[ ] external dependencies modellate?
-[ ] donation/rebase/fee policy definita?
-[ ] terminal states verificati?
-[ ] solvibilità verificata?
-[ ] ogni failure diventa regression?
-```
+- [ ] invariante economicamente significativo?
+- [ ] non tautologico?
+- [ ] state space realistico?
+- [ ] handler raggiunge stati interessanti?
+- [ ] troppe call sono no-op?
+- [ ] actor set adeguato?
+- [ ] selectors corretti?
+- [ ] ghost variables affidabili?
+- [ ] fail_on_revert scelto consapevolmente?
+- [ ] runs/depth ragionevoli?
+- [ ] external dependencies modellate?
+- [ ] donation/rebase/fee policy definita?
+- [ ] terminal states verificati?
+- [ ] solvibilità verificata?
+- [ ] ogni failure diventa regression?
 
 ---
 
@@ -3278,49 +3274,49 @@ Trova almeno **sei problemi**.
 
 # 103. Cosa devo ricordare
 
-### 1. Fuzzing testa una proprietà su molti input
+## 1. Fuzzing testa una proprietà su molti input
 
 Non significa "random testing senza specifica".
 
 ---
 
-### 2. `bound` e `assume` modellano il dominio
+## 2. `bound` e `assume` modellano il dominio
 
 Usali per descrivere input realistici, non per nascondere failure.
 
 ---
 
-### 3. Troppi `assume` possono distruggere l'esplorazione
+## 3. Troppi `assume` possono distruggere l'esplorazione
 
 Preferisci normalizzare quando possibile.
 
 ---
 
-### 4. Un fuzz failure produce un counterexample
+## 4. Un fuzz failure produce un counterexample
 
 Trasformalo in un regression test.
 
 ---
 
-### 5. Invariant testing è stateful
+## 5. Invariant testing è stateful
 
 Foundry prova sequenze di azioni sullo stesso stato.
 
 ---
 
-### 6. L'handler definisce il mondo che il fuzzer può esplorare
+## 6. L'handler definisce il mondo che il fuzzer può esplorare
 
 Se il modello è povero, il test è povero.
 
 ---
 
-### 7. Ghost variables aggiungono memoria/verifica indipendente
+## 7. Ghost variables aggiungono memoria/verifica indipendente
 
 Ma non devono duplicare tutta la business logic.
 
 ---
 
-### 8. Solvibilità è un ottimo invariante economico
+## 8. Solvibilità è un ottimo invariante economico
 
 ```text
 assets >= liabilities
@@ -3330,13 +3326,13 @@ quando coerente con la specification.
 
 ---
 
-### 9. Bounded handler e negative testing hanno ruoli differenti
+## 9. Bounded handler e negative testing hanno ruoli differenti
 
 Uno esplora bene gli stati validi; l'altro prova azioni proibite.
 
 ---
 
-### 10. Più run non compensano una property debole
+## 10. Più run non compensano una property debole
 
 La qualità dell'invariante viene prima del numero di sequenze.
 
@@ -3417,9 +3413,7 @@ Fonti tecniche consultate il **21 settembre 2026**:
 
 ---
 
-## Fine Lezione 14
-
-La **Lezione 15** non è inclusa in questo file.
+# Fine Lezione 14
 
 Prossimo argomento:
 

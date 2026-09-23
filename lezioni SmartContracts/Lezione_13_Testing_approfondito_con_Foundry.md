@@ -2853,36 +2853,34 @@ Per ogni test chiediti:
 
 Quando auditi un repository:
 
-```text
-[ ] esiste una suite test?
-[ ] test positivi?
-[ ] test negativi?
-[ ] authorization testata?
-[ ] state machine testata?
-[ ] boundary values?
-[ ] zero address?
-[ ] zero amount?
-[ ] external failure?
-[ ] reentrancy regression?
-[ ] oracle stale/zero/negative?
-[ ] ERC20 false-return?
-[ ] fee-on-transfer?
-[ ] upgrade preservation?
-[ ] unauthorized upgrade?
-[ ] timelock early execution?
-[ ] paused-state behavior?
-[ ] terminal state?
-[ ] event correctness?
-[ ] balance delta?
-[ ] coverage analizzata?
-[ ] test troppo generici?
-[ ] `expectRevert()` generici dove dovrebbero essere precisi?
-[ ] prank lifecycle corretto?
-[ ] helper nascondono troppo?
-[ ] test dipendono dall'ordine?
-[ ] test dipendono da RPC esterno senza motivo?
-[ ] regression test per bug storici?
-```
+- [ ] esiste una suite test?
+- [ ] test positivi?
+- [ ] test negativi?
+- [ ] authorization testata?
+- [ ] state machine testata?
+- [ ] boundary values?
+- [ ] zero address?
+- [ ] zero amount?
+- [ ] external failure?
+- [ ] reentrancy regression?
+- [ ] oracle stale/zero/negative?
+- [ ] ERC20 false-return?
+- [ ] fee-on-transfer?
+- [ ] upgrade preservation?
+- [ ] unauthorized upgrade?
+- [ ] timelock early execution?
+- [ ] paused-state behavior?
+- [ ] terminal state?
+- [ ] event correctness?
+- [ ] balance delta?
+- [ ] coverage analizzata?
+- [ ] test troppo generici?
+- [ ] `expectRevert()` generici dove dovrebbero essere precisi?
+- [ ] prank lifecycle corretto?
+- [ ] helper nascondono troppo?
+- [ ] test dipendono dall'ordine?
+- [ ] test dipendono da RPC esterno senza motivo?
+- [ ] regression test per bug storici?
 
 ---
 
@@ -3125,11 +3123,11 @@ success path incompleto
 
 # 99. Cosa devo ricordare
 
-### 1. Un test deve verificare una proprietà, non soltanto eseguire codice
+## 1. Un test deve verificare una proprietà, non soltanto eseguire codice
 
 ---
 
-### 2. Negative testing è parte del secure coding
+## 2. Negative testing è parte del secure coding
 
 ```text
 ciò che non deve essere possibile
@@ -3139,7 +3137,7 @@ ciò che non deve essere possibile
 
 ---
 
-### 3. Usa revert precisi
+## 3. Usa revert precisi
 
 ```solidity
 expectRevert(
@@ -3157,19 +3155,19 @@ quando conosci la causa attesa.
 
 ---
 
-### 4. Verifica lo stato dopo la call
+## 4. Verifica lo stato dopo la call
 
 Eventi e return value non bastano.
 
 ---
 
-### 5. Mantieni caller e setup espliciti
+## 5. Mantieni caller e setup espliciti
 
 `prank`, `startPrank` e helper troppo astratti possono nascondere errori.
 
 ---
 
-### 6. Coverage è una mappa, non una prova
+## 6. Coverage è una mappa, non una prova
 
 ```text
 100% coverage
@@ -3179,23 +3177,23 @@ Eventi e return value non bastano.
 
 ---
 
-### 7. Mutation thinking misura la forza della suite
+## 7. Mutation thinking misura la forza della suite
 
 Se introduci il bug e il test continua a passare, la suite è debole.
 
 ---
 
-### 8. Ogni bug trovato deve diventare una regressione permanente
+## 8. Ogni bug trovato deve diventare una regressione permanente
 
 ---
 
-### 9. Testa failure propagation e rollback
+## 9. Testa failure propagation e rollback
 
 Le dipendenze esterne sono parte del comportamento.
 
 ---
 
-### 10. Testing architecture prepara fuzzing e invarianti
+## 10. Testing architecture prepara fuzzing e invarianti
 
 Se non sai formulare proprietà con esempi concreti, sarà difficile scrivere buoni fuzz/invariant test.
 
@@ -3288,9 +3286,7 @@ Fonti tecniche consultate il **21 settembre 2026**:
 
 ---
 
-## Fine Lezione 13
-
-La **Lezione 14** non è inclusa in questo file.
+# Fine Lezione 13
 
 Prossimo argomento:
 

@@ -416,7 +416,7 @@ trustless
 
 # 11. Threshold: trade-off
 
-### 1-of-5
+## 1-of-5
 
 Alta liveness:
 
@@ -430,7 +430,7 @@ Bassa resistenza:
 una sola chiave compromessa basta
 ```
 
-### 5-of-5
+## 5-of-5
 
 Alta resistenza alla singola compromissione:
 
@@ -445,7 +445,7 @@ una chiave persa
 => sistema potenzialmente bloccato
 ```
 
-### 3-of-5
+## 3-of-5
 
 Compromesso classico:
 
@@ -3400,36 +3400,32 @@ L'invariant testing è particolarmente utile per governance perché lo stato è 
 
 # 92. Checklist da auditor — ownership
 
-```text
-[ ] chi è owner?
-[ ] EOA o contract?
-[ ] può cambiare?
-[ ] transfer è one-step o two-step?
-[ ] renounce è possibile?
-[ ] renounce può brickare il sistema?
-[ ] owner controlla asset?
-[ ] owner controlla upgrade?
-[ ] owner controlla oracle?
-[ ] owner controlla ruoli?
-```
+- [ ] chi è owner?
+- [ ] EOA o contract?
+- [ ] può cambiare?
+- [ ] transfer è one-step o two-step?
+- [ ] renounce è possibile?
+- [ ] renounce può brickare il sistema?
+- [ ] owner controlla asset?
+- [ ] owner controlla upgrade?
+- [ ] owner controlla oracle?
+- [ ] owner controlla ruoli?
 
 ---
 
 # 93. Checklist — multisig
 
-```text
-[ ] quanti owner?
-[ ] threshold?
-[ ] signer duplicati impossibili?
-[ ] threshold zero impossibile?
-[ ] threshold > owners impossible?
-[ ] signer realmente indipendenti?
-[ ] recovery se una chiave è persa?
-[ ] owner change richiede threshold?
-[ ] module/plugin aggiuntivi?
-[ ] arbitrary execution powers?
-[ ] quali contratti controlla?
-```
+- [ ] quanti owner?
+- [ ] threshold?
+- [ ] signer duplicati impossibili?
+- [ ] threshold zero impossibile?
+- [ ] threshold > owners impossible?
+- [ ] signer realmente indipendenti?
+- [ ] recovery se una chiave è persa?
+- [ ] owner change richiede threshold?
+- [ ] module/plugin aggiuntivi?
+- [ ] arbitrary execution powers?
+- [ ] quali contratti controlla?
 
 Per un Safe reale vanno inoltre revisionati:
 
@@ -3447,55 +3443,49 @@ secondo la configurazione effettiva.
 
 # 94. Checklist — timelock
 
-```text
-[ ] minDelay?
-[ ] chi è proposer?
-[ ] chi è executor?
-[ ] executor aperto?
-[ ] chi è canceller?
-[ ] chi è admin?
-[ ] timelock self-admin?
-[ ] recovery path?
-[ ] updateDelay passa dal timelock?
-[ ] target ownership realmente al timelock?
-[ ] esistono bypass path?
-[ ] users possono uscire durante delay?
-[ ] monitoring delle scheduled operations?
-[ ] batch operations decodificate?
-```
+- [ ] minDelay?
+- [ ] chi è proposer?
+- [ ] chi è executor?
+- [ ] executor aperto?
+- [ ] chi è canceller?
+- [ ] chi è admin?
+- [ ] timelock self-admin?
+- [ ] recovery path?
+- [ ] updateDelay passa dal timelock?
+- [ ] target ownership realmente al timelock?
+- [ ] esistono bypass path?
+- [ ] users possono uscire durante delay?
+- [ ] monitoring delle scheduled operations?
+- [ ] batch operations decodificate?
 
 ---
 
 # 95. Checklist — emergency powers
 
-```text
-[ ] chi può pause?
-[ ] cosa viene pausato?
-[ ] withdrawal resta disponibile?
-[ ] chi può unpause?
-[ ] unpause ha delay?
-[ ] emergency role può cambiare codice?
-[ ] può cambiare oracle?
-[ ] può spostare fondi?
-[ ] ruolo revocabile?
-[ ] chi può revocarlo?
-```
+- [ ] chi può pause?
+- [ ] cosa viene pausato?
+- [ ] withdrawal resta disponibile?
+- [ ] chi può unpause?
+- [ ] unpause ha delay?
+- [ ] emergency role può cambiare codice?
+- [ ] può cambiare oracle?
+- [ ] può spostare fondi?
+- [ ] ruolo revocabile?
+- [ ] chi può revocarlo?
 
 ---
 
 # 96. Checklist — role-based access control
 
-```text
-[ ] tutti i ruoli documentati?
-[ ] chi possiede ogni ruolo?
-[ ] role admin di ogni ruolo?
-[ ] DEFAULT_ADMIN_ROLE?
-[ ] può auto-amministrarsi?
-[ ] può concedere ruoli critici?
-[ ] esiste delay?
-[ ] role revocation testata?
-[ ] separation of duties reale?
-```
+- [ ] tutti i ruoli documentati?
+- [ ] chi possiede ogni ruolo?
+- [ ] role admin di ogni ruolo?
+- [ ] DEFAULT_ADMIN_ROLE?
+- [ ] può auto-amministrarsi?
+- [ ] può concedere ruoli critici?
+- [ ] esiste delay?
+- [ ] role revocation testata?
+- [ ] separation of duties reale?
 
 ---
 
@@ -3706,43 +3696,43 @@ renounce
 
 # 98. Cosa devo ricordare
 
-### 1. `onlyOwner` protegge dall'account sbagliato, non da un owner compromesso
+## 1. `onlyOwner` protegge dall'account sbagliato, non da un owner compromesso
 
 L'access control è solo il primo livello.
 
 ---
 
-### 2. Un multisig trasforma single-key trust in threshold trust
+## 2. Un multisig trasforma single-key trust in threshold trust
 
 Non rende il sistema trustless.
 
 ---
 
-### 3. Un timelock aggiunge tempo, non giudizio
+## 3. Un timelock aggiunge tempo, non giudizio
 
 Una decisione malevola può restare malevola, ma diventa osservabile prima dell'esecuzione.
 
 ---
 
-### 4. Per imporre davvero il timelock, il target deve essere controllato dal timelock
+## 4. Per imporre davvero il timelock, il target deve essere controllato dal timelock
 
 Non lasciare bypass amministrativi involontari.
 
 ---
 
-### 5. Proposer, executor, canceller e admin sono poteri diversi
+## 5. Proposer, executor, canceller e admin sono poteri diversi
 
 Analizzali separatamente.
 
 ---
 
-### 6. Separation of duties limita il blast radius
+## 6. Separation of duties limita il blast radius
 
 Non dare automaticamente tutte le authority alla stessa chiave.
 
 ---
 
-### 7. Emergency power deve essere minimo
+## 7. Emergency power deve essere minimo
 
 Spesso:
 
@@ -3758,13 +3748,13 @@ arbitrary emergency upgrade
 
 ---
 
-### 8. Safety e liveness sono in tensione
+## 8. Safety e liveness sono in tensione
 
 Una governance impossibile da compromettere ma anche impossibile da usare non è necessariamente un buon sistema.
 
 ---
 
-### 9. Segui tutti i write path
+## 9. Segui tutti i write path
 
 Per ogni stato critico:
 
@@ -3776,7 +3766,7 @@ fa parte del trust model.
 
 ---
 
-### 10. Upgradeability è governance
+## 10. Upgradeability è governance
 
 Se puoi cambiare implementation, puoi spesso cambiare quasi tutte le regole future.
 
@@ -3871,9 +3861,7 @@ Fonti tecniche consultate il **21 settembre 2026**:
 
 ---
 
-## Fine Lezione 12
-
-La **Lezione 13** non è inclusa in questo file.
+# Fine Lezione 12
 
 Prossimo argomento:
 

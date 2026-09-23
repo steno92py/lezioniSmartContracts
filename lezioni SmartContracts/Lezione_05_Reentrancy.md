@@ -1746,10 +1746,9 @@ Fonti tecniche effettivamente consultate per preparare questa lezione:
 
 ---
 
-### Fine Lezione 5
+## Fine Lezione 5
 
 Fermati qui. Prima della lezione successiva dovresti essere in grado di guardare una external call e chiederti immediatamente:
 
 > **quale stato può osservare o riutilizzare una callback in questo preciso momento?**
 
-La prossima lezione verrà prodotta soltanto quando chiederai di continuare.

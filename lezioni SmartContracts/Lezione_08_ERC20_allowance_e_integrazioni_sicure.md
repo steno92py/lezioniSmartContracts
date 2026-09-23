@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Obiettivi
+# 1. Obiettivi
 
 Alla fine di questa lezione dovresti saper:
 
@@ -211,7 +211,6 @@ Alice
 
 Token storage:
 allowance[Alice][Escrow] = 100
-
 
 Escrow
   |
@@ -2576,13 +2575,13 @@ poi correggere.
 
 Se devi conservare soltanto pochi concetti, conserva questi.
 
-### 1. Un ERC-20 è un altro smart contract
+## 1. Un ERC-20 è un altro smart contract
 
 Interagire con un token significa fare una external call.
 
 ---
 
-### 2. `approve` non trasferisce token
+## 2. `approve` non trasferisce token
 
 Crea una autorizzazione persistente:
 
@@ -2592,7 +2591,7 @@ owner -> spender -> amount
 
 ---
 
-### 3. `transferFrom` usa quella autorizzazione
+## 3. `transferFrom` usa quella autorizzazione
 
 Nel token:
 
@@ -2604,19 +2603,19 @@ non necessariamente il proprietario dei token.
 
 ---
 
-### 4. Non ignorare il risultato delle operazioni token
+## 4. Non ignorare il risultato delle operazioni token
 
 Usa primitive robuste come `SafeERC20` quando appropriato.
 
 ---
 
-### 5. `safeTransferFrom` non significa automaticamente "ho ricevuto esattamente amount"
+## 5. `safeTransferFrom` non significa automaticamente "ho ricevuto esattamente amount"
 
 La semantica economica del token può essere diversa.
 
 ---
 
-### 6. Accounting nominale e asset reali devono essere riconciliati
+## 6. Accounting nominale e asset reali devono essere riconciliati
 
 La proprietà cruciale è spesso:
 
@@ -2632,13 +2631,13 @@ la chiamata non ha revertito
 
 ---
 
-### 7. La compatibilità con un token è una scelta di protocollo
+## 7. La compatibilità con un token è una scelta di protocollo
 
 Devi definire esplicitamente quali proprietà degli asset esterni assumi.
 
 ---
 
-### 8. In auditing, l'indirizzo token è anche un indirizzo di codice
+## 8. In auditing, l'indirizzo token è anche un indirizzo di codice
 
 Se è controllabile dall'utente, la superficie di rischio cresce drasticamente.
 
@@ -2722,9 +2721,7 @@ Documentazione verificata il **21 settembre 2026**.
 
 ---
 
-## Fine Lezione 8
-
-La prossima lezione non è inclusa qui, come richiesto.
+# Fine Lezione 8
 
 Quando vorrai continuare, la progressione naturale sarà:
 

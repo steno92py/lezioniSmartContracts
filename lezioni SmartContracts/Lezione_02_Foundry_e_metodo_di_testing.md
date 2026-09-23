@@ -1345,8 +1345,6 @@ Quando leggi un contratto e la relativa suite di test, prova a percorrere questa
 
 ## 11. Esercizi
 
-Non includo subito le soluzioni. Se vuoi, puoi mandarmi il tuo codice o chiedermi le soluzioni dopo aver provato.
-
 ### Esercizio 1 — Stato invariato dopo revert
 
 Nel test `test_RevertWhen_FeeIsTooHigh`, salva prima della call:

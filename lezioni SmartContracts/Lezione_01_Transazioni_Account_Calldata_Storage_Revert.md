@@ -1363,4 +1363,4 @@ Fonti tecniche effettivamente consultate per questa lezione, verificate il 21 se
 
 ---
 
-**Fine della Lezione 1.**
+## Fine Lezione 1

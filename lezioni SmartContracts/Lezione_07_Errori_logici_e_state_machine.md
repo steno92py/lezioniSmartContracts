@@ -1626,6 +1626,5 @@ Fonti tecniche consultate per questa lezione:
 
 ---
 
-**Fine Lezione 7.**
+## Fine Lezione 7
 
-La prossima lezione non è inclusa qui, come richiesto dal metodo del corso.
