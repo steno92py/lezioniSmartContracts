@@ -4,7 +4,9 @@
 >
 > Tutti gli esempi sono progettati esclusivamente per **Foundry/Anvil locale**, account di test e contratti giocattolo. Il proxy minimale della prima parte è volutamente insicuro e serve solo a capire il meccanismo.
 
-## 1. Obiettivi
+## Obiettivi e modello mentale
+
+### 1. Obiettivi
 
 Alla fine della lezione dovresti saper spiegare `delegatecall`, distinguere code context e storage context, capire perché un proxy può cambiare logica mantenendo address e stato, riconoscere storage collision e initializer mancanti, distinguere ERC-1967/UUPS/Transparent Proxy, analizzare `_authorizeUpgrade`, verificare uno storage layout con Foundry e testare un upgrade preservando le proprietà del protocollo.
 
@@ -21,7 +23,7 @@ In particolare imparerai a verificare queste proprietà:
 
 ---
 
-## 2. Modello mentale
+### 2. Modello mentale
 
 Un normale contratto accoppia:
 
@@ -75,7 +77,9 @@ Questo è possibile grazie a `delegatecall`.
 
 ---
 
-## 3. `call` vs `delegatecall`
+## delegatecall e storage layout
+
+### 3. `call` vs `delegatecall`
 
 Con una normale chiamata:
 
@@ -140,7 +144,7 @@ Questa quadrupla è da memorizzare.
 
 ---
 
-## 4. Perché `delegatecall` è security-critical
+### 4. Perché `delegatecall` è security-critical
 
 Considera:
 
@@ -187,7 +191,7 @@ Per questo lo storage layout diventa parte della sicurezza.
 
 ---
 
-## 5. Storage layout
+### 5. Storage layout
 
 Esempio semplificato:
 
@@ -231,7 +235,7 @@ Questo è storage corruption.
 
 ---
 
-## 6. Modifiche classiche incompatibili
+### 6. Modifiche classiche incompatibili
 
 V1:
 
@@ -240,7 +244,7 @@ uint256 public a;
 uint256 public b;
 ```
 
-### Reorder
+#### Reorder
 
 ```solidity
 uint256 public b;
@@ -249,7 +253,7 @@ uint256 public a;
 
 Pericoloso.
 
-### Cambio tipo
+#### Cambio tipo
 
 ```solidity
 address public a;
@@ -258,7 +262,7 @@ uint256 public b;
 
 Pericoloso.
 
-### Inserimento prima
+#### Inserimento prima
 
 ```solidity
 uint256 public newValue;
@@ -268,7 +272,7 @@ uint256 public b;
 
 Pericoloso nel layout classico.
 
-### Rimozione
+#### Rimozione
 
 ```solidity
 uint256 public b;
@@ -276,7 +280,7 @@ uint256 public b;
 
 Pericolosa.
 
-### Append
+#### Append
 
 ```solidity
 uint256 public a;
@@ -288,7 +292,7 @@ Nel modello classico è la modifica tipicamente compatibile: gli slot già usati
 
 ---
 
-## 7. Packing
+### 7. Packing
 
 Non assumere:
 
@@ -329,11 +333,13 @@ type
 
 ---
 
-## 8. Laboratorio 1 — proxy volutamente fragile
+## Laboratorio 1: la collisione di storage
+
+### 8. Laboratorio 1 — proxy volutamente fragile
 
 Prima di usare OpenZeppelin voglio che tu veda il problema direttamente.
 
-### `src/lab/SimpleProxy.sol`
+#### `src/lab/SimpleProxy.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -411,9 +417,9 @@ Non è production-ready.
 
 ---
 
-## 9. Implementation giocattolo
+### 9. Implementation giocattolo
 
-### `src/lab/LogicV1.sol`
+#### `src/lab/LogicV1.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -451,7 +457,7 @@ quello del Proxy.
 
 ---
 
-## 10. Collisione passo per passo
+### 10. Collisione passo per passo
 
 Prima:
 
@@ -488,9 +494,9 @@ L'indirizzo dell'implementation è stato corrotto.
 
 ---
 
-## 11. Test Foundry della collisione
+### 11. Test Foundry della collisione
 
-### `test/SimpleProxy.t.sol`
+#### `test/SimpleProxy.t.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -535,7 +541,7 @@ Questo laboratorio dimostra soltanto il meccanismo localmente.
 
 ---
 
-## 12. Perché ERC-1967 esiste
+### 12. Perché ERC-1967 esiste
 
 Usare normali slot applicativi per:
 
@@ -575,9 +581,9 @@ Non evita invece una V2 applicativa con layout incompatibile con V1.
 
 ---
 
-## 13. Due collisioni diverse
+### 13. Due collisioni diverse
 
-### Tipo A — Proxy metadata vs application
+#### Tipo A — Proxy metadata vs application
 
 ```text
 proxy implementation slot
@@ -591,7 +597,7 @@ Mitigazione tipica:
 ERC-1967
 ```
 
-### Tipo B — V1 vs V2
+#### Tipo B — V1 vs V2
 
 ```text
 vecchio application layout
@@ -614,7 +620,9 @@ Non confondere i due problemi.
 
 ---
 
-## 14. `ERC1967Proxy`
+## ERC-1967, UUPS e inizializzazione
+
+### 14. `ERC1967Proxy`
 
 OpenZeppelin Contracts 5.x espone:
 
@@ -650,11 +658,11 @@ possono avvenire nello stesso flusso.
 
 ---
 
-## 15. Transparent Proxy e UUPS
+### 15. Transparent Proxy e UUPS
 
 Sono due famiglie comuni.
 
-### Transparent Proxy
+#### Transparent Proxy
 
 Concettualmente:
 
@@ -679,7 +687,7 @@ Il pattern separa le chiamate dell'admin dalla normale dispatch verso l'implemen
 
 Nella OpenZeppelin 5.x corrente gli upgrade di un `TransparentUpgradeableProxy` passano tramite un `ProxyAdmin`.
 
-### UUPS
+#### UUPS
 
 Con UUPS:
 
@@ -701,7 +709,7 @@ OpenZeppelin 5.x indica UUPS come pattern generalmente più leggero e versatile 
 
 ---
 
-## 16. `_authorizeUpgrade`
+### 16. `_authorizeUpgrade`
 
 Con OpenZeppelin UUPS devi implementare:
 
@@ -758,7 +766,7 @@ governance del potere di upgrade
 
 ---
 
-## 17. Constructor vs initializer
+### 17. Constructor vs initializer
 
 Considera:
 
@@ -798,7 +806,7 @@ initialize(...)
 
 ---
 
-## 18. `Initializable`
+### 18. `Initializable`
 
 OpenZeppelin fornisce:
 
@@ -829,7 +837,7 @@ L'obiettivo è rendere lo step iniziale utilizzabile una volta.
 
 ---
 
-## 19. Proxy non inizializzato
+### 19. Proxy non inizializzato
 
 Se fai:
 
@@ -859,7 +867,7 @@ OpenZeppelin consiglia di passare l'encoded initializer durante la costruzione/d
 
 ---
 
-## 20. Implementation non inizializzata
+### 20. Implementation non inizializzata
 
 L'implementation è anch'essa un contratto deployato e possiede uno storage proprio.
 
@@ -887,9 +895,11 @@ Serve soltanto, in questo caso, a rendere sicura l'istanza implementation.
 
 ---
 
-## 21. UUPS Escrow V1
+## Escrow upgradeable: V1, V2 e compatibilità
 
-### `src/upgrade/EscrowV1.sol`
+### 21. UUPS Escrow V1
+
+#### `src/upgrade/EscrowV1.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -977,9 +987,9 @@ Non spostiamo fondi reali in questa lezione.
 
 ---
 
-## 22. Analisi di `initialize`
+### 22. Analisi di `initialize`
 
-### Chi può chiamarla?
+#### Chi può chiamarla?
 
 Qualunque caller può **tentare** la call sul proxy.
 
@@ -991,7 +1001,7 @@ initializer
 
 permette lo step previsto una sola volta.
 
-### Input controllati
+#### Input controllati
 
 ```text
 initialOwner
@@ -999,7 +1009,7 @@ buyer
 seller
 ```
 
-### Stato modificato
+#### Stato modificato
 
 Se chiamata tramite proxy:
 
@@ -1016,13 +1026,13 @@ buyer
 seller
 ```
 
-### External calls
+#### External calls
 
 Non verso protocolli arbitrari.
 
 Gli initializer parent vengono eseguiti nel medesimo contesto.
 
-### Assunzione critica
+#### Assunzione critica
 
 La prima initialization deve essere quella legittima.
 
@@ -1030,7 +1040,7 @@ Il modifier non decide **chi debba essere il primo caller**: impedisce la ripeti
 
 ---
 
-## 23. Analisi di `_authorizeUpgrade`
+### 23. Analisi di `_authorizeUpgrade`
 
 ```solidity
 function _authorizeUpgrade(
@@ -1038,21 +1048,21 @@ function _authorizeUpgrade(
 ) internal override onlyOwner {}
 ```
 
-### Caller effettivo
+#### Caller effettivo
 
 La procedura UUPS deve arrivare qui nel contesto del proxy.
 
-### Controllo
+#### Controllo
 
 ```text
 msg.sender deve essere owner
 ```
 
-### Stato scritto direttamente
+#### Stato scritto direttamente
 
 Nessuno in questa funzione.
 
-### Effetto possibile
+#### Effetto possibile
 
 Permettere al meccanismo di cambiare l'implementation.
 
@@ -1068,9 +1078,9 @@ impatto minuscolo
 
 ---
 
-## 24. V2 compatibile
+### 24. V2 compatibile
 
-### `src/upgrade/EscrowV2.sol`
+#### `src/upgrade/EscrowV2.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1116,7 +1126,7 @@ dopo lo stato già esistente.
 
 ---
 
-## 25. `reinitializer(2)`
+### 25. `reinitializer(2)`
 
 Una nuova implementation può introdurre nuovo stato che deve essere configurato.
 
@@ -1153,7 +1163,7 @@ Questo riduce il rischio di inizializzare accidentalmente più volte lo stesso m
 
 ---
 
-## 26. ERC-7201 Namespaced Storage
+### 26. ERC-7201 Namespaced Storage
 
 OpenZeppelin Contracts Upgradeable 5.x usa, per molti componenti, il pattern ERC-7201.
 
@@ -1196,7 +1206,7 @@ e deve comunque essere validato.
 
 ---
 
-## 27. Storage gaps
+### 27. Storage gaps
 
 Un altro pattern storico/importante è:
 
@@ -1233,7 +1243,7 @@ e verificare il pattern reale, non quello che supponi.
 
 ---
 
-## 28. V2 incompatibile
+### 28. V2 incompatibile
 
 Esempio giocattolo:
 
@@ -1263,7 +1273,9 @@ La useremo solo perché il tooling segnali l'incompatibilità.
 
 ---
 
-## 29. Ispezione con Foundry
+## Strumenti: ispezione, validation e deploy
+
+### 29. Ispezione con Foundry
 
 Dopo:
 
@@ -1292,7 +1304,7 @@ Questa review va fatta **prima** dell'upgrade.
 
 ---
 
-## 30. OpenZeppelin Foundry Upgrades
+### 30. OpenZeppelin Foundry Upgrades
 
 La documentazione corrente per nuovi deployment con OpenZeppelin Contracts v5 indica:
 
@@ -1325,7 +1337,7 @@ prima di procedere.
 
 ---
 
-## 31. Remappings
+### 31. Remappings
 
 La guida ufficiale corrente del Foundry Upgrades plugin per OpenZeppelin v5 propone remapping coerenti con la copia transitiva di Contracts installata insieme a `contracts-upgradeable`.
 
@@ -1352,7 +1364,7 @@ Non mescolare casualmente copie diverse delle librerie.
 
 ---
 
-## 32. Configurazione della validation
+### 32. Configurazione della validation
 
 Il plugin Foundry può richiedere build metadata come:
 
@@ -1375,7 +1387,7 @@ Prima capisci **perché** viene segnalata l'incompatibilità.
 
 ---
 
-## 33. Deploy UUPS con initialization atomica
+### 33. Deploy UUPS con initialization atomica
 
 Il plugin corrente espone:
 
@@ -1419,7 +1431,7 @@ address chiamato = proxy
 
 ---
 
-## 34. Perché l'initialization nel deploy è importante
+### 34. Perché l'initialization nel deploy è importante
 
 Flusso desiderato:
 
@@ -1450,7 +1462,9 @@ La finestra intermedia è un rischio inutile.
 
 ---
 
-## 35. Test Foundry — setup
+## Laboratorio Foundry: test e mutation lab dell'upgrade
+
+### 35. Test Foundry — setup
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1512,7 +1526,7 @@ Segui il formato accettato dalla versione installata.
 
 ---
 
-## 36. Test — stato iniziale
+### 36. Test — stato iniziale
 
 ```solidity
 function test_InitializedState()
@@ -1544,7 +1558,7 @@ Stiamo leggendo lo storage **attraverso il proxy**.
 
 ---
 
-## 37. Test negativo — initialize due volte
+### 37. Test negativo — initialize due volte
 
 ```solidity
 function test_CannotInitializeTwice()
@@ -1566,7 +1580,7 @@ Proprietà:
 
 ---
 
-## 38. Stato prima dell'upgrade
+### 38. Stato prima dell'upgrade
 
 ```solidity
 function test_StateBeforeUpgrade()
@@ -1588,7 +1602,7 @@ function test_StateBeforeUpgrade()
 
 ---
 
-## 39. Upgrade con il plugin
+### 39. Upgrade con il plugin
 
 La API corrente espone:
 
@@ -1620,7 +1634,7 @@ Nel nostro esempio:
 
 ---
 
-## 40. Test — preservare lo stato
+### 40. Test — preservare lo stato
 
 ```solidity
 function test_UpgradePreservesState()
@@ -1688,7 +1702,7 @@ vecchio stato intatto
 
 ---
 
-## 41. Test negativo — upgrade non autorizzato
+### 41. Test negativo — upgrade non autorizzato
 
 Proprietà:
 
@@ -1718,7 +1732,7 @@ Nel progetto reale, se il custom error è stabile nella versione usata, rendi `e
 
 ---
 
-## 42. Test negativo — V2 initializer due volte
+### 42. Test negativo — V2 initializer due volte
 
 Dopo aver eseguito l'upgrade con:
 
@@ -1744,7 +1758,7 @@ reinitializer(2)
 
 ---
 
-## 43. Validare senza eseguire l'upgrade
+### 43. Validare senza eseguire l'upgrade
 
 Il plugin espone:
 
@@ -1786,7 +1800,7 @@ pre-deployment review
 
 ---
 
-## 44. La validation non dimostra la correttezza logica
+### 44. La validation non dimostra la correttezza logica
 
 Questa V2 potrebbe avere un layout perfettamente compatibile:
 
@@ -1817,7 +1831,7 @@ manual audit
 
 ---
 
-## 45. Mutation lab — layout
+### 45. Mutation lab — layout
 
 Parti da:
 
@@ -1841,7 +1855,7 @@ Non forzare l'upgrade.
 
 ---
 
-## 46. Mutation lab — authorization
+### 46. Mutation lab — authorization
 
 Cambia temporaneamente:
 
@@ -1871,7 +1885,7 @@ Questo verifica che il regression test copra davvero il controllo critico.
 
 ---
 
-## 47. Mutation lab — proxy non inizializzato
+### 47. Mutation lab — proxy non inizializzato
 
 Nel laboratorio locale:
 
@@ -1895,7 +1909,9 @@ proprietà
 
 ---
 
-## 48. `upgradeToAndCall`
+## Rischi di upgrade, invarianti e migration plan
+
+### 48. `upgradeToAndCall`
 
 Nella linea OpenZeppelin 5.x corrente il meccanismo UUPS usa:
 
@@ -1922,7 +1938,7 @@ Le API storiche come un separato `upgradeTo` non vanno date per scontate nella v
 
 ---
 
-## 49. ERC-1822 e UUPS
+### 49. ERC-1822 e UUPS
 
 UUPS deriva dal concetto formalizzato da ERC-1822.
 
@@ -1950,7 +1966,7 @@ Sono proprietà diverse.
 
 ---
 
-## 50. Transparent + UUPS: non mischiarli a caso
+### 50. Transparent + UUPS: non mischiarli a caso
 
 Transparent Proxy e UUPS usano entrambi lo slot ERC-1967 dell'implementation.
 
@@ -1964,7 +1980,7 @@ Non comporre meccanismi di upgrade per tentativi.
 
 ---
 
-## 51. Bricking risk
+### 51. Bricking risk
 
 Un upgrade può rendere un sistema inutilizzabile anche senza rubare fondi.
 
@@ -1996,7 +2012,7 @@ Non è automaticamente "più sicura".
 
 ---
 
-## 52. Upgrade authority e governance
+### 52. Upgrade authority e governance
 
 Con:
 
@@ -2030,7 +2046,7 @@ Per ora conserva questa equivalenza concettuale:
 
 ---
 
-## 53. Post-upgrade invariant testing
+### 53. Post-upgrade invariant testing
 
 Non basta:
 
@@ -2069,30 +2085,30 @@ dovranno anch'essi sopravvivere correttamente.
 
 ---
 
-## 54. Proprietà e invarianti
+### 54. Proprietà e invarianti
 
-### U1 — Upgrade authorization
+#### U1 — Upgrade authorization
 
 ```text
 caller non autorizzato
 => implementation non cambia
 ```
 
-### U2 — V1 initialization
+#### U2 — V1 initialization
 
 ```text
 proxy già inizializzato
 => initialize() reverte
 ```
 
-### U3 — V2 initialization
+#### U3 — V2 initialization
 
 ```text
 initializeV2 già eseguito
 => initializeV2 reverte
 ```
 
-### U4 — State preservation
+#### U4 — State preservation
 
 Per ogni campo che non deve essere migrato:
 
@@ -2100,7 +2116,7 @@ Per ogni campo che non deve essere migrato:
 before == after
 ```
 
-### U5 — Business invariants
+#### U5 — Business invariants
 
 Se prima valeva:
 
@@ -2111,7 +2127,7 @@ funded == true
 
 l'upgrade deve preservare la semantica dichiarata.
 
-### U6 — Implementation locked
+#### U6 — Implementation locked
 
 Quando usiamo il pattern OpenZeppelin:
 
@@ -2120,14 +2136,14 @@ implementation diretta
 => initializer bloccato
 ```
 
-### U7 — Incompatible layout rejected
+#### U7 — Incompatible layout rejected
 
 ```text
 BadV2
 => validation failure
 ```
 
-### U8 — Upgrade migration atomica quando necessaria
+#### U8 — Upgrade migration atomica quando necessaria
 
 Se V2 non è valida senza una configurazione:
 
@@ -2141,7 +2157,7 @@ devono essere trattati come un'unica transizione logica.
 
 ---
 
-## 55. Test matrix per ogni upgrade
+### 55. Test matrix per ogni upgrade
 
 Una buona checklist di test V1 → V2:
 
@@ -2160,7 +2176,7 @@ Una buona checklist di test V1 → V2:
 
 ---
 
-## 56. Migration plan
+### 56. Migration plan
 
 Scrivi sempre esplicitamente:
 
@@ -2194,7 +2210,7 @@ Va auditata.
 
 ---
 
-## 57. Major version delle librerie
+### 57. Major version delle librerie
 
 OpenZeppelin documenta che le major release vanno considerate incompatibili per storage upgradeability.
 
@@ -2216,7 +2232,7 @@ Un dependency upgrade può essere uno storage-layout upgrade.
 
 ---
 
-## 58. Non usare opzioni `unsafe` come scorciatoia
+### 58. Non usare opzioni `unsafe` come scorciatoia
 
 Il Foundry Upgrades package espone anche primitive `UnsafeUpgrades`.
 
@@ -2247,7 +2263,7 @@ Le eccezioni avanzate richiedono una prova rigorosa della sicurezza.
 
 ---
 
-## 59. Selector clashes
+### 59. Selector clashes
 
 Anche i function selector fanno parte del problema proxy.
 
@@ -2259,9 +2275,11 @@ Altro motivo per preferire primitive consolidate.
 
 ---
 
-## 60. Threat model dell'Escrow upgradeable
+## Threat model e checklist da auditor
 
-### Asset
+### 60. Threat model dell'Escrow upgradeable
+
+#### Asset
 
 ```text
 fondi in custodia
@@ -2271,7 +2289,7 @@ approval verso token
 configurazioni oracle/router
 ```
 
-### Nuovi attori
+#### Nuovi attori
 
 ```text
 proxy admin / upgrader
@@ -2280,7 +2298,7 @@ multisig futuro
 governance futura
 ```
 
-### Nuovi entry point
+#### Nuovi entry point
 
 ```text
 initialize
@@ -2288,7 +2306,7 @@ reinitializer
 upgradeToAndCall / upgrade path
 ```
 
-### Nuove failure mode
+#### Nuove failure mode
 
 ```text
 proxy non inizializzato
@@ -2302,7 +2320,7 @@ governance compromise
 
 ---
 
-## 61. Checklist da auditor — proxy
+### 61. Checklist da auditor — proxy
 
 Quando incontri un contratto upgradeable:
 
@@ -2336,7 +2354,7 @@ Quando incontri un contratto upgradeable:
 
 ---
 
-## 62. Checklist storage layout
+### 62. Checklist storage layout
 
 - [ ] nessuna variabile rimossa
 - [ ] nessuna variabile riordinata
@@ -2352,7 +2370,7 @@ Quando incontri un contratto upgradeable:
 
 ---
 
-## 63. Checklist initializer
+### 63. Checklist initializer
 
 - [ ] constructor implementation -> _disableInitializers()
 - [ ] initialize -> initializer
@@ -2366,7 +2384,7 @@ Quando incontri un contratto upgradeable:
 
 ---
 
-## 64. Checklist authorization upgrade
+### 64. Checklist authorization upgrade
 
 - [ ] _authorizeUpgrade implementata
 - [ ] access control corretto
@@ -2379,7 +2397,9 @@ Quando incontri un contratto upgradeable:
 
 ---
 
-## 65. Laboratorio Foundry — struttura
+## Laboratorio, esercizi e chiusura
+
+### 65. Laboratorio Foundry — struttura
 
 ```text
 upgrade-lab/
@@ -2428,9 +2448,9 @@ Tutto resta locale.
 
 ---
 
-## 66. Esercizi
+### 66. Esercizi
 
-### Esercizio 1 — Execution context
+#### Esercizio 1 — Execution context
 
 Per:
 
@@ -2449,7 +2469,7 @@ bytecode eseguito
 
 prima di controllare gli appunti.
 
-### Esercizio 2 — Collisione
+#### Esercizio 2 — Collisione
 
 Crea:
 
@@ -2460,7 +2480,7 @@ Logic slot 0 = owner
 
 Chiama `setOwner()` tramite proxy e osserva il valore dell'implementation.
 
-### Esercizio 3 — Packing
+#### Esercizio 3 — Packing
 
 Crea:
 
@@ -2477,7 +2497,7 @@ Prevedi il layout e poi controllalo con:
 forge inspect MyContract storageLayout
 ```
 
-### Esercizio 4 — Upgrade compatibile
+#### Esercizio 4 — Upgrade compatibile
 
 V1:
 
@@ -2496,7 +2516,7 @@ c
 
 Scrivi valori in `a` e `b`, fai upgrade e verifica che non cambino.
 
-### Esercizio 5 — Upgrade incompatibile
+#### Esercizio 5 — Upgrade incompatibile
 
 Crea una V2:
 
@@ -2509,17 +2529,17 @@ e usa `validateUpgrade`.
 
 Non bypassare il warning.
 
-### Esercizio 6 — Initialization takeover
+#### Esercizio 6 — Initialization takeover
 
 Deploya localmente un proxy volutamente non inizializzato, usa uno `stranger` di Foundry per chiamare `initialize`, osserva il risultato, poi correggi il deploy.
 
-### Esercizio 7 — Authorization mutation
+#### Esercizio 7 — Authorization mutation
 
 Rimuovi temporaneamente `onlyOwner` da `_authorizeUpgrade`.
 
 Il test negativo deve rilevare il problema.
 
-### Esercizio 8 — V2 migration
+#### Esercizio 8 — V2 migration
 
 Aggiungi:
 
@@ -2543,7 +2563,7 @@ address(0)
 seconda initializeV2
 ```
 
-### Esercizio 9 — State-preservation helper
+#### Esercizio 9 — State-preservation helper
 
 Crea:
 
@@ -2561,7 +2581,7 @@ amount
 funded
 ```
 
-### Esercizio 10 — Audit challenge
+#### Esercizio 10 — Audit challenge
 
 Analizza:
 
@@ -2595,9 +2615,9 @@ Trova almeno dieci problemi o domande di audit prima di proporre una patch.
 
 ---
 
-## 67. Cosa devo ricordare
+### 67. Cosa devo ricordare
 
-### 1. `delegatecall` esegue il codice dell'implementation usando il contesto del proxy
+#### 1. `delegatecall` esegue il codice dell'implementation usando il contesto del proxy
 
 ```text
 code = implementation
@@ -2606,23 +2626,23 @@ address(this) = proxy
 msg.sender = caller originale
 ```
 
-### 2. Storage layout è una security boundary
+#### 2. Storage layout è una security boundary
 
 La V2 deve interpretare correttamente i bit già persistenti.
 
-### 3. ERC-1967 protegge i metadata slot del proxy
+#### 3. ERC-1967 protegge i metadata slot del proxy
 
 Non risolve da solo le incompatibilità fra V1 e V2.
 
-### 4. Constructor e initializer non sono equivalenti
+#### 4. Constructor e initializer non sono equivalenti
 
 Il constructor configura l'implementation; una initializer via proxy configura lo storage del proxy.
 
-### 5. Un proxy non inizializzato è pericoloso
+#### 5. Un proxy non inizializzato è pericoloso
 
 La configurazione iniziale va eseguita subito e protetta.
 
-### 6. Blocca normalmente l'implementation
+#### 6. Blocca normalmente l'implementation
 
 Con OpenZeppelin:
 
@@ -2630,15 +2650,15 @@ Con OpenZeppelin:
 _disableInitializers();
 ```
 
-### 7. UUPS rende `_authorizeUpgrade()` security-critical
+#### 7. UUPS rende `_authorizeUpgrade()` security-critical
 
 Chi supera quel controllo può cambiare il codice futuro.
 
-### 8. Storage compatibility non implica logic correctness
+#### 8. Storage compatibility non implica logic correctness
 
 Servono validation **e** regression/invariant testing.
 
-### 9. Upgradeability introduce governance nel threat model
+#### 9. Upgradeability introduce governance nel threat model
 
 La domanda finale è:
 
@@ -2646,7 +2666,7 @@ La domanda finale è:
 
 ---
 
-## 68. Collegamento con il corso
+### 68. Collegamento con il corso
 
 La catena ora è:
 
@@ -2694,7 +2714,7 @@ emergency powers
 
 ---
 
-## 69. Fonti della lezione
+### 69. Fonti della lezione
 
 Fonti tecniche consultate il **21 settembre 2026**:
 

@@ -6,7 +6,9 @@
 
 ---
 
-# 1. Obiettivi
+# Obiettivi e modello mentale
+
+## 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -42,7 +44,7 @@ Alla fine della lezione dovresti saper:
 
 ---
 
-# 2. Modello mentale
+## 2. Modello mentale
 
 Nel testing dinamico facciamo:
 
@@ -83,9 +85,9 @@ Un finding non è automaticamente una vulnerabilità confermata.
 
 ---
 
-# 3. Analisi statica vs testing
+## 3. Analisi statica vs testing
 
-## Testing
+### Testing
 
 Può dimostrare:
 
@@ -94,7 +96,7 @@ per questo input/sequenza:
 la proprietà passa o fallisce
 ```
 
-## Analisi statica
+### Analisi statica
 
 Può trovare pattern come:
 
@@ -112,7 +114,7 @@ Le due tecniche sono complementari.
 
 ---
 
-# 4. Primo static analyzer: il compilatore
+## 4. Primo static analyzer: il compilatore
 
 Prima ancora di Slither:
 
@@ -144,7 +146,7 @@ Piuttosto:
 
 ---
 
-# 5. Warning != vulnerability
+## 5. Warning != vulnerability
 
 Esempio:
 
@@ -176,7 +178,9 @@ verdetto
 
 ---
 
-# 6. Che cos'è Slither
+# Slither: installazione, detector e triage
+
+## 6. Che cos'è Slither
 
 Slither è uno static analyzer per Solidity/Vyper sviluppato da Trail of Bits.
 
@@ -204,7 +208,7 @@ Slither usa il framework di compilazione sottostante, tramite `crytic-compile`, 
 
 ---
 
-# 7. Installazione
+## 7. Installazione
 
 L'installazione può avvenire con Python tooling, per esempio in ambiente isolato.
 
@@ -230,7 +234,7 @@ Poiché toolchain e dipendenze evolvono, verifica sempre la documentazione uffic
 
 ---
 
-# 8. Progetto Foundry
+## 8. Progetto Foundry
 
 Struttura:
 
@@ -269,7 +273,7 @@ foundry config
 
 ---
 
-# 9. Slither esegue molti detector di default
+## 9. Slither esegue molti detector di default
 
 Comando:
 
@@ -298,7 +302,7 @@ Serve per prioritizzare.
 
 ---
 
-# 10. Impact vs confidence
+## 10. Impact vs confidence
 
 Esempio concettuale:
 
@@ -336,7 +340,7 @@ business semantics
 
 ---
 
-# 11. Triage
+## 11. Triage
 
 Per ogni finding chiediti:
 
@@ -355,7 +359,7 @@ Questa è la fase di triage.
 
 ---
 
-# 12. Un finding non è ancora un report finding
+## 12. Un finding non è ancora un report finding
 
 Pipeline corretta:
 
@@ -398,9 +402,11 @@ documented false positive
 
 ---
 
-# 13. Primo laboratorio — unchecked low-level call
+# Primo laboratorio: unchecked low-level call
 
-## `src/UnsafeCaller.sol`
+## 13. Primo laboratorio — unchecked low-level call
+
+### `src/UnsafeCaller.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -436,7 +442,7 @@ ma il risultato viene ignorato.
 
 ---
 
-# 14. Perché è pericoloso
+## 14. Perché è pericoloso
 
 Se il target reverte:
 
@@ -458,7 +464,7 @@ Property violata:
 
 ---
 
-# 15. Static finding vs business meaning
+## 15. Static finding vs business meaning
 
 Slither può individuare un unchecked low-level call.
 
@@ -474,7 +480,7 @@ Quindi la severity reale deriva dall'invariante di business.
 
 ---
 
-# 16. Riproduzione Foundry
+## 16. Riproduzione Foundry
 
 Mock:
 
@@ -519,7 +525,7 @@ Il test conferma il finding.
 
 ---
 
-# 17. Remediation
+## 17. Remediation
 
 Versione semplice:
 
@@ -551,7 +557,7 @@ invece di arbitrary low-level call.
 
 ---
 
-# 18. Regression test
+## 18. Regression test
 
 ```solidity
 function test_FailedExternalCallCannotMarkCompleted()
@@ -586,7 +592,9 @@ permanent executable security property
 
 ---
 
-# 19. Printers
+# Printer, call graph e data dependency
+
+## 19. Printers
 
 Slither non serve soltanto a trovare bug.
 
@@ -615,7 +623,7 @@ Questi strumenti sono particolarmente utili all'inizio di un audit.
 
 ---
 
-# 20. `human-summary`
+## 20. `human-summary`
 
 Comando:
 
@@ -639,7 +647,7 @@ inheritance
 
 ---
 
-# 21. `contract-summary`
+## 21. `contract-summary`
 
 ```bash
 slither . \
@@ -659,7 +667,7 @@ Utile per costruire l'inventario del protocollo.
 
 ---
 
-# 22. `function-summary`
+## 22. `function-summary`
 
 ```bash
 slither . \
@@ -689,7 +697,7 @@ dove passa il controllo?
 
 ---
 
-# 23. `vars-and-auth`
+## 23. `vars-and-auth`
 
 Comando:
 
@@ -722,7 +730,7 @@ all authorities
 
 ---
 
-# 24. Esempio: oracle write paths
+## 24. Esempio: oracle write paths
 
 Supponiamo:
 
@@ -752,7 +760,7 @@ quali funzioni possono cambiare oracle?
 
 ---
 
-# 25. `entry-points`
+## 25. `entry-points`
 
 Un audit manuale parte spesso dalle funzioni raggiungibili dall'esterno.
 
@@ -787,7 +795,7 @@ view
 
 ---
 
-# 26. Call graph
+## 26. Call graph
 
 Comando:
 
@@ -819,7 +827,7 @@ unexpected external calls
 
 ---
 
-# 27. Call graph e reentrancy
+## 27. Call graph e reentrancy
 
 Se una funzione:
 
@@ -843,7 +851,7 @@ Ricorda:
 
 ---
 
-# 28. CFG
+## 28. CFG
 
 Control Flow Graph:
 
@@ -872,7 +880,7 @@ quali abbiamo testato?
 
 ---
 
-# 29. Data dependency
+## 29. Data dependency
 
 Slither espone analisi di dipendenza dati.
 
@@ -911,7 +919,7 @@ Questo è potente per taint/data-flow reasoning.
 
 ---
 
-# 30. Perché data-flow conta in audit
+## 30. Perché data-flow conta in audit
 
 Supponiamo:
 
@@ -947,7 +955,7 @@ da dove arriva questo valore critico?
 
 ---
 
-# 31. Source → Sink thinking
+## 31. Source → Sink thinking
 
 Modello utile:
 
@@ -987,7 +995,9 @@ L'audit spesso consiste nel seguire questo flusso.
 
 ---
 
-# 32. Secondo laboratorio — arbitrary target
+# Secondo laboratorio, filtri e falsi positivi
+
+## 32. Secondo laboratorio — arbitrary target
 
 ```solidity
 contract FlexibleExecutor {
@@ -1028,7 +1038,7 @@ arbitrary external call capability
 
 ---
 
-# 33. Static detector non vede sempre tutta la severity
+## 33. Static detector non vede sempre tutta la severity
 
 Il low-level call può essere "checked".
 
@@ -1055,7 +1065,7 @@ safe design
 
 ---
 
-# 34. Tool finding vs threat modeling
+## 34. Tool finding vs threat modeling
 
 Slither cerca pattern.
 
@@ -1071,7 +1081,7 @@ Servono entrambi.
 
 ---
 
-# 35. Detector selection
+## 35. Detector selection
 
 Puoi eseguire solo alcuni detector:
 
@@ -1098,7 +1108,7 @@ slither --list-detectors
 
 ---
 
-# 36. Exclude detector
+## 36. Exclude detector
 
 ```bash
 slither . \
@@ -1119,7 +1129,7 @@ future bug surface
 
 ---
 
-# 37. Filtering dependencies
+## 37. Filtering dependencies
 
 In un progetto con OpenZeppelin potresti ricevere finding principalmente dalle dependency.
 
@@ -1139,7 +1149,7 @@ Se il problema deriva dalla **tua integrazione** con una dependency, non vuoi na
 
 ---
 
-# 38. Non ignorare una directory solo perché è `lib/`
+## 38. Non ignorare una directory solo perché è `lib/`
 
 Le dependency vendored fanno parte del bytecode o del build.
 
@@ -1158,7 +1168,7 @@ Ma devi sapere perché.
 
 ---
 
-# 39. JSON output
+## 39. JSON output
 
 Per automation:
 
@@ -1179,7 +1189,7 @@ custom dashboards
 
 ---
 
-# 40. SARIF
+## 40. SARIF
 
 Slither supporta output adatto a strumenti di code scanning.
 
@@ -1201,7 +1211,7 @@ static findings become tracked artifacts
 
 ---
 
-# 41. Triage mode
+## 41. Triage mode
 
 Slither offre una modalità di triage:
 
@@ -1224,7 +1234,7 @@ Per ogni finding nascosto dovrebbe esistere una ragione documentata.
 
 ---
 
-# 42. Inline suppressions
+## 42. Inline suppressions
 
 Slither supporta commenti per disabilitare detector specifici su righe/sezioni.
 
@@ -1247,7 +1257,7 @@ La suppression senza razionale crea debito di sicurezza.
 
 ---
 
-# 43. False positive
+## 43. False positive
 
 Definizione pratica:
 
@@ -1275,7 +1285,7 @@ Devi dimostrarlo, non dichiararlo.
 
 ---
 
-# 44. False negative
+## 44. False negative
 
 Più pericoloso:
 
@@ -1300,7 +1310,7 @@ Per questo l'assenza di finding non è una prova di sicurezza.
 
 ---
 
-# 45. Severity reale
+## 45. Severity reale
 
 Quando confermi un finding, valuta:
 
@@ -1325,7 +1335,9 @@ Slither: High
 
 ---
 
-# 46. Reentrancy detector
+# Detector chiave e terzo laboratorio
+
+## 46. Reentrancy detector
 
 Slither ha detector per differenti pattern di reentrancy.
 
@@ -1346,7 +1358,7 @@ Una reentrancy warning è l'inizio della review.
 
 ---
 
-# 47. Reentrancy e trusted contract
+## 47. Reentrancy e trusted contract
 
 Anche se oggi:
 
@@ -1369,7 +1381,7 @@ Lezione 10 e 11 si applicano qui.
 
 ---
 
-# 48. Uninitialized state
+## 48. Uninitialized state
 
 Slither può segnalare variabili di stato mai inizializzate.
 
@@ -1397,7 +1409,7 @@ può lasciare ruoli/config a zero.
 
 ---
 
-# 49. Unprotected upgrade
+## 49. Unprotected upgrade
 
 Slither include detector relativi a upgradeability.
 
@@ -1421,7 +1433,7 @@ timelock
 
 ---
 
-# 50. `vars-and-auth` per upgrade authority
+## 50. `vars-and-auth` per upgrade authority
 
 Nel nostro Escrow UUPS:
 
@@ -1447,7 +1459,7 @@ chi può portare execution path fino all'upgrade?
 
 ---
 
-# 51. Call graph per governance
+## 51. Call graph per governance
 
 Per:
 
@@ -1471,7 +1483,7 @@ La governance completa richiede anche config review.
 
 ---
 
-# 52. Third lab — apparent reentrancy
+## 52. Third lab — apparent reentrancy
 
 Contratto:
 
@@ -1506,7 +1518,7 @@ Se non esiste funzione che sfrutta `done` in modo pericoloso, il finding potrebb
 
 ---
 
-# 53. Il metodo corretto con finding reentrancy
+## 53. Il metodo corretto con finding reentrancy
 
 Scrivi:
 
@@ -1534,7 +1546,7 @@ Se non sai scrivere l'invariante violabile, non hai ancora confermato il bug.
 
 ---
 
-# 54. Compiler warning + Slither + test
+## 54. Compiler warning + Slither + test
 
 Un workflow molto forte:
 
@@ -1560,7 +1572,7 @@ Dynamic test dimostra la proprietà.
 
 ---
 
-# 55. Analisi manuale prima dei detector?
+## 55. Analisi manuale prima dei detector?
 
 Durante un audit professionale conviene non dipendere completamente dai tool.
 
@@ -1578,7 +1590,7 @@ Così Slither non "ancora" tutta la tua attenzione sui pattern che sa riconoscer
 
 ---
 
-# 56. Oppure tool-first?
+## 56. Oppure tool-first?
 
 Per codebase grandi, puoi usare printer/tooling all'inizio per costruire rapidamente una mappa:
 
@@ -1607,7 +1619,9 @@ I printer sono ottimi per orientation.
 
 ---
 
-# 57. Inheritance graph
+# Codice upgradeable, audit query e triage worksheet
+
+## 57. Inheritance graph
 
 ```bash
 slither . \
@@ -1635,7 +1649,7 @@ initializer chain
 
 ---
 
-# 58. Upgradeable code review
+## 58. Upgradeable code review
 
 Per upgradeable contracts, static review deve includere:
 
@@ -1660,7 +1674,7 @@ Tool specializzati hanno responsabilità diverse.
 
 ---
 
-# 59. Slither-check-upgradeability
+## 59. Slither-check-upgradeability
 
 Il progetto Slither include strumenti dedicati all'upgradeability, oltre ai detector generici.
 
@@ -1680,7 +1694,7 @@ manual storage review
 
 ---
 
-# 60. Static analyzer disagreement
+## 60. Static analyzer disagreement
 
 Due tool possono produrre risultati diversi.
 
@@ -1699,7 +1713,7 @@ La decisione finale deve tornare alla property e al codice.
 
 ---
 
-# 61. SlithIR
+## 61. SlithIR
 
 Slither usa una representation intermedia, SlithIR, per molte analisi.
 
@@ -1721,7 +1735,7 @@ Questo spiega come detector complessi possano ragionare oltre la semplice regex.
 
 ---
 
-# 62. Regex scanner vs static analyzer
+## 62. Regex scanner vs static analyzer
 
 Un grep può trovare:
 
@@ -1747,7 +1761,7 @@ Ma anche più complesso e non infallibile.
 
 ---
 
-# 63. Search manuale resta utile
+## 63. Search manuale resta utile
 
 Usa:
 
@@ -1775,7 +1789,7 @@ relazioni strutturali
 
 ---
 
-# 64. Audit query: tutte le external call
+## 64. Audit query: tutte le external call
 
 Una tecnica manuale:
 
@@ -1805,7 +1819,7 @@ Slither call graph/function summary può accelerare.
 
 ---
 
-# 65. Audit query: tutti i privileged writes
+## 65. Audit query: tutti i privileged writes
 
 Cerca:
 
@@ -1829,7 +1843,7 @@ Questo crea una mappa di governance.
 
 ---
 
-# 66. Audit query: user-controlled addresses
+## 66. Audit query: user-controlled addresses
 
 Cerca funzioni con:
 
@@ -1855,7 +1869,7 @@ Address input sono spesso più pericolosi di semplici `uint256`.
 
 ---
 
-# 67. Triage worksheet
+## 67. Triage worksheet
 
 Per ogni finding crea:
 
@@ -1885,7 +1899,7 @@ Questo rende il processo ripetibile.
 
 ---
 
-# 68. Esempio triage completo
+## 68. Esempio triage completo
 
 Finding:
 
@@ -1951,7 +1965,7 @@ failed call cannot mark completed
 
 ---
 
-# 69. Falso positivo documentato
+## 69. Falso positivo documentato
 
 Supponiamo detector:
 
@@ -1984,7 +1998,9 @@ Se in futuro diventa proxy, la conclusione cambia.
 
 ---
 
-# 70. Tool findings cambiano con la codebase
+# Baseline, CI, limiti e workflow integrato
+
+## 70. Tool findings cambiano con la codebase
 
 Una suppression valida oggi può non esserlo domani.
 
@@ -2006,7 +2022,7 @@ Per questo suppressions e false-positive decisions vanno reviewate nei diff.
 
 ---
 
-# 71. Baseline
+## 71. Baseline
 
 In una codebase esistente con molti finding, puoi creare una baseline:
 
@@ -2026,7 +2042,7 @@ Ma il backlog storico resta debito di sicurezza.
 
 ---
 
-# 72. CI
+## 72. CI
 
 Pipeline concettuale:
 
@@ -2051,7 +2067,7 @@ Slither può esportare JSON/SARIF per CI.
 
 ---
 
-# 73. Fail CI su quale severity?
+## 73. Fail CI su quale severity?
 
 Non esiste una soglia universale.
 
@@ -2078,7 +2094,7 @@ Meglio combinare CI gating con baseline/triage disciplinato.
 
 ---
 
-# 74. Compiler version
+## 74. Compiler version
 
 La documentazione Solidity raccomanda di usare versioni recenti del compiler per beneficiare dei warning e fix più recenti.
 
@@ -2094,7 +2110,7 @@ Non aggiornare compiler in modo casuale senza test/regression.
 
 ---
 
-# 75. Known compiler bugs
+## 75. Known compiler bugs
 
 La documentazione Solidity mantiene informazioni sui bug noti del compiler.
 
@@ -2114,7 +2130,7 @@ con quale compiler è stato prodotto il bytecode?
 
 ---
 
-# 76. Static analysis e inline assembly
+## 76. Static analysis e inline assembly
 
 Assembly/Yul può ridurre la capacità degli analyzer di ragionare con precisione.
 
@@ -2142,7 +2158,7 @@ Non assumere che un tool comprenda ogni semantica custom.
 
 ---
 
-# 77. Custom detectors
+## 77. Custom detectors
 
 Slither espone API per scrivere analisi custom in Python.
 
@@ -2161,7 +2177,7 @@ Non lo implementiamo oggi, ma è importante sapere che static analysis può esse
 
 ---
 
-# 78. Protocol-specific rule
+## 78. Protocol-specific rule
 
 Immagina requisito:
 
@@ -2186,7 +2202,7 @@ Security automation diventa più forte quando incorpora la specification.
 
 ---
 
-# 79. Slither non conosce il "giusto prezzo"
+## 79. Slither non conosce il "giusto prezzo"
 
 Può vedere:
 
@@ -2210,7 +2226,7 @@ La semantica economica resta responsabilità dell'audit manuale.
 
 ---
 
-# 80. Slither non conosce il "giusto threshold"
+## 80. Slither non conosce il "giusto threshold"
 
 Può vedere:
 
@@ -2232,7 +2248,7 @@ Questa è governance analysis.
 
 ---
 
-# 81. Slither non conosce la specification completa
+## 81. Slither non conosce la specification completa
 
 Quindi:
 
@@ -2257,7 +2273,7 @@ Questa frase va ricordata.
 
 ---
 
-# 82. Static analysis + fuzzing
+## 82. Static analysis + fuzzing
 
 Ottima combinazione:
 
@@ -2285,7 +2301,7 @@ per verificare la proprietà.
 
 ---
 
-# 83. Static analysis + coverage
+## 83. Static analysis + coverage
 
 Call graph/CFG:
 
@@ -2307,7 +2323,7 @@ branch critici non testati
 
 ---
 
-# 84. Static analysis + mutation testing
+## 84. Static analysis + mutation testing
 
 Detector:
 
@@ -2331,7 +2347,7 @@ Tre angoli diversi sulla stessa proprietà.
 
 ---
 
-# 85. Audit workflow integrato
+## 85. Audit workflow integrato
 
 Per il nostro Escrow:
 
@@ -2354,11 +2370,13 @@ Questo è già un workflow molto vicino a un audit reale.
 
 ---
 
-# 86. Laboratorio: progetto intentionally noisy
+# Laboratorio: progetto intentionally noisy
+
+## 86. Laboratorio: progetto intentionally noisy
 
 Crea:
 
-## `src/static/StaticLab.sol`
+### `src/static/StaticLab.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -2406,7 +2424,7 @@ Non usare fuori dal lab.
 
 ---
 
-# 87. Prima run
+## 87. Prima run
 
 ```bash
 forge build
@@ -2425,7 +2443,7 @@ Poi classifica.
 
 ---
 
-# 88. Possibile finding 1 — unchecked call
+## 88. Possibile finding 1 — unchecked call
 
 ```text
 unsafeExecute
@@ -2435,7 +2453,7 @@ Conferma con test.
 
 ---
 
-# 89. Possibile finding 2 — access control
+## 89. Possibile finding 2 — access control
 
 ```text
 setAdmin
@@ -2465,7 +2483,7 @@ stranger cannot setAdmin
 
 ---
 
-# 90. Possibile finding 3 — arbitrary external call
+## 90. Possibile finding 3 — arbitrary external call
 
 `arbitraryExecute` controlla `success`.
 
@@ -2485,7 +2503,7 @@ Questo finding potrebbe emergere con detector specifici o dalla manual review.
 
 ---
 
-# 91. Fix `setAdmin`
+## 91. Fix `setAdmin`
 
 ```solidity
 error OnlyAdmin();
@@ -2523,7 +2541,7 @@ function test_StrangerCannotSetAdmin()
 
 ---
 
-# 92. Rerun
+## 92. Rerun
 
 Dopo fix:
 
@@ -2544,7 +2562,7 @@ non introdurre regressioni
 
 ---
 
-# 93. Triage dei low/info findings
+## 93. Triage dei low/info findings
 
 Non ignorarli automaticamente.
 
@@ -2577,7 +2595,9 @@ potrebbe indicare feature security incompleta.
 
 ---
 
-# 94. Complexity
+# Complessità e review del diff
+
+## 94. Complexity
 
 Codice complesso è più difficile da auditare.
 
@@ -2597,7 +2617,7 @@ Sono risk multipliers.
 
 ---
 
-# 95. Modularità vs composability
+## 95. Modularità vs composability
 
 Separare codice in moduli può migliorare la leggibilità.
 
@@ -2619,7 +2639,7 @@ Quindi "modularità" non significa automaticamente "più contratti esterni".
 
 ---
 
-# 96. Review del diff
+## 96. Review del diff
 
 Slither è utile anche su modifiche.
 
@@ -2636,7 +2656,7 @@ Il diff di sicurezza è spesso più importante di rileggere sempre tutto da zero
 
 ---
 
-# 97. Security review di una nuova external call
+## 97. Security review di una nuova external call
 
 Quando il diff aggiunge:
 
@@ -2663,7 +2683,9 @@ La checklist completa resta manuale.
 
 ---
 
-# 98. Checklist da auditor — static analysis
+# Checklist, esercizi e chiusura
+
+## 98. Checklist da auditor — static analysis
 
 - [ ] forge build pulito?
 - [ ] compiler warnings compresi?
@@ -2687,7 +2709,7 @@ La checklist completa resta manuale.
 
 ---
 
-# 99. Checklist per ogni finding
+## 99. Checklist per ogni finding
 
 ```text
 Detector:
@@ -2714,9 +2736,9 @@ Se non riesci a compilare questa scheda, il finding non è ancora sufficientemen
 
 ---
 
-# 100. Esercizi
+## 100. Esercizi
 
-## Esercizio 1 — Inventory
+### Esercizio 1 — Inventory
 
 Sul progetto Escrow:
 
@@ -2736,7 +2758,7 @@ callback
 
 ---
 
-## Esercizio 2 — Vars and auth
+### Esercizio 2 — Vars and auth
 
 Esegui:
 
@@ -2758,7 +2780,7 @@ e identifica ogni write path.
 
 ---
 
-## Esercizio 3 — Call graph
+### Esercizio 3 — Call graph
 
 Genera il call graph.
 
@@ -2773,7 +2795,7 @@ delegatecall
 
 ---
 
-## Esercizio 4 — Confirm a finding
+### Esercizio 4 — Confirm a finding
 
 Usa `UnsafeCaller`.
 
@@ -2786,7 +2808,7 @@ Usa `UnsafeCaller`.
 
 ---
 
-## Esercizio 5 — False positive analysis
+### Esercizio 5 — False positive analysis
 
 Crea una funzione:
 
@@ -2807,7 +2829,7 @@ Se nessuno, giustifica il triage.
 
 ---
 
-## Esercizio 6 — User-controlled target
+### Esercizio 6 — User-controlled target
 
 Analizza:
 
@@ -2828,7 +2850,7 @@ Elenca almeno dieci domande di threat modeling che Slither da solo non può riso
 
 ---
 
-## Esercizio 7 — Suppression
+### Esercizio 7 — Suppression
 
 Scegli un finding realmente non applicabile.
 
@@ -2847,7 +2869,7 @@ cosa renderebbe obsoleta questa assumption?
 
 ---
 
-## Esercizio 8 — CI artifact
+### Esercizio 8 — CI artifact
 
 Genera:
 
@@ -2868,7 +2890,7 @@ description
 
 ---
 
-## Esercizio 9 — Compiler warnings
+### Esercizio 9 — Compiler warnings
 
 Introduci volontariamente un warning innocuo in un contratto locale.
 
@@ -2894,7 +2916,7 @@ warning = ignorare
 
 ---
 
-## Esercizio 10 — Audit challenge
+### Esercizio 10 — Audit challenge
 
 Analizza:
 
@@ -2937,15 +2959,15 @@ Separali in due colonne.
 
 ---
 
-# 101. Cosa devo ricordare
+## 101. Cosa devo ricordare
 
-## 1. Slither trova candidati, non emette verità assolute
+### 1. Slither trova candidati, non emette verità assolute
 
 Ogni finding richiede triage.
 
 ---
 
-## 2. Static analysis e testing sono complementari
+### 2. Static analysis e testing sono complementari
 
 ```text
 static -> dove guardare
@@ -2954,31 +2976,31 @@ dynamic -> dimostra behavior
 
 ---
 
-## 3. Il compiler è parte della security toolchain
+### 3. Il compiler è parte della security toolchain
 
 Non ignorare warning senza capirli.
 
 ---
 
-## 4. Printer come `entry-points`, `vars-and-auth` e `call-graph` sono strumenti da auditor
+### 4. Printer come `entry-points`, `vars-and-auth` e `call-graph` sono strumenti da auditor
 
 Non servono solo i detector.
 
 ---
 
-## 5. Impact e confidence del tool non sono la severity finale
+### 5. Impact e confidence del tool non sono la severity finale
 
 Il contesto economico decide la gravità reale.
 
 ---
 
-## 6. L'assenza di finding non dimostra sicurezza
+### 6. L'assenza di finding non dimostra sicurezza
 
 Business logic, oracle semantics e governance possono essere sbagliati senza alert statici.
 
 ---
 
-## 7. Segui source → sink
+### 7. Segui source → sink
 
 Input utente, oracle e ruoli devono essere tracciati fino a:
 
@@ -2991,21 +3013,21 @@ upgrade
 
 ---
 
-## 8. Ogni finding confermato deve diventare un test di regressione
+### 8. Ogni finding confermato deve diventare un test di regressione
 
 ---
 
-## 9. Documenta i falsi positivi
+### 9. Documenta i falsi positivi
 
 Una suppression senza spiegazione è debito di sicurezza.
 
 ---
 
-## 10. Static analysis è parte di un audit workflow, non il suo sostituto
+### 10. Static analysis è parte di un audit workflow, non il suo sostituto
 
 ---
 
-# 102. Workflow consigliato
+## 102. Workflow consigliato
 
 Per il nostro progetto:
 
@@ -3044,7 +3066,7 @@ Questo workflow comincia a unire quasi tutti i concetti studiati finora.
 
 ---
 
-# 103. Fonti della lezione
+## 103. Fonti della lezione
 
 Fonti tecniche consultate il **22 settembre 2026**:
 

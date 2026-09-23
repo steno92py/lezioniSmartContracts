@@ -8,7 +8,9 @@
 
 ---
 
-# 1. Obiettivi
+# Obiettivi, modello mentale e categorie di test
+
+## 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -44,7 +46,7 @@ Alla fine della lezione dovresti saper:
 
 ---
 
-# 2. Modello mentale
+## 2. Modello mentale
 
 Il testing di sicurezza non è:
 
@@ -89,7 +91,7 @@ quale dipendenza esterna è stata coinvolta?
 
 ---
 
-# 3. Testing e specifica
+## 3. Testing e specifica
 
 Consideriamo una proprietà dell'Escrow:
 
@@ -123,9 +125,9 @@ Il punto è importante:
 
 ---
 
-# 4. Le categorie di test
+## 4. Le categorie di test
 
-## Unit test
+### Unit test
 
 Isola una piccola unità.
 
@@ -143,7 +145,7 @@ feeBps = 250
 
 ---
 
-## Negative test
+### Negative test
 
 Verifica ciò che deve fallire.
 
@@ -156,7 +158,7 @@ stranger -> setFee
 
 ---
 
-## Regression test
+### Regression test
 
 Nasce dopo un bug reale o simulato.
 
@@ -173,7 +175,7 @@ non può creare credito
 
 ---
 
-## Integration test
+### Integration test
 
 Verifica l'interazione tra più componenti.
 
@@ -191,7 +193,7 @@ Timelock
 
 ---
 
-## Property-oriented test
+### Property-oriented test
 
 Non è ancora fuzzing necessariamente.
 
@@ -208,7 +210,9 @@ indipendentemente dal fatto che il test usi un singolo valore concreto.
 
 ---
 
-# 5. Anatomia di una suite Foundry
+# Anatomia di una suite Foundry
+
+## 5. Anatomia di una suite Foundry
 
 Struttura consigliata:
 
@@ -247,7 +251,7 @@ cosa stai testando e perché
 
 ---
 
-# 6. `Test.sol`
+## 6. `Test.sol`
 
 Il modo standard di scrivere test Foundry è:
 
@@ -282,7 +286,7 @@ assertEq(
 
 ---
 
-# 7. `setUp()`
+## 7. `setUp()`
 
 Foundry esegue:
 
@@ -318,7 +322,7 @@ Ogni test parte da uno stato pulito derivato dal setup.
 
 ---
 
-# 8. Cosa mettere nel `setUp`
+## 8. Cosa mettere nel `setUp`
 
 Buoni candidati:
 
@@ -344,7 +348,7 @@ perché questo test passa?
 
 ---
 
-# 9. Helper espliciti
+## 9. Helper espliciti
 
 Meglio:
 
@@ -382,7 +386,7 @@ Il test deve restare comprensibile.
 
 ---
 
-# 10. Arrange — Act — Assert
+## 10. Arrange — Act — Assert
 
 Una struttura utile:
 
@@ -423,7 +427,7 @@ Non è una regola sintattica.
 
 ---
 
-# 11. Given — When — Then
+## 11. Given — When — Then
 
 Per test più orientati alla specifica:
 
@@ -443,7 +447,7 @@ Può aiutare a scrivere nomi di test migliori.
 
 ---
 
-# 12. Naming dei test
+## 12. Naming dei test
 
 Preferisci nomi che descrivono la proprietà.
 
@@ -470,7 +474,9 @@ Il nome è parte della documentazione.
 
 ---
 
-# 13. `makeAddr`
+# Cheatcodes: identità, fondi e tempo
+
+## 13. `makeAddr`
 
 Forge Std consente:
 
@@ -496,7 +502,7 @@ quando stai costruendo scenari di test.
 
 ---
 
-# 14. `vm.prank`
+## 14. `vm.prank`
 
 `vm.prank(address)` modifica:
 
@@ -524,7 +530,7 @@ Poi l'effetto termina.
 
 ---
 
-# 15. Un dettaglio importante su `prank`
+## 15. Un dettaglio importante su `prank`
 
 Il "next call" è letterale.
 
@@ -552,7 +558,7 @@ vicine.
 
 ---
 
-# 16. `startPrank`
+## 16. `startPrank`
 
 Per più chiamate consecutive:
 
@@ -579,7 +585,7 @@ per le call interessate.
 
 ---
 
-# 17. Non dimenticare `stopPrank`
+## 17. Non dimenticare `stopPrank`
 
 Questo test è pericoloso:
 
@@ -610,7 +616,7 @@ vm.stopPrank();
 
 ---
 
-# 18. Testare caller e `tx.origin`
+## 18. Testare caller e `tx.origin`
 
 Foundry permette anche di configurare:
 
@@ -631,7 +637,7 @@ Non introdurre `tx.origin` se non stai testando esplicitamente quella semantica.
 
 ---
 
-# 19. `vm.deal`
+## 19. `vm.deal`
 
 Per assegnare Ether a un account di test:
 
@@ -657,7 +663,7 @@ Non crea una transazione reale.
 
 ---
 
-# 20. `hoax`
+## 20. `hoax`
 
 Forge Std offre utility come `hoax` che combinano:
 
@@ -680,7 +686,7 @@ così è chiaro quale proprietà stiamo manipolando.
 
 ---
 
-# 21. `vm.warp`
+## 21. `vm.warp`
 
 Per testare tempo:
 
@@ -710,7 +716,9 @@ Non è "attendere realmente".
 
 ---
 
-# 22. Boundary tests
+# Boundary, revert precisi e stato dopo il revert
+
+## 22. Boundary tests
 
 Ogni volta che vedi:
 
@@ -750,7 +758,7 @@ vs
 
 ---
 
-# 23. `expectRevert()`
+## 23. `expectRevert()`
 
 La forma più generica:
 
@@ -773,7 +781,7 @@ Ma è debole come regression test.
 
 ---
 
-# 24. Perché `expectRevert()` generico può nascondere bug
+## 24. Perché `expectRevert()` generico può nascondere bug
 
 Supponiamo di voler verificare:
 
@@ -803,7 +811,7 @@ La proprietà di authorization è rotta, ma non lo sappiamo.
 
 ---
 
-# 25. Custom error preciso
+## 25. Custom error preciso
 
 Contratto:
 
@@ -835,7 +843,7 @@ causa attesa
 
 ---
 
-# 26. Custom error con argomenti
+## 26. Custom error con argomenti
 
 Contratto:
 
@@ -864,7 +872,7 @@ Così verifichi anche il payload.
 
 ---
 
-# 27. `expectPartialRevert`
+## 27. `expectPartialRevert`
 
 Foundry corrente espone anche:
 
@@ -882,7 +890,7 @@ Se gli argomenti fanno parte della proprietà, preferisci verificarli.
 
 ---
 
-# 28. Footgun di `expectRevert`
+## 28. Footgun di `expectRevert`
 
 Foundry documenta un dettaglio importante:
 
@@ -928,7 +936,7 @@ Questo aumenta la precisione.
 
 ---
 
-# 29. Testare lo stato dopo un revert
+## 29. Testare lo stato dopo un revert
 
 Non fermarti a:
 
@@ -962,7 +970,7 @@ Questo verifica anche l'atomicità della failure path.
 
 ---
 
-# 30. State delta thinking
+## 30. State delta thinking
 
 Per ogni funzione pensa:
 
@@ -1005,7 +1013,9 @@ unchanged
 
 ---
 
-# 31. Event testing
+# Eventi, assertion e helper
+
+## 31. Event testing
 
 Gli eventi sono importanti per:
 
@@ -1035,7 +1045,7 @@ e chiami il contratto.
 
 ---
 
-# 32. Esempio `expectEmit`
+## 32. Esempio `expectEmit`
 
 Contratto:
 
@@ -1069,7 +1079,7 @@ In casi reali puoi configurare quali topic/data confrontare.
 
 ---
 
-# 33. Evento != stato
+## 33. Evento != stato
 
 Questo test è insufficiente:
 
@@ -1106,7 +1116,7 @@ Regola:
 
 ---
 
-# 34. Testare balance delta
+## 34. Testare balance delta
 
 Ether:
 
@@ -1141,7 +1151,7 @@ Preferisci delta a valori assoluti quando lo stato iniziale può cambiare.
 
 ---
 
-# 35. `assertEq`, `assertTrue`, `assertFalse`
+## 35. `assertEq`, `assertTrue`, `assertFalse`
 
 Test precisi:
 
@@ -1164,7 +1174,7 @@ Una assertion dovrebbe corrispondere a una proprietà comprensibile.
 
 ---
 
-# 36. Assert con messaggio
+## 36. Assert con messaggio
 
 Puoi usare:
 
@@ -1182,11 +1192,11 @@ Ma nomi di test e variabili leggibili spesso riducono la necessità di lunghi me
 
 ---
 
-# 37. Test helper base
+## 37. Test helper base
 
 Possiamo creare:
 
-## `test/helpers/EscrowTestBase.sol`
+### `test/helpers/EscrowTestBase.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1263,7 +1273,7 @@ Ora più file possono ereditare il setup comune.
 
 ---
 
-# 38. Attenzione agli helper che fanno troppe cose
+## 38. Attenzione agli helper che fanno troppe cose
 
 Questo helper:
 
@@ -1295,9 +1305,11 @@ _pause()
 
 ---
 
-# 39. Unit test vs integration test
+# Mock, dipendenze e regression test
 
-## Unit
+## 39. Unit test vs integration test
+
+### Unit
 
 Puoi isolare:
 
@@ -1307,7 +1319,7 @@ PriceConsumer
 
 da un vero mock oracle.
 
-## Integration
+### Integration
 
 Puoi testare:
 
@@ -1337,7 +1349,7 @@ stai verificando insieme?
 
 ---
 
-# 40. Mock contract
+## 40. Mock contract
 
 Esempio:
 
@@ -1367,7 +1379,7 @@ revert
 
 ---
 
-# 41. `vm.mockCall`
+## 41. `vm.mockCall`
 
 Foundry permette anche:
 
@@ -1399,7 +1411,7 @@ Poi una call compatibile riceverà quel risultato.
 
 ---
 
-# 42. Quando preferire `mockCall`
+## 42. Quando preferire `mockCall`
 
 Utile per:
 
@@ -1421,7 +1433,7 @@ più funzioni coordinate
 
 ---
 
-# 43. `mockCalls`
+## 43. `mockCalls`
 
 Foundry supporta anche risposte sequenziali.
 
@@ -1449,7 +1461,7 @@ Per ERC-20 importanti, mantieni anche integration test con un vero mock token.
 
 ---
 
-# 44. Reverting dependency test
+## 44. Reverting dependency test
 
 Quando una dipendenza critica deve bloccare l'operazione:
 
@@ -1477,7 +1489,7 @@ Il test deriva dalla failure policy.
 
 ---
 
-# 45. Testing reentrancy regression
+## 45. Testing reentrancy regression
 
 Dopo aver corretto una vulnerabilità, non eliminare il contratto attacker locale.
 
@@ -1497,7 +1509,7 @@ Il test di regressione deve restare per tutta la vita del codice.
 
 ---
 
-# 46. Regression naming
+## 46. Regression naming
 
 Puoi nominare:
 
@@ -1512,7 +1524,9 @@ Questo racconta la storia della sicurezza del protocollo.
 
 ---
 
-# 47. Testing di access control
+# Access control, state machine e casi limite
+
+## 47. Testing di access control
 
 Per ogni privileged function:
 
@@ -1543,7 +1557,7 @@ ma non può release una posizione già Refunded
 
 ---
 
-# 48. Combinatorial thinking
+## 48. Combinatorial thinking
 
 Due condizioni:
 
@@ -1578,7 +1592,7 @@ Ma la matrice deve essere pensata già ora.
 
 ---
 
-# 49. Table-driven thinking
+## 49. Table-driven thinking
 
 Puoi progettare mentalmente:
 
@@ -1595,7 +1609,7 @@ Solidity test non ha bisogno di essere formalmente parametrico per beneficiare d
 
 ---
 
-# 50. Test delle transizioni di stato
+## 50. Test delle transizioni di stato
 
 Per una state machine:
 
@@ -1625,7 +1639,7 @@ Ogni riga importante può diventare un test.
 
 ---
 
-# 51. Test terminal state
+## 51. Test terminal state
 
 Stato terminale significa:
 
@@ -1658,7 +1672,7 @@ state remains Released
 
 ---
 
-# 52. Test idempotence quando richiesta
+## 52. Test idempotence quando richiesta
 
 Alcune funzioni dovrebbero essere idempotenti.
 
@@ -1689,7 +1703,7 @@ Scrivi esplicitamente il comportamento desiderato.
 
 ---
 
-# 53. Test di zero address
+## 53. Test di zero address
 
 Ogni volta che un address entra come config:
 
@@ -1719,7 +1733,7 @@ Questo è un test di configuration safety.
 
 ---
 
-# 54. Test di `address(this)`
+## 54. Test di `address(this)`
 
 Per proxy/composability a volte è importante verificare:
 
@@ -1749,7 +1763,7 @@ proxy
 
 ---
 
-# 55. Test di call forwarding
+## 55. Test di call forwarding
 
 Per un proxy:
 
@@ -1772,7 +1786,9 @@ function returned correct number
 
 ---
 
-# 56. Call traces
+# Diagnostica: trace, filtri e isolamento
+
+## 56. Call traces
 
 Comandi:
 
@@ -1805,7 +1821,7 @@ dove è avvenuto il revert?
 
 ---
 
-# 57. Filtrare i test
+## 57. Filtrare i test
 
 Esempi:
 
@@ -1829,7 +1845,7 @@ Questo rende il feedback loop più rapido durante sviluppo/audit.
 
 ---
 
-# 58. Riprodurre un singolo failure
+## 58. Riprodurre un singolo failure
 
 Quando un test fallisce:
 
@@ -1845,7 +1861,7 @@ Non modificare subito il contratto finché non hai capito il failure.
 
 ---
 
-# 59. Logging
+## 59. Logging
 
 Puoi usare:
 
@@ -1878,7 +1894,7 @@ verification
 
 ---
 
-# 60. Snapshot / state reset
+## 60. Snapshot / state reset
 
 Foundry fornisce cheatcode per snapshot dello stato EVM e rollback locale.
 
@@ -1897,7 +1913,7 @@ La maggior parte dei test semplici beneficia della naturale isolation di Foundry
 
 ---
 
-# 61. Test isolation
+## 61. Test isolation
 
 Ogni test Foundry parte dalla situazione derivata da `setUp`.
 
@@ -1919,7 +1935,9 @@ Un test deve poter essere eseguito singolarmente.
 
 ---
 
-# 62. Mutation thinking
+# Mutation testing e coverage
+
+## 62. Mutation thinking
 
 Supponiamo di avere:
 
@@ -1951,7 +1969,7 @@ il test non sta realmente provando quella proprietà
 
 ---
 
-# 63. Altre mutation utili
+## 63. Altre mutation utili
 
 Modifica temporaneamente:
 
@@ -1983,7 +2001,7 @@ La suite dovrebbe rilevare queste regressioni.
 
 ---
 
-# 64. Mutation testing automatico
+## 64. Mutation testing automatico
 
 La documentazione Foundry corrente include anche una guida sul mutation testing.
 
@@ -2013,7 +2031,7 @@ Ma il mindset è già essenziale.
 
 ---
 
-# 65. Coverage
+## 65. Coverage
 
 Comando:
 
@@ -2042,7 +2060,7 @@ failure path dimenticata
 
 ---
 
-# 66. Coverage alta non significa sicurezza
+## 66. Coverage alta non significa sicurezza
 
 Contratto:
 
@@ -2090,7 +2108,7 @@ whether tests proved the right things
 
 ---
 
-# 67. Coverage come mappa di domande
+## 67. Coverage come mappa di domande
 
 Usa coverage per chiedere:
 
@@ -2118,7 +2136,7 @@ come obiettivo astratto.
 
 ---
 
-# 68. Branch coverage
+## 68. Branch coverage
 
 Considera:
 
@@ -2150,7 +2168,7 @@ La sicurezza vive spesso proprio nei rami di failure.
 
 ---
 
-# 69. Coverage report LCOV
+## 69. Coverage report LCOV
 
 Foundry può generare output:
 
@@ -2184,7 +2202,9 @@ per la versione installata.
 
 ---
 
-# 70. Test gas vs security test
+# Test come security code: matrici, Ether e privilegi
+
+## 70. Test gas vs security test
 
 Foundry può anche produrre gas report.
 
@@ -2209,7 +2229,7 @@ Ottimizzazione e sicurezza sono dimensioni differenti.
 
 ---
 
-# 71. Regression matrix
+## 71. Regression matrix
 
 Costruiamo una matrice semplice.
 
@@ -2227,7 +2247,7 @@ Questa tabella è estremamente utile durante audit e code review.
 
 ---
 
-# 72. Requirement traceability
+## 72. Requirement traceability
 
 La domanda:
 
@@ -2256,7 +2276,7 @@ tests -> requirement
 
 ---
 
-# 73. Test code è security code
+## 73. Test code è security code
 
 Un test sbagliato può dare più fiducia di nessun test.
 
@@ -2279,7 +2299,7 @@ Quindi il test stesso va reviewato.
 
 ---
 
-# 74. Error-path precision
+## 74. Error-path precision
 
 Per una funzione:
 
@@ -2308,7 +2328,7 @@ copra falsamente quattro proprietà diverse.
 
 ---
 
-# 75. Test ordering delle precondizioni
+## 75. Test ordering delle precondizioni
 
 Supponiamo:
 
@@ -2347,7 +2367,7 @@ Non serve testare ogni combinazione sempre, ma capisci il comportamento.
 
 ---
 
-# 76. External call expectation
+## 76. External call expectation
 
 Foundry offre strumenti per verificare anche che certe call esterne avvengano.
 
@@ -2379,7 +2399,7 @@ Interaction test e state test sono complementari.
 
 ---
 
-# 77. Event vs call vs state
+## 77. Event vs call vs state
 
 Tre tipi di evidenza:
 
@@ -2398,7 +2418,7 @@ Una suite robusta può usare tutti e tre dove opportuno.
 
 ---
 
-# 78. Testing Ether sends
+## 78. Testing Ether sends
 
 Per una funzione:
 
@@ -2427,7 +2447,7 @@ call returns success
 
 ---
 
-# 79. Recipient che reverte
+## 79. Recipient che reverte
 
 Mock:
 
@@ -2452,7 +2472,7 @@ Il test deriva dal design.
 
 ---
 
-# 80. Test di reentrancy callback
+## 80. Test di reentrancy callback
 
 Mantieni:
 
@@ -2485,7 +2505,7 @@ credit cannot be withdrawn twice
 
 ---
 
-# 81. Test di dependency upgrade
+## 81. Test di dependency upgrade
 
 Per componenti upgradeabili, prepara:
 
@@ -2513,7 +2533,7 @@ state machine
 
 ---
 
-# 82. Test di timelock
+## 82. Test di timelock
 
 Suite minima:
 
@@ -2534,7 +2554,7 @@ target state changed exactly once
 
 ---
 
-# 83. Test di emergency controls
+## 83. Test di emergency controls
 
 Per `pause`:
 
@@ -2550,7 +2570,9 @@ Questo è importante perché un `pause()` può accidentalmente bloccare anche il
 
 ---
 
-# 84. Local-first testing
+# Disciplina: local-first, CI, determinismo e regole di scrittura
+
+## 84. Local-first testing
 
 Per questa fase del corso:
 
@@ -2581,7 +2603,7 @@ Fork testing può essere utile più avanti per compatibility testing, ma non è 
 
 ---
 
-# 85. Anvil
+## 85. Anvil
 
 Anvil è utile quando vuoi osservare più realisticamente:
 
@@ -2609,7 +2631,7 @@ Usali per obiettivi differenti.
 
 ---
 
-# 86. CI mindset
+## 86. CI mindset
 
 La suite di regressione dovrebbe essere eseguita:
 
@@ -2642,7 +2664,7 @@ Slither
 
 ---
 
-# 87. Determinismo
+## 87. Determinismo
 
 Evita test che dipendono implicitamente da:
 
@@ -2666,7 +2688,7 @@ localmente.
 
 ---
 
-# 88. Flaky tests
+## 88. Flaky tests
 
 Un test flaky:
 
@@ -2689,7 +2711,7 @@ Local deterministic testing riduce il problema.
 
 ---
 
-# 89. One concept per test
+## 89. One concept per test
 
 Questo:
 
@@ -2716,7 +2738,7 @@ Integration tests più lunghi hanno senso per workflow end-to-end.
 
 ---
 
-# 90. Un test può avere più assertion
+## 90. Un test può avere più assertion
 
 "One concept per test" non significa:
 
@@ -2743,7 +2765,7 @@ Sono tutte parti della stessa proprietà di settlement.
 
 ---
 
-# 91. Arrange minima
+## 91. Arrange minima
 
 Evita preparazioni non necessarie.
 
@@ -2766,7 +2788,7 @@ Più piccolo è lo scenario, più facile è interpretare il failure.
 
 ---
 
-# 92. Negative tests first
+## 92. Negative tests first
 
 Quando introduci una nuova funzione privileged:
 
@@ -2788,7 +2810,7 @@ Fa parte dell'implementazione.
 
 ---
 
-# 93. Test del rollback
+## 93. Test del rollback
 
 Esempio:
 
@@ -2808,7 +2830,7 @@ Questo rende concreta l'atomicità EVM.
 
 ---
 
-# 94. Test di failure propagation
+## 94. Test di failure propagation
 
 Se dependency critica reverte:
 
@@ -2832,7 +2854,9 @@ Testa la failure policy.
 
 ---
 
-# 95. Test review checklist
+# Checklist, laboratorio finale e chiusura
+
+## 95. Test review checklist
 
 Per ogni test chiediti:
 
@@ -2849,7 +2873,7 @@ Per ogni test chiediti:
 
 ---
 
-# 96. Checklist da auditor — suite di test
+## 96. Checklist da auditor — suite di test
 
 Quando auditi un repository:
 
@@ -2884,7 +2908,7 @@ Quando auditi un repository:
 
 ---
 
-# 97. Laboratorio finale della lezione
+## 97. Laboratorio finale della lezione
 
 Crea questa struttura:
 
@@ -2937,9 +2961,9 @@ forge coverage
 
 ---
 
-# 98. Esercizi
+## 98. Esercizi
 
-## Esercizio 1 — Revert precision
+### Esercizio 1 — Revert precision
 
 Trova tre test esistenti che usano:
 
@@ -2959,7 +2983,7 @@ quando appropriato.
 
 ---
 
-## Esercizio 2 — State unchanged
+### Esercizio 2 — State unchanged
 
 Per ogni negative test su `deposit`, verifica anche:
 
@@ -2971,7 +2995,7 @@ token balance unchanged
 
 ---
 
-## Esercizio 3 — Event + state
+### Esercizio 3 — Event + state
 
 Per:
 
@@ -2990,7 +3014,7 @@ Non uno soltanto.
 
 ---
 
-## Esercizio 4 — Mutation
+### Esercizio 4 — Mutation
 
 Rimuovi temporaneamente:
 
@@ -3004,7 +3028,7 @@ Se non fallisce, aggiungi il regression test mancante.
 
 ---
 
-## Esercizio 5 — Boundary
+### Esercizio 5 — Boundary
 
 Per:
 
@@ -3022,7 +3046,7 @@ scrivi test:
 
 ---
 
-## Esercizio 6 — State matrix
+### Esercizio 6 — State matrix
 
 Per:
 
@@ -3043,7 +3067,7 @@ Poi implementa almeno quattro negative test mancanti.
 
 ---
 
-## Esercizio 7 — Mock strategy
+### Esercizio 7 — Mock strategy
 
 Per un oracle, implementa due test equivalenti:
 
@@ -3054,7 +3078,7 @@ Confronta leggibilità e capacità espressiva.
 
 ---
 
-## Esercizio 8 — Coverage gap
+### Esercizio 8 — Coverage gap
 
 Esegui:
 
@@ -3076,7 +3100,7 @@ Solo dopo scrivi il test.
 
 ---
 
-## Esercizio 9 — Regression matrix
+### Esercizio 9 — Regression matrix
 
 Costruisci una tabella con almeno 15 requisiti del nostro Escrow e collega:
 
@@ -3088,7 +3112,7 @@ regression
 
 ---
 
-## Esercizio 10 — Audit challenge
+### Esercizio 10 — Audit challenge
 
 Analizza questa suite:
 
@@ -3121,13 +3145,13 @@ success path incompleto
 
 ---
 
-# 99. Cosa devo ricordare
+## 99. Cosa devo ricordare
 
-## 1. Un test deve verificare una proprietà, non soltanto eseguire codice
+### 1. Un test deve verificare una proprietà, non soltanto eseguire codice
 
 ---
 
-## 2. Negative testing è parte del secure coding
+### 2. Negative testing è parte del secure coding
 
 ```text
 ciò che non deve essere possibile
@@ -3137,7 +3161,7 @@ ciò che non deve essere possibile
 
 ---
 
-## 3. Usa revert precisi
+### 3. Usa revert precisi
 
 ```solidity
 expectRevert(
@@ -3155,19 +3179,19 @@ quando conosci la causa attesa.
 
 ---
 
-## 4. Verifica lo stato dopo la call
+### 4. Verifica lo stato dopo la call
 
 Eventi e return value non bastano.
 
 ---
 
-## 5. Mantieni caller e setup espliciti
+### 5. Mantieni caller e setup espliciti
 
 `prank`, `startPrank` e helper troppo astratti possono nascondere errori.
 
 ---
 
-## 6. Coverage è una mappa, non una prova
+### 6. Coverage è una mappa, non una prova
 
 ```text
 100% coverage
@@ -3177,29 +3201,29 @@ Eventi e return value non bastano.
 
 ---
 
-## 7. Mutation thinking misura la forza della suite
+### 7. Mutation thinking misura la forza della suite
 
 Se introduci il bug e il test continua a passare, la suite è debole.
 
 ---
 
-## 8. Ogni bug trovato deve diventare una regressione permanente
+### 8. Ogni bug trovato deve diventare una regressione permanente
 
 ---
 
-## 9. Testa failure propagation e rollback
+### 9. Testa failure propagation e rollback
 
 Le dipendenze esterne sono parte del comportamento.
 
 ---
 
-## 10. Testing architecture prepara fuzzing e invarianti
+### 10. Testing architecture prepara fuzzing e invarianti
 
 Se non sai formulare proprietà con esempi concreti, sarà difficile scrivere buoni fuzz/invariant test.
 
 ---
 
-# 100. Collegamento con il corso
+## 100. Collegamento con il corso
 
 Finora abbiamo costruito:
 
@@ -3240,7 +3264,7 @@ Quindi la prossima lezione sarà:
 
 ---
 
-# 101. Fonti della lezione
+## 101. Fonti della lezione
 
 Fonti tecniche consultate il **21 settembre 2026**:
 

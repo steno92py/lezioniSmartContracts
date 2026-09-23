@@ -7,7 +7,9 @@
 
 ---
 
-# 1. Obiettivi
+# Obiettivi e modello mentale
+
+## 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -44,7 +46,7 @@ Alla fine della lezione dovresti saper:
 
 ---
 
-# 2. Modello mentale
+## 2. Modello mentale
 
 Nelle lezioni precedenti abbiamo chiesto:
 
@@ -86,7 +88,9 @@ ha un trust model molto diverso da un contratto immutable.
 
 ---
 
-# 3. Ownership
+# Ownership e single point of failure
+
+## 3. Ownership
 
 Il modello più semplice è:
 
@@ -139,7 +143,7 @@ contract EscrowAdmin is Ownable {
 
 ---
 
-# 4. Che cosa garantisce `onlyOwner`
+## 4. Che cosa garantisce `onlyOwner`
 
 Garantisce:
 
@@ -172,7 +176,7 @@ governance sicura
 
 ---
 
-# 5. Single point of failure
+## 5. Single point of failure
 
 Supponiamo:
 
@@ -216,9 +220,9 @@ chi possiede materialmente la private key.
 
 ---
 
-# 6. Safety vs liveness della chiave admin
+## 6. Safety vs liveness della chiave admin
 
-## Safety
+### Safety
 
 Vogliamo impedire:
 
@@ -229,7 +233,7 @@ fee arbitraria
 drain amministrativo
 ```
 
-## Liveness
+### Liveness
 
 Vogliamo poter:
 
@@ -248,7 +252,7 @@ Questo trade-off accompagnerà tutta la lezione.
 
 ---
 
-# 7. `Ownable2Step`
+## 7. `Ownable2Step`
 
 Un errore amministrativo classico è trasferire ownership all'indirizzo sbagliato.
 
@@ -290,7 +294,9 @@ Questo riduce il rischio di trasferimento accidentale a un address che non può/
 
 ---
 
-# 8. Multisig: modello mentale
+# Multisig
+
+## 8. Multisig: modello mentale
 
 Un multisig sostituisce concettualmente:
 
@@ -340,7 +346,7 @@ Non vede direttamente le singole firme.
 
 ---
 
-# 9. Perché un multisig riduce il rischio
+## 9. Perché un multisig riduce il rischio
 
 Una singola chiave compromessa non basta se:
 
@@ -368,7 +374,7 @@ Ma introduce nuovi problemi.
 
 ---
 
-# 10. Un multisig non elimina il trust
+## 10. Un multisig non elimina il trust
 
 Se controlla:
 
@@ -414,9 +420,9 @@ trustless
 
 ---
 
-# 11. Threshold: trade-off
+## 11. Threshold: trade-off
 
-## 1-of-5
+### 1-of-5
 
 Alta liveness:
 
@@ -430,7 +436,7 @@ Bassa resistenza:
 una sola chiave compromessa basta
 ```
 
-## 5-of-5
+### 5-of-5
 
 Alta resistenza alla singola compromissione:
 
@@ -445,7 +451,7 @@ una chiave persa
 => sistema potenzialmente bloccato
 ```
 
-## 3-of-5
+### 3-of-5
 
 Compromesso classico:
 
@@ -458,7 +464,7 @@ La soglia è parte del threat model.
 
 ---
 
-# 12. Non basta contare i signer
+## 12. Non basta contare i signer
 
 Cinque signer su:
 
@@ -484,13 +490,13 @@ Questo esce dal puro bytecode ma rientra nella sicurezza del sistema.
 
 ---
 
-# 13. Multisig locale nel corso
+## 13. Multisig locale nel corso
 
 Non abbiamo bisogno di usare un wallet pubblico reale.
 
 Possiamo modellare un multisig giocattolo.
 
-## `src/governance/ToyMultisig.sol`
+### `src/governance/ToyMultisig.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -651,15 +657,15 @@ execution
 
 ---
 
-# 14. Analisi del ToyMultisig
+## 14. Analisi del ToyMultisig
 
-## `submit`
+### `submit`
 
-### Caller
+#### Caller
 
 Solo owner.
 
-### Input controllati
+#### Input controllati
 
 ```text
 target
@@ -671,35 +677,35 @@ Questi input sono potentissimi.
 
 Il multisig è praticamente un executor generico.
 
-### Stato scritto
+#### Stato scritto
 
 ```text
 nuova transaction
 ```
 
-### External call
+#### External call
 
 Nessuna.
 
-### Assunzione
+#### Assunzione
 
 Gli owner useranno il multisig soltanto per target/action appropriate.
 
 ---
 
-## `approve`
+### `approve`
 
-### Caller
+#### Caller
 
 Solo owner.
 
-### Input
+#### Input
 
 ```text
 id
 ```
 
-### Stato
+#### Stato
 
 Marca:
 
@@ -709,25 +715,25 @@ approvedBy[id][owner] = true
 
 e incrementa approvals.
 
-### Proprietà
+#### Proprietà
 
 Un owner non può contare due volte.
 
 ---
 
-## `execute`
+### `execute`
 
-### Caller
+#### Caller
 
 Solo owner nel toy model.
 
-### Precondizione
+#### Precondizione
 
 ```text
 approvals >= threshold
 ```
 
-### Stato
+#### Stato
 
 ```text
 executed = true
@@ -735,13 +741,13 @@ executed = true
 
 prima della call.
 
-### External call
+#### External call
 
 ```solidity
 target.call(...)
 ```
 
-### CEI
+#### CEI
 
 Segniamo eseguita prima della call per evitare re-execution via callback.
 
@@ -755,7 +761,7 @@ torna al valore precedente.
 
 ---
 
-# 15. Multisig come owner
+## 15. Multisig come owner
 
 Se il nostro Escrow è:
 
@@ -792,7 +798,7 @@ owner = multisig address
 
 ---
 
-# 16. Limite del multisig senza timelock
+## 16. Limite del multisig senza timelock
 
 Se 3 firmatari approvano:
 
@@ -820,7 +826,9 @@ Qui entra il timelock.
 
 ---
 
-# 17. Timelock: modello mentale
+# Timelock, ruoli e separazione dei poteri
+
+## 17. Timelock: modello mentale
 
 Con timelock:
 
@@ -852,7 +860,7 @@ Serve un periodo minimo.
 
 ---
 
-# 18. Perché il delay è una security property
+## 18. Perché il delay è una security property
 
 Un delay può dare tempo per:
 
@@ -868,7 +876,7 @@ OpenZeppelin descrive precisamente questo uso: un `TimelockController` posto com
 
 ---
 
-# 19. Il timelock non impedisce una decisione malevola
+## 19. Il timelock non impedisce una decisione malevola
 
 Supponiamo governance compromessa.
 
@@ -906,7 +914,7 @@ Se gli utenti non possono uscire durante il delay, il beneficio può essere molt
 
 ---
 
-# 20. Delay e exit path
+## 20. Delay e exit path
 
 Un timelock è particolarmente utile quando:
 
@@ -939,7 +947,7 @@ il semplice delay non risolve il problema.
 
 ---
 
-# 21. `TimelockController`
+## 21. `TimelockController`
 
 OpenZeppelin Contracts 5.x espone:
 
@@ -972,7 +980,7 @@ Done
 
 ---
 
-# 22. Ruoli del timelock
+## 22. Ruoli del timelock
 
 I ruoli principali includono:
 
@@ -983,19 +991,19 @@ CANCELLER_ROLE
 DEFAULT_ADMIN_ROLE
 ```
 
-## Proposer
+### Proposer
 
 Può schedulare operazioni.
 
-## Executor
+### Executor
 
 Può eseguire operazioni diventate ready.
 
-## Canceller
+### Canceller
 
 Può cancellare operazioni pending.
 
-## Admin
+### Admin
 
 Può gestire i ruoli.
 
@@ -1003,7 +1011,7 @@ Questa separazione è importante.
 
 ---
 
-# 23. Proposer != Executor
+## 23. Proposer != Executor
 
 Il fatto che qualcuno possa dire:
 
@@ -1027,7 +1035,7 @@ Può soltanto eseguire ciò che era stato schedulato.
 
 ---
 
-# 24. Executor aperto
+## 24. Executor aperto
 
 OpenZeppelin permette di assegnare `EXECUTOR_ROLE` a:
 
@@ -1049,7 +1057,7 @@ La capacità di schedulare resta distinta dalla capacità di eseguire una propos
 
 ---
 
-# 25. Canceller
+## 25. Canceller
 
 Il canceller può impedire l'esecuzione di una operazione già schedulata ma non ancora completata.
 
@@ -1083,7 +1091,7 @@ chi può proporre?
 
 ---
 
-# 26. Admin del timelock
+## 26. Admin del timelock
 
 Il ruolo admin è estremamente sensibile perché può:
 
@@ -1114,7 +1122,7 @@ potresti bloccare il sistema
 
 ---
 
-# 27. Ownership al timelock
+## 27. Ownership al timelock
 
 Immagina:
 
@@ -1171,7 +1179,7 @@ Questo è un pattern estremamente importante.
 
 ---
 
-# 28. Chi deve essere owner?
+## 28. Chi deve essere owner?
 
 Per una funzione:
 
@@ -1199,7 +1207,7 @@ Questa è una delle domande principali da audit:
 
 ---
 
-# 29. Bypass path
+## 29. Bypass path
 
 Configurazione apparentemente sicura:
 
@@ -1232,7 +1240,7 @@ il controllo previsto
 
 ---
 
-# 30. Separation of duties
+## 30. Separation of duties
 
 Non dare necessariamente alla stessa entità tutti i poteri.
 
@@ -1259,7 +1267,7 @@ Questo riduce il blast radius di una singola compromissione.
 
 ---
 
-# 31. Emergency powers
+## 31. Emergency powers
 
 Un timelock di 48 ore è ottimo per:
 
@@ -1301,7 +1309,7 @@ con owner = Timelock.
 
 ---
 
-# 32. Perché pause e unpause possono avere autorità diverse
+## 32. Perché pause e unpause possono avere autorità diverse
 
 Il threat model può scegliere:
 
@@ -1332,7 +1340,7 @@ Non è una regola universale.
 
 ---
 
-# 33. Emergency role può diventare DoS
+## 33. Emergency role può diventare DoS
 
 Se il pauser può bloccare:
 
@@ -1368,11 +1376,13 @@ allow withdrawals/refunds
 
 ---
 
-# 34. Escrow amministrabile
+# Escrow amministrabile e laboratorio Foundry
+
+## 34. Escrow amministrabile
 
 Costruiamo un contratto giocattolo.
 
-## `src/governance/GovernedEscrow.sol`
+### `src/governance/GovernedEscrow.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1519,9 +1529,9 @@ owner:
 
 ---
 
-# 35. Analisi dei privilegi
+## 35. Analisi dei privilegi
 
-## `setFee`
+### `setFee`
 
 Caller:
 
@@ -1545,7 +1555,7 @@ Buon candidato per timelock.
 
 ---
 
-## `setOracle`
+### `setOracle`
 
 Caller:
 
@@ -1571,7 +1581,7 @@ Ottimo candidato per timelock.
 
 ---
 
-## `pause`
+### `pause`
 
 Caller:
 
@@ -1595,7 +1605,7 @@ Ma risposta rapida può essere desiderabile.
 
 ---
 
-## `unpause`
+### `unpause`
 
 Caller:
 
@@ -1618,7 +1628,7 @@ slow restart
 
 ---
 
-# 36. Deploy del Timelock locale
+## 36. Deploy del Timelock locale
 
 Nel test:
 
@@ -1669,7 +1679,7 @@ owner(Escrow) = Timelock
 
 ---
 
-# 37. Scheduling
+## 37. Scheduling
 
 Per eseguire:
 
@@ -1715,7 +1725,7 @@ delay
 
 ---
 
-# 38. Operation ID
+## 38. Operation ID
 
 Il timelock identifica una operazione tramite hash dei suoi contenuti.
 
@@ -1735,7 +1745,7 @@ Il `salt` aiuta anche a distinguere operazioni altrimenti identiche.
 
 ---
 
-# 39. Stato della operazione
+## 39. Stato della operazione
 
 Schema:
 
@@ -1764,7 +1774,7 @@ Questa è la proprietà centrale.
 
 ---
 
-# 40. Laboratorio Foundry — test setup
+## 40. Laboratorio Foundry — test setup
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1832,7 +1842,7 @@ contract GovernanceTest is Test {
 
 ---
 
-# 41. Test negativo — EOA non può bypassare timelock
+## 41. Test negativo — EOA non può bypassare timelock
 
 ```solidity
 function test_RandomUserCannotSetFee()
@@ -1877,7 +1887,7 @@ direct target privilege
 
 ---
 
-# 42. Test — schedule
+## 42. Test — schedule
 
 ```solidity
 function _scheduleFee(
@@ -1908,7 +1918,7 @@ function _scheduleFee(
 
 ---
 
-# 43. Test negativo — execute troppo presto
+## 43. Test negativo — execute troppo presto
 
 ```solidity
 function test_CannotExecuteBeforeDelay()
@@ -1944,7 +1954,7 @@ function test_CannotExecuteBeforeDelay()
 
 ---
 
-# 44. Test — execution dopo il delay
+## 44. Test — execution dopo il delay
 
 ```solidity
 function test_ExecuteAfterDelay()
@@ -1993,7 +2003,7 @@ quindi `onlyOwner` passa.
 
 ---
 
-# 45. Test di boundary temporale
+## 45. Test di boundary temporale
 
 Se una operazione diventa ready esattamente a:
 
@@ -2023,7 +2033,7 @@ state transitions
 
 ---
 
-# 46. Cancellation
+## 46. Cancellation
 
 Una operazione pending può essere cancellata da chi possiede il ruolo appropriato.
 
@@ -2049,7 +2059,7 @@ governance DoS
 
 ---
 
-# 47. Test del pause rapido
+## 47. Test del pause rapido
 
 ```solidity
 function test_EmergencyPauserCanPauseImmediately()
@@ -2071,7 +2081,7 @@ Questo è intenzionale.
 
 ---
 
-# 48. Test negativo — altri non possono pausare
+## 48. Test negativo — altri non possono pausare
 
 ```solidity
 function test_StrangerCannotPause()
@@ -2094,7 +2104,7 @@ function test_StrangerCannotPause()
 
 ---
 
-# 49. Unpause attraverso timelock
+## 49. Unpause attraverso timelock
 
 Poiché:
 
@@ -2125,16 +2135,18 @@ Questo è un esempio di asymmetric emergency governance.
 
 ---
 
-# 50. Proprietà e invarianti
+# Invarianti, AccessControl e AccessManager
 
-## G1 — Solo il controller previsto modifica la config
+## 50. Proprietà e invarianti
+
+### G1 — Solo il controller previsto modifica la config
 
 ```text
 caller != timelock
 => setFee/setOracle revert
 ```
 
-## G2 — Nessun bypass del delay
+### G2 — Nessun bypass del delay
 
 ```text
 privileged change
@@ -2142,7 +2154,7 @@ privileged change
 dopo schedule + delay
 ```
 
-## G3 — Delay boundary
+### G3 — Delay boundary
 
 ```text
 now < readyAt
@@ -2152,7 +2164,7 @@ now >= readyAt
 => execute può procedere
 ```
 
-## G4 — Pauser limitato
+### G4 — Pauser limitato
 
 ```text
 emergencyPauser
@@ -2162,25 +2174,25 @@ emergencyPauser
 => non può setFee
 ```
 
-## G5 — Timelock limitato alle sue authority
+### G5 — Timelock limitato alle sue authority
 
 Il fatto che il timelock sia owner non rende automaticamente ogni altra chiave privileged.
 
-## G6 — Cancellazione effettiva
+### G6 — Cancellazione effettiva
 
 ```text
 cancelled operation
 => non può essere eseguita
 ```
 
-## G7 — Multisig threshold
+### G7 — Multisig threshold
 
 ```text
 approvals < threshold
 => no execution
 ```
 
-## G8 — Una firma conta una volta
+### G8 — Una firma conta una volta
 
 ```text
 same owner
@@ -2189,7 +2201,7 @@ same owner
 
 ---
 
-# 51. Governance come state machine
+## 51. Governance come state machine
 
 Un'azione amministrativa ha essa stessa una macchina a stati.
 
@@ -2231,7 +2243,7 @@ Quindi governance security è anche state-machine security.
 
 ---
 
-# 52. Proposal != execution
+## 52. Proposal != execution
 
 Questa distinzione è essenziale.
 
@@ -2263,7 +2275,7 @@ Sono indipendenti.
 
 ---
 
-# 53. AccessControl
+## 53. AccessControl
 
 Per ruoli multiple OpenZeppelin espone:
 
@@ -2296,7 +2308,7 @@ Ma aumenta la complessità.
 
 ---
 
-# 54. `DEFAULT_ADMIN_ROLE`
+## 54. `DEFAULT_ADMIN_ROLE`
 
 In `AccessControl`, il:
 
@@ -2326,7 +2338,7 @@ Guarda anche chi può **concederlo**.
 
 ---
 
-# 55. Role admin graph
+## 55. Role admin graph
 
 Esempio:
 
@@ -2368,7 +2380,7 @@ who can obtain permission to call?
 
 ---
 
-# 56. AccessManager
+## 56. AccessManager
 
 OpenZeppelin 5.x include:
 
@@ -2405,7 +2417,7 @@ Ma aumenta il blast radius dell'authority centrale.
 
 ---
 
-# 57. Quando un AccessManager può aiutare
+## 57. Quando un AccessManager può aiutare
 
 Immagina:
 
@@ -2436,7 +2448,9 @@ Perché quella authority diventa sistemica.
 
 ---
 
-# 58. Timelock e UUPS
+# Configurazioni fragili, least authority e delay
+
+## 58. Timelock e UUPS
 
 Colleghiamo la Lezione 11.
 
@@ -2494,7 +2508,7 @@ governance security
 
 ---
 
-# 59. Una configurazione fragile
+## 59. Una configurazione fragile
 
 Supponiamo:
 
@@ -2525,7 +2539,7 @@ Ma deve essere intenzionale e documentato.
 
 ---
 
-# 60. Emergency upgrade?
+## 60. Emergency upgrade?
 
 Alcuni sistemi desiderano:
 
@@ -2557,7 +2571,7 @@ Spesso un emergency pause limitato ha blast radius inferiore a un emergency arbi
 
 ---
 
-# 61. Principle of least authority
+## 61. Principle of least authority
 
 Se devi fermare un protocollo, concedi:
 
@@ -2590,7 +2604,7 @@ contract roles
 
 ---
 
-# 62. Blast radius table
+## 62. Blast radius table
 
 Costruisci una tabella mentale:
 
@@ -2611,7 +2625,7 @@ La sicurezza dipende molto più da questa tabella che dal nome elegante della go
 
 ---
 
-# 63. Renouncing ownership
+## 63. Renouncing ownership
 
 `Ownable` permette di rinunciare ownership.
 
@@ -2648,7 +2662,7 @@ Dipende dal sistema.
 
 ---
 
-# 64. Immutable after setup
+## 64. Immutable after setup
 
 Una strategia interessante è:
 
@@ -2686,7 +2700,7 @@ recoverability
 
 ---
 
-# 65. Timelock delay troppo corto
+## 65. Timelock delay troppo corto
 
 Se:
 
@@ -2709,7 +2723,7 @@ Il delay è una parameter security decision.
 
 ---
 
-# 66. Timelock delay troppo lungo
+## 66. Timelock delay troppo lungo
 
 Se:
 
@@ -2733,7 +2747,7 @@ Separation of duties serve proprio a gestire trade-off differenti.
 
 ---
 
-# 67. Time delay non basta senza monitoring
+## 67. Time delay non basta senza monitoring
 
 Un upgrade scheduled 48 ore prima aiuta soltanto se qualcuno può:
 
@@ -2755,7 +2769,7 @@ qual è il response process?
 
 ---
 
-# 68. Governance operation hashes
+## 68. Governance operation hashes
 
 In audit, una proposta timelock dovrebbe essere interpretabile.
 
@@ -2780,7 +2794,7 @@ L'azione reale deve corrispondere alla proposta descritta agli utenti.
 
 ---
 
-# 69. Batch operations
+## 69. Batch operations
 
 `TimelockController` supporta anche batch di operazioni.
 
@@ -2809,7 +2823,7 @@ Una singola call inattesa può cambiare drasticamente l'effetto della proposta.
 
 ---
 
-# 70. Predecessor dependency
+## 70. Predecessor dependency
 
 Il timelock permette anche di modellare dipendenze tra operazioni.
 
@@ -2834,7 +2848,9 @@ esiste un predecessor?
 
 ---
 
-# 71. Test del multisig giocattolo
+# Test del multisig e vulnerabilità concettuali
+
+## 71. Test del multisig giocattolo
 
 Setup:
 
@@ -2870,7 +2886,7 @@ Abbiamo:
 
 ---
 
-# 72. Test — threshold non raggiunta
+## 72. Test — threshold non raggiunta
 
 ```solidity
 function test_CannotExecuteWithOneApproval()
@@ -2904,7 +2920,7 @@ function test_CannotExecuteWithOneApproval()
 
 ---
 
-# 73. Test — threshold raggiunta
+## 73. Test — threshold raggiunta
 
 ```text
 Alice approve
@@ -2923,7 +2939,7 @@ perché threshold = 2.
 
 ---
 
-# 74. Test negativo — double approval
+## 74. Test negativo — double approval
 
 ```solidity
 vm.prank(alice);
@@ -2944,7 +2960,7 @@ Una singola identità non deve pesare due volte.
 
 ---
 
-# 75. Vulnerabilità concettuale — owners duplicati
+## 75. Vulnerabilità concettuale — owners duplicati
 
 Se il constructor permettesse:
 
@@ -2965,7 +2981,7 @@ Una threshold ha senso soltanto se l'insieme dei signer è definito correttament
 
 ---
 
-# 76. Vulnerabilità concettuale — threshold zero
+## 76. Vulnerabilità concettuale — threshold zero
 
 Se:
 
@@ -2986,7 +3002,7 @@ sono invarianti di configurazione.
 
 ---
 
-# 77. Vulnerabilità concettuale — timelock bypass
+## 77. Vulnerabilità concettuale — timelock bypass
 
 Supponiamo:
 
@@ -3021,7 +3037,9 @@ Da audit:
 
 ---
 
-# 78. Write-path analysis
+# Analisi della governance: write path, recovery e osservabilità
+
+## 78. Write-path analysis
 
 Per una variabile:
 
@@ -3054,7 +3072,7 @@ Questo metodo è potentissimo.
 
 ---
 
-# 79. Governance graph
+## 79. Governance graph
 
 Disegna:
 
@@ -3093,7 +3111,7 @@ colpisce quale componente
 
 ---
 
-# 80. Esercizio di threat modeling per ogni authority
+## 80. Esercizio di threat modeling per ogni authority
 
 Per ogni ruolo rispondi:
 
@@ -3114,7 +3132,7 @@ Questa è una security review di governance.
 
 ---
 
-# 81. Audit dell'upgrade authority
+## 81. Audit dell'upgrade authority
 
 Dalla Lezione 11:
 
@@ -3147,7 +3165,7 @@ L'autorità effettiva può essere distante diversi hop dal proxy.
 
 ---
 
-# 82. Recovery
+## 82. Recovery
 
 Supponiamo che un signer perda la chiave.
 
@@ -3172,7 +3190,7 @@ Questa è liveness governance.
 
 ---
 
-# 83. Self-admin timelock: vantaggio
+## 83. Self-admin timelock: vantaggio
 
 Se:
 
@@ -3202,7 +3220,7 @@ execute immediate
 
 ---
 
-# 84. Self-admin timelock: rischio
+## 84. Self-admin timelock: rischio
 
 Se tutti i proposers diventano indisponibili:
 
@@ -3228,7 +3246,7 @@ La decentralizzazione delle authority deve considerare recovery.
 
 ---
 
-# 85. `updateDelay`
+## 85. `updateDelay`
 
 Nel `TimelockController`, il minimum delay non dovrebbe essere cambiabile direttamente da un account arbitrario.
 
@@ -3243,7 +3261,7 @@ il delay che dovrebbe proteggermi
 
 ---
 
-# 86. Governance e observability
+## 86. Governance e observability
 
 Eventi importanti:
 
@@ -3271,7 +3289,7 @@ Serve infrastruttura off-chain che osservi.
 
 ---
 
-# 87. Governance e front-end
+## 87. Governance e front-end
 
 Un'interfaccia dovrebbe mostrare chiaramente:
 
@@ -3294,7 +3312,7 @@ Un multisig con 5 signer che firmano calldata incomprensibile può avere un proc
 
 ---
 
-# 88. Governance non deve diventare un "god mode" non documentato
+## 88. Governance non deve diventare un "god mode" non documentato
 
 Esempio:
 
@@ -3317,7 +3335,7 @@ Il fatto che sia dietro multisig/timelock riduce alcuni rischi, ma il blast radi
 
 ---
 
-# 89. Preferire capacità specifiche
+## 89. Preferire capacità specifiche
 
 Meglio, quando possibile:
 
@@ -3347,7 +3365,9 @@ invariant enforcement
 
 ---
 
-# 90. Test negativi essenziali
+# Checklist, esercizi e chiusura
+
+## 90. Test negativi essenziali
 
 Per ogni funzione privilegiata scrivi almeno:
 
@@ -3376,7 +3396,7 @@ duplicate signer -> doesn't count twice
 
 ---
 
-# 91. Fuzzing futuro
+## 91. Fuzzing futuro
 
 Più avanti potremo fuzzare proprietà come:
 
@@ -3398,7 +3418,7 @@ L'invariant testing è particolarmente utile per governance perché lo stato è 
 
 ---
 
-# 92. Checklist da auditor — ownership
+## 92. Checklist da auditor — ownership
 
 - [ ] chi è owner?
 - [ ] EOA o contract?
@@ -3413,7 +3433,7 @@ L'invariant testing è particolarmente utile per governance perché lo stato è 
 
 ---
 
-# 93. Checklist — multisig
+## 93. Checklist — multisig
 
 - [ ] quanti owner?
 - [ ] threshold?
@@ -3441,7 +3461,7 @@ secondo la configurazione effettiva.
 
 ---
 
-# 94. Checklist — timelock
+## 94. Checklist — timelock
 
 - [ ] minDelay?
 - [ ] chi è proposer?
@@ -3460,7 +3480,7 @@ secondo la configurazione effettiva.
 
 ---
 
-# 95. Checklist — emergency powers
+## 95. Checklist — emergency powers
 
 - [ ] chi può pause?
 - [ ] cosa viene pausato?
@@ -3475,7 +3495,7 @@ secondo la configurazione effettiva.
 
 ---
 
-# 96. Checklist — role-based access control
+## 96. Checklist — role-based access control
 
 - [ ] tutti i ruoli documentati?
 - [ ] chi possiede ogni ruolo?
@@ -3489,9 +3509,9 @@ secondo la configurazione effettiva.
 
 ---
 
-# 97. Esercizi
+## 97. Esercizi
 
-## Esercizio 1 — Governance graph
+### Esercizio 1 — Governance graph
 
 Disegna un sistema con:
 
@@ -3506,7 +3526,7 @@ Mostra ogni edge di authority.
 
 ---
 
-## Esercizio 2 — Blast radius
+### Esercizio 2 — Blast radius
 
 Per:
 
@@ -3523,7 +3543,7 @@ scrivi l'impatto della compromissione.
 
 ---
 
-## Esercizio 3 — Timelock tests
+### Esercizio 3 — Timelock tests
 
 Implementa:
 
@@ -3536,7 +3556,7 @@ execute after boundary
 
 ---
 
-## Esercizio 4 — Cancel
+### Esercizio 4 — Cancel
 
 Aggiungi test:
 
@@ -3550,7 +3570,7 @@ execute
 
 ---
 
-## Esercizio 5 — Fast pause / slow unpause
+### Esercizio 5 — Fast pause / slow unpause
 
 Verifica:
 
@@ -3564,7 +3584,7 @@ timelock -> unpause dopo delay
 
 ---
 
-## Esercizio 6 — Multisig threshold
+### Esercizio 6 — Multisig threshold
 
 Con 3 owners e threshold 2:
 
@@ -3584,7 +3604,7 @@ e descrivi il nuovo liveness risk.
 
 ---
 
-## Esercizio 7 — Bypass hunting
+### Esercizio 7 — Bypass hunting
 
 Dato:
 
@@ -3602,7 +3622,7 @@ Rispondi:
 
 ---
 
-## Esercizio 8 — Role graph
+### Esercizio 8 — Role graph
 
 Costruisci:
 
@@ -3617,7 +3637,7 @@ Poi modifica gli admin dei ruoli in modo che nessun singolo ruolo possa auto-ele
 
 ---
 
-## Esercizio 9 — Governance deadlock
+### Esercizio 9 — Governance deadlock
 
 Progetta una configurazione self-admin timelock in cui:
 
@@ -3631,7 +3651,7 @@ Poi proponi un recovery design con il minimo privilegio possibile.
 
 ---
 
-## Esercizio 10 — Audit challenge
+### Esercizio 10 — Audit challenge
 
 Analizza:
 
@@ -3694,45 +3714,45 @@ renounce
 
 ---
 
-# 98. Cosa devo ricordare
+## 98. Cosa devo ricordare
 
-## 1. `onlyOwner` protegge dall'account sbagliato, non da un owner compromesso
+### 1. `onlyOwner` protegge dall'account sbagliato, non da un owner compromesso
 
 L'access control è solo il primo livello.
 
 ---
 
-## 2. Un multisig trasforma single-key trust in threshold trust
+### 2. Un multisig trasforma single-key trust in threshold trust
 
 Non rende il sistema trustless.
 
 ---
 
-## 3. Un timelock aggiunge tempo, non giudizio
+### 3. Un timelock aggiunge tempo, non giudizio
 
 Una decisione malevola può restare malevola, ma diventa osservabile prima dell'esecuzione.
 
 ---
 
-## 4. Per imporre davvero il timelock, il target deve essere controllato dal timelock
+### 4. Per imporre davvero il timelock, il target deve essere controllato dal timelock
 
 Non lasciare bypass amministrativi involontari.
 
 ---
 
-## 5. Proposer, executor, canceller e admin sono poteri diversi
+### 5. Proposer, executor, canceller e admin sono poteri diversi
 
 Analizzali separatamente.
 
 ---
 
-## 6. Separation of duties limita il blast radius
+### 6. Separation of duties limita il blast radius
 
 Non dare automaticamente tutte le authority alla stessa chiave.
 
 ---
 
-## 7. Emergency power deve essere minimo
+### 7. Emergency power deve essere minimo
 
 Spesso:
 
@@ -3748,13 +3768,13 @@ arbitrary emergency upgrade
 
 ---
 
-## 8. Safety e liveness sono in tensione
+### 8. Safety e liveness sono in tensione
 
 Una governance impossibile da compromettere ma anche impossibile da usare non è necessariamente un buon sistema.
 
 ---
 
-## 9. Segui tutti i write path
+### 9. Segui tutti i write path
 
 Per ogni stato critico:
 
@@ -3766,13 +3786,13 @@ fa parte del trust model.
 
 ---
 
-## 10. Upgradeability è governance
+### 10. Upgradeability è governance
 
 Se puoi cambiare implementation, puoi spesso cambiare quasi tutte le regole future.
 
 ---
 
-# 99. Collegamento con il corso
+## 99. Collegamento con il corso
 
 Ora la catena è:
 
@@ -3823,7 +3843,7 @@ La Lezione 13 sarà dedicata al **testing approfondito**.
 
 ---
 
-# 100. Fonti della lezione
+## 100. Fonti della lezione
 
 Fonti tecniche consultate il **21 settembre 2026**:
 

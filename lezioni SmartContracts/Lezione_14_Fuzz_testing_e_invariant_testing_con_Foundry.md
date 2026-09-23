@@ -6,7 +6,9 @@
 
 ---
 
-# 1. Obiettivi
+# Obiettivi e modello mentale
+
+## 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -37,7 +39,7 @@ Alla fine della lezione dovresti saper:
 
 ---
 
-# 2. Modello mentale
+## 2. Modello mentale
 
 Nella Lezione 13 abbiamo scelto casi concreti:
 
@@ -109,9 +111,9 @@ INVARIANT MUST STILL HOLD
 
 ---
 
-# 3. Fuzzing vs invariant testing
+## 3. Fuzzing vs invariant testing
 
-## Fuzz test
+### Fuzz test
 
 Tipicamente:
 
@@ -131,7 +133,7 @@ Domanda tipica:
 
 ---
 
-## Invariant test
+### Invariant test
 
 Foundry chiama molte funzioni target in sequenza sullo **stesso stato** durante una run.
 
@@ -143,7 +145,7 @@ Questa distinzione è fondamentale.
 
 ---
 
-# 4. Perché il fuzzing è utile
+## 4. Perché il fuzzing è utile
 
 Gli umani tendono a scegliere:
 
@@ -171,7 +173,9 @@ Serve a testare una proprietà su un dominio più ampio.
 
 ---
 
-# 5. Primo fuzz test
+# Primo fuzz test: bound e assume
+
+## 5. Primo fuzz test
 
 Contratto giocattolo:
 
@@ -214,7 +218,7 @@ per ogni input per cui la funzione è definita senza overflow.
 
 ---
 
-# 6. Attenzione all'overflow dell'espressione di test
+## 6. Attenzione all'overflow dell'espressione di test
 
 In Solidity 0.8+, questa espressione:
 
@@ -238,7 +242,7 @@ Ma perché stiamo esprimendo il dominio reale.
 
 ---
 
-# 7. `bound()`
+## 7. `bound()`
 
 Forge Std offre:
 
@@ -273,7 +277,7 @@ Ora qualunque `rawAmount` viene mappato nell'intervallo desiderato.
 
 ---
 
-# 8. Perché `bound` spesso è preferibile a `assume`
+## 8. Perché `bound` spesso è preferibile a `assume`
 
 Con:
 
@@ -302,7 +306,7 @@ Quindi, quando stai modellando un range continuo:
 
 ---
 
-# 9. `vm.assume()`
+## 9. `vm.assume()`
 
 `assume` è comunque utile quando il dominio è una proprietà discreta o difficile da rappresentare con `bound`.
 
@@ -322,7 +326,7 @@ Ora il test esplora caller che non sono il buyer e non sono zero.
 
 ---
 
-# 10. Assumption poisoning
+## 10. Assumption poisoning
 
 Questo è un test apparentemente sofisticato:
 
@@ -355,7 +359,9 @@ Chiediti sempre:
 
 ---
 
-# 11. Fuzzing dell'Escrow
+# Fuzzing dell'Escrow e dell'oracle
+
+## 11. Fuzzing dell'Escrow
 
 Prendiamo un Escrow semplificato:
 
@@ -397,7 +403,7 @@ contract SimpleEscrow {
 
 ---
 
-# 12. Fuzz property: accounting
+## 12. Fuzz property: accounting
 
 Property:
 
@@ -436,7 +442,7 @@ function testFuzz_DepositRecordsAmount(
 
 ---
 
-# 13. Fuzz negative test: unauthorized caller
+## 13. Fuzz negative test: unauthorized caller
 
 ```solidity
 function testFuzz_NonBuyerCannotDeposit(
@@ -479,7 +485,7 @@ non il valore.
 
 ---
 
-# 14. Fuzzing e validation order
+## 14. Fuzzing e validation order
 
 Se usi:
 
@@ -504,7 +510,7 @@ Devi sapere quale comportamento vuoi.
 
 ---
 
-# 15. Fuzzing boundary economiche
+## 15. Fuzzing boundary economiche
 
 Dal corso sugli oracle:
 
@@ -523,7 +529,7 @@ Possiamo fuzzare due regioni separatamente.
 
 ---
 
-# 16. Fuzz test freshness valida
+## 16. Fuzz test freshness valida
 
 ```solidity
 function testFuzz_FreshPriceAccepted(
@@ -554,7 +560,7 @@ function testFuzz_FreshPriceAccepted(
 
 ---
 
-# 17. Fuzz test stale
+## 17. Fuzz test stale
 
 ```solidity
 function testFuzz_StalePriceRejected(
@@ -592,7 +598,9 @@ Separare i domini rende la property chiara.
 
 ---
 
-# 18. Counterexample
+# Controesempi, proprietà e configurazione del fuzzing
+
+## 18. Counterexample
 
 Quando un fuzz test fallisce, Foundry cerca tipicamente di trovare un input piccolo/riproducibile che causa il failure.
 
@@ -626,7 +634,7 @@ che la mia property o implementazione è sbagliata"
 
 ---
 
-# 19. Shrinking
+## 19. Shrinking
 
 Gli strumenti di property testing cercano di ridurre un failing input verso un caso più semplice.
 
@@ -646,15 +654,15 @@ Questa è una delle grandi utilità del fuzzing.
 
 ---
 
-# 20. Proprietà sbagliata vs codice sbagliato
+## 20. Proprietà sbagliata vs codice sbagliato
 
 Se un fuzz test fallisce, ci sono almeno due possibilità.
 
-## Codice sbagliato
+### Codice sbagliato
 
 La proprietà era corretta e hai trovato un bug.
 
-## Proprietà sbagliata
+### Proprietà sbagliata
 
 Hai scritto un requisito che in realtà non vale.
 
@@ -676,7 +684,7 @@ Il fuzzing aiuta anche a correggere la specification.
 
 ---
 
-# 21. Fuzzing di rounding
+## 21. Fuzzing di rounding
 
 Per conversioni con decimals:
 
@@ -703,7 +711,7 @@ Possiamo testarla.
 
 ---
 
-# 22. Fuzz property monotonicity
+## 22. Fuzz property monotonicity
 
 ```solidity
 function testFuzz_QuoteIsMonotonic(
@@ -751,7 +759,7 @@ Possiamo normalizzare gli input.
 
 ---
 
-# 23. Normalizzare invece di scartare
+## 23. Normalizzare invece di scartare
 
 Pattern utile:
 
@@ -777,7 +785,7 @@ scarta quasi tutto
 
 ---
 
-# 24. Fuzzing di access control
+## 24. Fuzzing di access control
 
 Una property utile:
 
@@ -822,7 +830,7 @@ quando appropriato alla versione usata.
 
 ---
 
-# 25. Fuzzing non sostituisce casi mirati
+## 25. Fuzzing non sostituisce casi mirati
 
 Continua a mantenere:
 
@@ -843,7 +851,7 @@ Un caso di regressione noto va codificato esplicitamente.
 
 ---
 
-# 26. Configurazione fuzz
+## 26. Configurazione fuzz
 
 Foundry consente di configurare il numero di run.
 
@@ -873,7 +881,7 @@ Il valore ottimale dipende da velocità e complessità.
 
 ---
 
-# 27. Più run non correggono una property debole
+## 27. Più run non correggono una property debole
 
 Se la tua assertion è:
 
@@ -893,7 +901,9 @@ La qualità della property viene prima della quantità di input.
 
 ---
 
-# 28. Passiamo agli invarianti
+# Invarianti e stateful fuzzing
+
+## 28. Passiamo agli invarianti
 
 Ora introduciamo il concetto più potente.
 
@@ -926,7 +936,7 @@ Questo è un invariante.
 
 ---
 
-# 29. Che cos'è un invariante
+## 29. Che cos'è un invariante
 
 Un invariante è una proprietà che deve restare vera per ogni stato raggiungibile ammesso dal modello.
 
@@ -954,9 +964,9 @@ La relazione deve rimanere vera.
 
 ---
 
-# 30. Invariante vs postcondition
+## 30. Invariante vs postcondition
 
-## Postcondition
+### Postcondition
 
 Dopo `deposit(x)`:
 
@@ -964,7 +974,7 @@ Dopo `deposit(x)`:
 credit[user] increased by x
 ```
 
-## Invariante
+### Invariante
 
 In ogni stato valido:
 
@@ -976,7 +986,7 @@ Le postcondition locali aiutano a dimostrare l'invariante globale.
 
 ---
 
-# 31. Stateful fuzzing
+## 31. Stateful fuzzing
 
 Foundry invariant testing genera call ripetute a funzioni target.
 
@@ -1008,7 +1018,7 @@ L'obiettivo è esplorare sequenze che un umano potrebbe non scrivere.
 
 ---
 
-# 32. Problema: chiamare direttamente il protocollo
+## 32. Problema: chiamare direttamente il protocollo
 
 Se lasci Foundry chiamare liberamente il protocollo con qualsiasi input/caller, potresti ottenere moltissimi revert inutili.
 
@@ -1028,7 +1038,7 @@ Qui entra l'**handler**.
 
 ---
 
-# 33. Handler
+## 33. Handler
 
 Un handler è un contratto test-side che espone azioni fuzzabili verso il protocollo.
 
@@ -1056,11 +1066,11 @@ L'handler può:
 
 ---
 
-# 34. Contratto per invariant lab
+## 34. Contratto per invariant lab
 
 Creiamo un vault token multiutente molto semplice.
 
-## `src/invariant/CreditVault.sol`
+### `src/invariant/CreditVault.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1143,7 +1153,7 @@ exact-transfer ERC20 mock
 
 ---
 
-# 35. Invariante principale
+## 35. Invariante principale
 
 Per il vault:
 
@@ -1172,7 +1182,7 @@ sarebbe l'invariante corretto.
 
 ---
 
-# 36. Il modello determina l'invariante
+## 36. Il modello determina l'invariante
 
 Questo è un punto fondamentale.
 
@@ -1194,9 +1204,11 @@ Quindi:
 
 ---
 
-# 37. Handler base
+# Handler e ghost variables
 
-## `test/invariant/handlers/VaultHandler.sol`
+## 37. Handler base
+
+### `test/invariant/handlers/VaultHandler.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1319,7 +1331,7 @@ contract VaultHandler is Test {
 
 ---
 
-# 38. Perché l'handler ritorna invece di usare `assume`
+## 38. Perché l'handler ritorna invece di usare `assume`
 
 In `withdraw`:
 
@@ -1345,7 +1357,7 @@ Se quasi tutte le action diventano no-op, l'action space è progettato male.
 
 ---
 
-# 39. Actor selection
+## 39. Actor selection
 
 Usiamo:
 
@@ -1371,7 +1383,7 @@ che scarterebbe quasi ogni address casuale.
 
 ---
 
-# 40. Ghost variables
+## 40. Ghost variables
 
 Nel handler:
 
@@ -1396,7 +1408,7 @@ ghostDeposited - ghostWithdrawn
 
 ---
 
-# 41. Perché si chiamano "ghost"
+## 41. Perché si chiamano "ghost"
 
 Sono variabili concettualmente esterne alla business logic.
 
@@ -1417,9 +1429,9 @@ Non devono diventare una seconda implementazione complessa del protocollo, altri
 
 ---
 
-# 42. Invariant test contract
+## 42. Invariant test contract
 
-## `test/invariant/CreditVaultInvariant.t.sol`
+### `test/invariant/CreditVaultInvariant.t.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1491,7 +1503,7 @@ Foundry fuzzera le funzioni esterne del handler target.
 
 ---
 
-# 43. Perché targettiamo l'handler
+## 43. Perché targettiamo l'handler
 
 Se facessimo:
 
@@ -1525,7 +1537,7 @@ e ottenere sequenze più significative.
 
 ---
 
-# 44. Invariant: ghost accounting
+## 44. Invariant: ghost accounting
 
 Possiamo aggiungere:
 
@@ -1546,7 +1558,7 @@ Questa proprietà verifica il protocollo da un secondo punto di vista.
 
 ---
 
-# 45. Due invarianti indipendenti
+## 45. Due invarianti indipendenti
 
 Ora abbiamo:
 
@@ -1572,7 +1584,7 @@ Più osservabili indipendenti possono migliorare la diagnosi.
 
 ---
 
-# 46. Ma attenzione a duplicare la stessa formula
+## 46. Ma attenzione a duplicare la stessa formula
 
 Se `ghostDeposited` viene aggiornato copiando esattamente la stessa logica buggy del protocollo, potresti avere:
 
@@ -1594,7 +1606,7 @@ non replicare tutta la business logic.
 
 ---
 
-# 47. Invariante di solvibilità
+## 47. Invariante di solvibilità
 
 Per un protocollo più generale:
 
@@ -1622,7 +1634,7 @@ Non riguarda soltanto l'assenza di revert.
 
 ---
 
-# 48. Invariante terminal state
+## 48. Invariante terminal state
 
 Per un singolo Escrow:
 
@@ -1664,7 +1676,7 @@ current state is terminal
 
 ---
 
-# 49. Perché serve il ghost
+## 49. Perché serve il ghost
 
 Se guardi soltanto lo stato corrente:
 
@@ -1686,7 +1698,9 @@ Questa è una delle funzioni più potenti delle ghost variables.
 
 ---
 
-# 50. Handler per state machine
+# Handler avanzati e configurazione invariant
+
+## 50. Handler per state machine
 
 Immagina:
 
@@ -1722,7 +1736,7 @@ Sono due strategie diverse.
 
 ---
 
-# 51. Bounded handler
+## 51. Bounded handler
 
 Un bounded handler prova soprattutto sequenze **valide**.
 
@@ -1748,7 +1762,7 @@ testa meno failure path
 
 ---
 
-# 52. Adversarial handler
+## 52. Adversarial handler
 
 Un adversarial handler può tentare:
 
@@ -1784,7 +1798,7 @@ e un secondo handler/adversarial suite se serve.
 
 ---
 
-# 53. `fail_on_revert`
+## 53. `fail_on_revert`
 
 Foundry invariant configuration consente di decidere come trattare i revert durante l'esplorazione.
 
@@ -1814,7 +1828,7 @@ può rivelare bug dell'handler/protocollo.
 
 ---
 
-# 54. Configurazione invariant
+## 54. Configurazione invariant
 
 Esempio concettuale `foundry.toml`:
 
@@ -1841,7 +1855,7 @@ Controlla sempre la reference della versione Foundry installata per i nomi/opzio
 
 ---
 
-# 55. Depth
+## 55. Depth
 
 Con:
 
@@ -1873,7 +1887,7 @@ Non sostituisce un action model ben progettato.
 
 ---
 
-# 56. Target selectors
+## 56. Target selectors
 
 A volte non vuoi che Foundry chiami tutte le funzioni esterne del handler.
 
@@ -1898,7 +1912,7 @@ Questo rende l'action space esplicito.
 
 ---
 
-# 57. Perché limitare selectors
+## 57. Perché limitare selectors
 
 Un handler può contenere helper esterni per:
 
@@ -1924,7 +1938,7 @@ ogni external function esistente
 
 ---
 
-# 58. Target sender
+## 58. Target sender
 
 Foundry permette anche di controllare sender/target in invariant testing.
 
@@ -1940,7 +1954,7 @@ Ma in altri casi il sender stesso può essere parte dello spazio fuzzato.
 
 ---
 
-# 59. `targetContract` non è una security property
+## 59. `targetContract` non è una security property
 
 Scrivere:
 
@@ -1966,7 +1980,9 @@ action distribution
 
 ---
 
-# 60. Invariante non tautologico
+# Invarianti forti, deboli e mutation test
+
+## 60. Invariante non tautologico
 
 Questo è inutile:
 
@@ -1999,15 +2015,15 @@ Vuoi fonti indipendenti.
 
 ---
 
-# 61. Esempi di invarianti forti
+## 61. Esempi di invarianti forti
 
-## Solvibilità
+### Solvibilità
 
 ```text
 asset >= liabilities
 ```
 
-## Conservation
+### Conservation
 
 ```text
 initial + deposits
@@ -2015,19 +2031,19 @@ initial + deposits
 vault balance + withdrawals
 ```
 
-## Authorization state
+### Authorization state
 
 ```text
 owner changes only through authorized path
 ```
 
-## Terminality
+### Terminality
 
 ```text
 once terminal, never non-terminal
 ```
 
-## Supply consistency
+### Supply consistency
 
 ```text
 sum tracked balances
@@ -2039,7 +2055,7 @@ quando il modello lo consente.
 
 ---
 
-# 62. Esempi di invarianti deboli
+## 62. Esempi di invarianti deboli
 
 ```text
 balance >= 0
@@ -2063,7 +2079,7 @@ Un buon invariante protegge una proprietà che potrebbe realisticamente rompersi
 
 ---
 
-# 63. Mutation test degli invarianti
+## 63. Mutation test degli invarianti
 
 Prendi il vault corretto:
 
@@ -2103,7 +2119,7 @@ invariante è sbagliato
 
 ---
 
-# 64. Mutation: doppio credito
+## 64. Mutation: doppio credito
 
 Mutazione:
 
@@ -2122,7 +2138,7 @@ Questo è un buon sanity check della suite.
 
 ---
 
-# 65. Mutation: withdraw troppo
+## 65. Mutation: withdraw troppo
 
 Vulnerable change:
 
@@ -2150,7 +2166,7 @@ available + 1
 
 ---
 
-# 66. Invariant testing non sostituisce negative testing
+## 66. Invariant testing non sostituisce negative testing
 
 Questa è una regola importante:
 
@@ -2170,7 +2186,9 @@ Servono entrambi.
 
 ---
 
-# 67. Handler coverage
+# Copertura degli handler e invarianti di protocollo
+
+## 67. Handler coverage
 
 Aggiungi ghost counters:
 
@@ -2201,7 +2219,7 @@ Questo è utilissimo.
 
 ---
 
-# 68. No-op ratio
+## 68. No-op ratio
 
 Se:
 
@@ -2225,7 +2243,7 @@ L'obiettivo non è eliminare tutti i revert.
 
 ---
 
-# 69. Actor set
+## 69. Actor set
 
 Tre actor possono bastare per molte proprietà:
 
@@ -2251,7 +2269,7 @@ almeno due actor sono importanti.
 
 ---
 
-# 70. Invariante cross-user
+## 70. Invariante cross-user
 
 Property:
 
@@ -2286,7 +2304,7 @@ Ma devi esporre gli actor dal handler oppure con getter.
 
 ---
 
-# 71. Ghost model vs on-chain sum
+## 71. Ghost model vs on-chain sum
 
 Un mapping non è enumerabile nativamente.
 
@@ -2308,7 +2326,7 @@ Questa è una ragione per cui `totalCredit` può essere utile anche per invarian
 
 ---
 
-# 72. Handler actor getter
+## 72. Handler actor getter
 
 Nel handler:
 
@@ -2326,7 +2344,7 @@ Così l'invariant contract può leggere gli utenti modellati.
 
 ---
 
-# 73. Conservation law
+## 73. Conservation law
 
 Supponiamo che inizialmente il vault abbia zero token.
 
@@ -2365,7 +2383,7 @@ otteniamo tre relazioni collegate.
 
 ---
 
-# 74. Evitare underflow nelle ghost assertions
+## 74. Evitare underflow nelle ghost assertions
 
 Se sai che il bookkeeping corretto implica:
 
@@ -2388,7 +2406,7 @@ Se questa prima property fallisce, hai trovato un problema nel modello o nel pro
 
 ---
 
-# 75. Invariant di access control
+## 75. Invariant di access control
 
 È più difficile di una normale assertion.
 
@@ -2418,7 +2436,7 @@ Se una funzione non autorizzata modifica fee, l'invariante diverge.
 
 ---
 
-# 76. Stateful governance testing
+## 76. Stateful governance testing
 
 Handler actions potrebbero essere:
 
@@ -2447,7 +2465,7 @@ Costruiscilo soltanto dopo avere unit test solidi.
 
 ---
 
-# 77. Non partire dall'invariant test più complesso
+## 77. Non partire dall'invariant test più complesso
 
 Progressione consigliata:
 
@@ -2465,7 +2483,7 @@ Altrimenti quando fallisce non sai dove guardare.
 
 ---
 
-# 78. Invariant testing di reentrancy
+## 78. Invariant testing di reentrancy
 
 Non serve necessariamente generare "attacchi reali".
 
@@ -2487,7 +2505,7 @@ La property resta difensiva.
 
 ---
 
-# 79. Invariant testing di token anomali
+## 79. Invariant testing di token anomali
 
 Puoi avere handler/mocks con modalità:
 
@@ -2510,7 +2528,7 @@ Poi testa quella policy.
 
 ---
 
-# 80. Asset policy e invarianti
+## 80. Asset policy e invarianti
 
 Se supporti soltanto exact-transfer token:
 
@@ -2538,7 +2556,9 @@ Questo mostra quanto invariant testing dipenda dalla specification.
 
 ---
 
-# 81. Test di invariant failure
+# Failure, riproducibilità e suite in CI
+
+## 81. Test di invariant failure
 
 Quando un invariante fallisce, Foundry fornisce informazioni sulla sequenza che ha portato allo stato problematico.
 
@@ -2556,7 +2576,7 @@ Questo trasforma una scoperta automatica in un test permanente semplice.
 
 ---
 
-# 82. Perché creare una regression dopo il fuzz failure
+## 82. Perché creare una regression dopo il fuzz failure
 
 L'invariant test può trovare una sequenza come:
 
@@ -2590,7 +2610,7 @@ permanent guardrail
 
 ---
 
-# 83. Seed e riproducibilità
+## 83. Seed e riproducibilità
 
 Foundry permette di riprodurre fuzz failures attraverso informazioni stampate/output e opzioni di test.
 
@@ -2612,7 +2632,7 @@ e crea un regression test esplicito.
 
 ---
 
-# 84. Fuzz dictionary
+## 84. Fuzz dictionary
 
 I fuzz engine moderni possono apprendere/utilizzare valori interessanti dal bytecode/calldata e dai risultati.
 
@@ -2636,7 +2656,7 @@ MAX_FEE + 1
 
 ---
 
-# 85. Dynamic test linking
+## 85. Dynamic test linking
 
 Alcune modalità avanzate di Foundry possono migliorare il comportamento dei test che coinvolgono librerie/bytecode dinamico.
 
@@ -2651,7 +2671,7 @@ che verifica bene la property
 
 ---
 
-# 86. Invariant test file structure
+## 86. Invariant test file structure
 
 Suggerimento:
 
@@ -2669,7 +2689,7 @@ Tenere handler separati migliora la leggibilità.
 
 ---
 
-# 87. Configurazione separata CI
+## 87. Configurazione separata CI
 
 Esempio:
 
@@ -2695,7 +2715,7 @@ Misura i tempi della tua suite.
 
 ---
 
-# 88. Unit suite + fuzz suite + invariant suite
+## 88. Unit suite + fuzz suite + invariant suite
 
 Una pipeline robusta:
 
@@ -2713,7 +2733,9 @@ Puoi filtrare per path/contract durante sviluppo.
 
 ---
 
-# 89. Una property può valere solo sotto precondizioni
+# Progettare proprietà e modelli realistici
+
+## 89. Una property può valere solo sotto precondizioni
 
 Esempio:
 
@@ -2735,7 +2757,7 @@ Il fuzz test non deve "scoprire" ogni volta che la funzione non è definita fuor
 
 ---
 
-# 90. Evitare test oracle-dependent inconsapevoli
+## 90. Evitare test oracle-dependent inconsapevoli
 
 Se il fuzz test riguarda:
 
@@ -2760,7 +2782,7 @@ Riduci il numero di variabili per isolare il problema.
 
 ---
 
-# 91. Incremental dimensionality
+## 91. Incremental dimensionality
 
 Progressione:
 
@@ -2780,7 +2802,7 @@ Aggiungila solo quando la property lo richiede.
 
 ---
 
-# 92. Differential thinking
+## 92. Differential thinking
 
 Puoi confrontare:
 
@@ -2810,7 +2832,7 @@ Approfondiremo il differential testing in contesti appropriati.
 
 ---
 
-# 93. Invariant testing e external calls
+## 93. Invariant testing e external calls
 
 Se il protocollo chiama mock esterni, questi fanno parte dello stato della run.
 
@@ -2835,7 +2857,7 @@ Questo è un esempio di multi-contract invariant testing.
 
 ---
 
-# 94. Ma attenzione alle action irrealistiche
+## 94. Ma attenzione alle action irrealistiche
 
 Se il tuo real system non consente a chiunque di:
 
@@ -2855,7 +2877,7 @@ Un invariant test vale quanto il suo state-transition model.
 
 ---
 
-# 95. Adversarial capability deve essere realistica
+## 95. Adversarial capability deve essere realistica
 
 Puoi modellare:
 
@@ -2879,7 +2901,7 @@ Non confondere tutte le capabilities in un unico handler.
 
 ---
 
-# 96. Liveness invariants
+## 96. Liveness invariants
 
 Le safety properties sono più semplici:
 
@@ -2907,7 +2929,7 @@ Possiamo testare reachability e absence of permanent lock in scenari mirati, ma 
 
 ---
 
-# 97. Invariant of no stuck liability
+## 97. Invariant of no stuck liability
 
 Una property pratica per Escrow potrebbe essere:
 
@@ -2932,7 +2954,9 @@ La seconda richiede metodologia più sofisticata.
 
 ---
 
-# 98. Checklist da auditor — fuzz tests
+# Checklist, laboratorio e chiusura
+
+## 98. Checklist da auditor — fuzz tests
 
 Quando leggi fuzz test:
 
@@ -2950,7 +2974,7 @@ Quando leggi fuzz test:
 
 ---
 
-# 99. Checklist da auditor — invariant tests
+## 99. Checklist da auditor — invariant tests
 
 - [ ] invariante economicamente significativo?
 - [ ] non tautologico?
@@ -2970,7 +2994,7 @@ Quando leggi fuzz test:
 
 ---
 
-# 100. Laboratorio completo
+## 100. Laboratorio completo
 
 Struttura:
 
@@ -3021,7 +3045,7 @@ forge test -vvvv \
 
 ---
 
-# 101. Config di laboratorio
+## 101. Config di laboratorio
 
 Esempio:
 
@@ -3060,9 +3084,9 @@ FOUNDRY_PROFILE=deep forge test
 
 ---
 
-# 102. Esercizi
+## 102. Esercizi
 
-## Esercizio 1 — Deposit fuzz
+### Esercizio 1 — Deposit fuzz
 
 Scrivi:
 
@@ -3085,7 +3109,7 @@ funded
 
 ---
 
-## Esercizio 2 — Unauthorized caller
+### Esercizio 2 — Unauthorized caller
 
 Fuzza:
 
@@ -3104,7 +3128,7 @@ e verifica `OnlyBuyer`.
 
 ---
 
-## Esercizio 3 — Fee boundaries
+### Esercizio 3 — Fee boundaries
 
 Per una fee `<= 1000 bps`, fuzza:
 
@@ -3117,7 +3141,7 @@ Scrivi due fuzz test distinti.
 
 ---
 
-## Esercizio 4 — Oracle freshness
+### Esercizio 4 — Oracle freshness
 
 Fuzza `age` nei due domini:
 
@@ -3128,7 +3152,7 @@ MAX_AGE+1 .. MAX_AGE+30 days
 
 ---
 
-## Esercizio 5 — Monotonicity
+### Esercizio 5 — Monotonicity
 
 Verifica:
 
@@ -3141,7 +3165,7 @@ senza usare un'assumption altamente selettiva.
 
 ---
 
-## Esercizio 6 — Primo invariant
+### Esercizio 6 — Primo invariant
 
 Implementa:
 
@@ -3155,7 +3179,7 @@ con handler `deposit/withdraw`.
 
 ---
 
-## Esercizio 7 — Ghost accounting
+### Esercizio 7 — Ghost accounting
 
 Aggiungi:
 
@@ -3174,7 +3198,7 @@ totalCredit
 
 ---
 
-## Esercizio 8 — Mutation
+### Esercizio 8 — Mutation
 
 Rimuovi temporaneamente:
 
@@ -3190,7 +3214,7 @@ Salva poi una sequenza minima come regression test.
 
 ---
 
-## Esercizio 9 — Actor sum
+### Esercizio 9 — Actor sum
 
 Con tre actor fissi verifica:
 
@@ -3204,7 +3228,7 @@ totalCredit
 
 ---
 
-## Esercizio 10 — Terminal-state invariant
+### Esercizio 10 — Terminal-state invariant
 
 Costruisci un handler per:
 
@@ -3226,7 +3250,7 @@ never returns to Created/Funded
 
 ---
 
-## Esercizio 11 — Adversarial withdrawal
+### Esercizio 11 — Adversarial withdrawal
 
 Aggiungi un'azione separata che tenta:
 
@@ -3248,7 +3272,7 @@ Non sostituire con questo il bounded `withdraw`: servono entrambi.
 
 ---
 
-## Esercizio 12 — Audit challenge
+### Esercizio 12 — Audit challenge
 
 Analizza:
 
@@ -3272,51 +3296,51 @@ Trova almeno **sei problemi**.
 
 ---
 
-# 103. Cosa devo ricordare
+## 103. Cosa devo ricordare
 
-## 1. Fuzzing testa una proprietà su molti input
+### 1. Fuzzing testa una proprietà su molti input
 
 Non significa "random testing senza specifica".
 
 ---
 
-## 2. `bound` e `assume` modellano il dominio
+### 2. `bound` e `assume` modellano il dominio
 
 Usali per descrivere input realistici, non per nascondere failure.
 
 ---
 
-## 3. Troppi `assume` possono distruggere l'esplorazione
+### 3. Troppi `assume` possono distruggere l'esplorazione
 
 Preferisci normalizzare quando possibile.
 
 ---
 
-## 4. Un fuzz failure produce un counterexample
+### 4. Un fuzz failure produce un counterexample
 
 Trasformalo in un regression test.
 
 ---
 
-## 5. Invariant testing è stateful
+### 5. Invariant testing è stateful
 
 Foundry prova sequenze di azioni sullo stesso stato.
 
 ---
 
-## 6. L'handler definisce il mondo che il fuzzer può esplorare
+### 6. L'handler definisce il mondo che il fuzzer può esplorare
 
 Se il modello è povero, il test è povero.
 
 ---
 
-## 7. Ghost variables aggiungono memoria/verifica indipendente
+### 7. Ghost variables aggiungono memoria/verifica indipendente
 
 Ma non devono duplicare tutta la business logic.
 
 ---
 
-## 8. Solvibilità è un ottimo invariante economico
+### 8. Solvibilità è un ottimo invariante economico
 
 ```text
 assets >= liabilities
@@ -3326,19 +3350,19 @@ quando coerente con la specification.
 
 ---
 
-## 9. Bounded handler e negative testing hanno ruoli differenti
+### 9. Bounded handler e negative testing hanno ruoli differenti
 
 Uno esplora bene gli stati validi; l'altro prova azioni proibite.
 
 ---
 
-## 10. Più run non compensano una property debole
+### 10. Più run non compensano una property debole
 
 La qualità dell'invariante viene prima del numero di sequenze.
 
 ---
 
-# 104. Collegamento con il corso
+## 104. Collegamento con il corso
 
 Abbiamo ora questa pipeline:
 
@@ -3371,7 +3395,7 @@ Nella prossima lezione inizieremo a cercare problemi analizzando anche la sua st
 
 ---
 
-# 105. Fonti della lezione
+## 105. Fonti della lezione
 
 Fonti tecniche consultate il **21 settembre 2026**:
 

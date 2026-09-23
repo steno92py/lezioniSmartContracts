@@ -5,7 +5,9 @@
 
 ---
 
-# 1. Obiettivi
+# Obiettivi e modello mentale
+
+## 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -29,7 +31,7 @@ Le simulazioni avvengono soltanto con prezzi e AMM fittizi locali.
 
 ---
 
-# 2. Modello mentale
+## 2. Modello mentale
 
 Uno smart contract non "sa" quanto vale ETH, USDC, BTC o qualsiasi altro asset.
 
@@ -92,7 +94,7 @@ L'oracle è quindi una **trust boundary**.
 
 ---
 
-# 3. Perché gli oracoli esistono
+## 3. Perché gli oracoli esistono
 
 La blockchain raggiunge consenso sullo stato che essa stessa esegue.
 
@@ -117,7 +119,7 @@ La domanda vera è:
 
 ---
 
-# 4. Oracle correctness ha più dimensioni
+## 4. Oracle correctness ha più dimensioni
 
 Supponiamo che un feed restituisca:
 
@@ -145,7 +147,9 @@ La sicurezza di un oracle consumer è quindi un problema di **validazione semant
 
 ---
 
-# 5. Prezzo e unità
+# Prezzo, unità, decimals e freschezza
+
+## 5. Prezzo e unità
 
 Un prezzo senza unità è quasi privo di significato.
 
@@ -176,7 +180,7 @@ decimals degli asset
 
 ---
 
-# 6. Decimals
+## 6. Decimals
 
 Supponiamo un oracle con:
 
@@ -210,7 +214,7 @@ e il programma deve tenere conto dello scaling.
 
 ---
 
-# 7. Esempio di errore sui decimals
+## 7. Esempio di errore sui decimals
 
 Supponiamo:
 
@@ -251,7 +255,7 @@ produce un numero scalato in modo errato.
 
 ---
 
-# 8. Derivazione della formula
+## 8. Derivazione della formula
 
 Definiamo:
 
@@ -301,7 +305,7 @@ Regola pratica:
 
 ---
 
-# 9. Precisione e overflow intermedio
+## 9. Precisione e overflow intermedio
 
 Anche se il risultato finale entra in `uint256`, l'espressione:
 
@@ -325,7 +329,7 @@ Serve a eseguire meglio una formula **già corretta**.
 
 ---
 
-# 10. Stale price
+## 10. Stale price
 
 Un prezzo può essere autentico ma vecchio.
 
@@ -358,7 +362,7 @@ revert
 
 ---
 
-# 11. Perché `block.timestamp` esiste qui
+## 11. Perché `block.timestamp` esiste qui
 
 Solidity espone:
 
@@ -382,11 +386,13 @@ Per freshness è normalmente una componente del modello temporale on-chain, ma i
 
 ---
 
-# 12. Oracle giocattolo locale
+# Oracle giocattolo e consumer: da vulnerabile a robusto
+
+## 12. Oracle giocattolo locale
 
 Creiamo un feed minimale.
 
-## `src/mocks/MockPriceOracle.sol`
+### `src/mocks/MockPriceOracle.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -445,7 +451,7 @@ Non è un oracle production-ready.
 
 ---
 
-# 13. Consumer vulnerabile minimo
+## 13. Consumer vulnerabile minimo
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -481,7 +487,7 @@ contract VulnerableValuation {
 
 ---
 
-# 14. Perché è vulnerabile
+## 14. Perché è vulnerabile
 
 Il contratto assume:
 
@@ -527,11 +533,11 @@ Questo è il motivo per cui gli errori oracle sono spesso **business logic vulne
 
 ---
 
-# 15. Consumer più robusto
+## 15. Consumer più robusto
 
 Costruiamo una utility semplice.
 
-## `src/PriceConsumer.sol`
+### `src/PriceConsumer.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -641,7 +647,7 @@ contract PriceConsumer {
 
 ---
 
-# 16. Nota sulla precisione della funzione
+## 16. Nota sulla precisione della funzione
 
 La funzione sopra è didattica.
 
@@ -668,7 +674,7 @@ copio una formula e spero che funzioni.
 
 ---
 
-# 17. Chainlink: modello concettuale
+## 17. Chainlink: modello concettuale
 
 Un consumer Chainlink Data Feed tipicamente legge dati da un feed tramite un'interfaccia standardizzata.
 
@@ -693,7 +699,7 @@ Per evitare che il laboratorio dipenda da indirizzi o feed reali, **non colleghi
 
 ---
 
-# 18. Integrare un prezzo nell'Escrow
+## 18. Integrare un prezzo nell'Escrow
 
 Immaginiamo che il nostro Escrow debba accettare una release solo se il valore depositato è almeno:
 
@@ -730,7 +736,7 @@ oracle availability
 
 ---
 
-# 19. La disponibilità dell'oracle è parte della sicurezza
+## 19. La disponibilità dell'oracle è parte della sicurezza
 
 Supponiamo:
 
@@ -764,7 +770,9 @@ Il failure mode deve essere progettato.
 
 ---
 
-# 20. Price manipulation: concetto
+# Manipolazione del prezzo e TWAP
+
+## 20. Price manipulation: concetto
 
 Un oracle è manipolabile quando il dato utilizzato dal protocollo può essere spostato abbastanza da alterare una decisione economica.
 
@@ -795,7 +803,7 @@ per vedere se il consumer resiste a dati anomali.
 
 ---
 
-# 21. Spot price vs robustezza
+## 21. Spot price vs robustezza
 
 Un prezzo spot ricavato da un singolo mercato può essere molto sensibile allo stato immediato di quel mercato.
 
@@ -822,7 +830,7 @@ economic security
 
 ---
 
-# 22. TWAP: intuizione
+## 22. TWAP: intuizione
 
 TWAP significa:
 
@@ -868,7 +876,7 @@ La sicurezza dipende da:
 
 ---
 
-# 23. Freshness e TWAP non sono la stessa cosa
+## 23. Freshness e TWAP non sono la stessa cosa
 
 Sono due proprietà diverse.
 
@@ -896,7 +904,9 @@ Auditare un oracle richiede distinguere le dimensioni.
 
 ---
 
-# 24. Slippage
+# Slippage e mock AMM
+
+## 24. Slippage
 
 Supponiamo di voler scambiare:
 
@@ -934,7 +944,7 @@ revert
 
 ---
 
-# 25. Il bug `amountOutMin = 0`
+## 25. Il bug `amountOutMin = 0`
 
 Considera:
 
@@ -957,11 +967,11 @@ Il codice compila perfettamente.
 
 ---
 
-# 26. Mock AMM locale
+## 26. Mock AMM locale
 
 Costruiamo un simulatore semplice.
 
-## `src/mocks/MockSwap.sol`
+### `src/mocks/MockSwap.sol`
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1016,7 +1026,7 @@ slippage bound
 
 ---
 
-# 27. Consumer vulnerabile allo slippage
+## 27. Consumer vulnerabile allo slippage
 
 ```solidity
 contract BadSwapConsumer {
@@ -1047,7 +1057,7 @@ il consumer accetta comunque il risultato.
 
 ---
 
-# 28. Consumer con bound
+## 28. Consumer con bound
 
 ```solidity
 contract BoundedSwapConsumer {
@@ -1089,7 +1099,9 @@ eseguire uno swap entro condizioni economiche definite
 
 ---
 
-# 29. MEV: modello mentale
+# MEV, front-running e deadline
+
+## 29. MEV: modello mentale
 
 Ethereum.org definisce MEV come valore estraibile tramite:
 
@@ -1116,7 +1128,7 @@ di essa.
 
 ---
 
-# 30. Front-running
+## 30. Front-running
 
 Modello astratto:
 
@@ -1142,7 +1154,7 @@ Da designer dobbiamo chiederci:
 
 ---
 
-# 31. Sandwiching: intuizione difensiva
+## 31. Sandwiching: intuizione difensiva
 
 Schema astratto:
 
@@ -1176,7 +1188,7 @@ quindi usare:
 
 ---
 
-# 32. Slippage protection non elimina il MEV
+## 32. Slippage protection non elimina il MEV
 
 Questo è importante.
 
@@ -1208,7 +1220,7 @@ MEV elimination
 
 ---
 
-# 33. Deadline
+## 33. Deadline
 
 Molti protocolli associano a un'azione anche:
 
@@ -1240,7 +1252,7 @@ Sono due invarianti diversi.
 
 ---
 
-# 34. Contratto locale per slippage + deadline
+## 34. Contratto locale per slippage + deadline
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1288,21 +1300,23 @@ output minimo
 
 ---
 
-# 35. Analisi funzione-per-funzione
+# Analisi del codice e invarianti
 
-## `PriceConsumer.readPrice()`
+## 35. Analisi funzione-per-funzione
 
-### Chi può chiamarla?
+### `PriceConsumer.readPrice()`
+
+#### Chi può chiamarla?
 
 Chiunque.
 
 È `view`.
 
-### Input controllati dal caller
+#### Input controllati dal caller
 
 Nessuno direttamente.
 
-### Stato letto
+#### Stato letto
 
 ```text
 oracle
@@ -1310,17 +1324,17 @@ maxAge
 block.timestamp
 ```
 
-### External calls
+#### External calls
 
 ```text
 oracle.latestPrice()
 ```
 
-### Quando il controllo passa fuori?
+#### Quando il controllo passa fuori?
 
 Durante la lettura del feed.
 
-### Assunzioni
+#### Assunzioni
 
 - `oracle` implementa l'interfaccia prevista;
 - `updatedAt` ha la semantica attesa;
@@ -1330,13 +1344,13 @@ Durante la lettura del feed.
 
 ---
 
-# 36. `quote18To6()`
+## 36. `quote18To6()`
 
-## Caller
+### Caller
 
 Chiunque.
 
-## Input
+### Input
 
 ```text
 amount18
@@ -1344,24 +1358,24 @@ amount18
 
 controllato dal chiamante.
 
-## Stato letto
+### Stato letto
 
 - oracle;
 - price;
 - decimals.
 
-## Stato modificato
+### Stato modificato
 
 Nessuno.
 
-## External calls
+### External calls
 
 ```text
 readPrice()
 oracle.decimals()
 ```
 
-## Assunzioni
+### Assunzioni
 
 - input usa 18 decimals;
 - output desiderato usa 6 decimals;
@@ -1379,13 +1393,13 @@ return: QUOTE units, 1e6
 
 ---
 
-# 37. `SafeSwapIntent.execute()`
+## 37. `SafeSwapIntent.execute()`
 
-## Caller
+### Caller
 
 Chiunque.
 
-## Input controllati
+### Input controllati
 
 ```text
 amountIn
@@ -1393,20 +1407,20 @@ amountOutMin
 deadline
 ```
 
-## Stato letto
+### Stato letto
 
 ```text
 block.timestamp
 swapper
 ```
 
-## External call
+### External call
 
 ```text
 swapper.swap(...)
 ```
 
-## Assunzioni
+### Assunzioni
 
 - `swapper` esegue la semantica prevista;
 - `amountOutMin` è stato calcolato in modo ragionevole;
@@ -1424,38 +1438,38 @@ Quindi il protocol design deve stabilire chi è responsabile dei bounds.
 
 ---
 
-# 38. Proprietà e invarianti
+## 38. Proprietà e invarianti
 
-## Oracle
+### Oracle
 
-### O1 — Il prezzo deve essere positivo
+#### O1 — Il prezzo deve essere positivo
 
 ```text
 price <= 0
 => revert
 ```
 
-### O2 — Timestamp presente
+#### O2 — Timestamp presente
 
 ```text
 updatedAt == 0
 => revert
 ```
 
-### O3 — Niente timestamp futuro
+#### O3 — Niente timestamp futuro
 
 ```text
 updatedAt > block.timestamp
 => revert
 ```
 
-### O4 — Freshness
+#### O4 — Freshness
 
 ```text
 block.timestamp - updatedAt <= maxAge
 ```
 
-### O5 — Unit correctness
+#### O5 — Unit correctness
 
 Per input noto:
 
@@ -1464,36 +1478,36 @@ Per input noto:
 => 3000e6 USD units
 ```
 
-### O6 — Scaling coerente per decimals diversi
+#### O6 — Scaling coerente per decimals diversi
 
 Lo stesso prezzo economico rappresentato con 8 o 18 decimals deve produrre lo stesso valore economico finale, entro la rounding policy.
 
 ---
 
-## Slippage
+### Slippage
 
-### S1 — Output insufficiente
+#### S1 — Output insufficiente
 
 ```text
 actualOut < amountOutMin
 => revert
 ```
 
-### S2 — Output al limite
+#### S2 — Output al limite
 
 ```text
 actualOut == amountOutMin
 => success
 ```
 
-### S3 — Deadline
+#### S3 — Deadline
 
 ```text
 block.timestamp > deadline
 => revert
 ```
 
-### S4 — Nessuna esecuzione economicamente non limitata
+#### S4 — Nessuna esecuzione economicamente non limitata
 
 A livello di protocol design potremmo richiedere:
 
@@ -1505,7 +1519,9 @@ ma va valutato in base all'asset e alla semantica del sistema.
 
 ---
 
-# 39. Laboratorio Foundry
+# Laboratorio Foundry: test di oracle e swap
+
+## 39. Laboratorio Foundry
 
 Struttura:
 
@@ -1550,7 +1566,7 @@ remappings = [
 
 ---
 
-# 40. Test oracle — setup
+## 40. Test oracle — setup
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -1594,7 +1610,7 @@ contract PriceConsumerTest is Test {
 
 ---
 
-# 41. Happy path
+## 41. Happy path
 
 ```solidity
 function test_ReadFreshPrice()
@@ -1609,7 +1625,7 @@ function test_ReadFreshPrice()
 
 ---
 
-# 42. Test negativo — zero
+## 42. Test negativo — zero
 
 ```solidity
 function test_ZeroPriceReverts()
@@ -1630,7 +1646,7 @@ function test_ZeroPriceReverts()
 
 ---
 
-# 43. Test negativo — prezzo negativo
+## 43. Test negativo — prezzo negativo
 
 ```solidity
 function test_NegativePriceReverts()
@@ -1659,7 +1675,7 @@ non deve avvenire prima della validazione.
 
 ---
 
-# 44. Test negativo — stale data
+## 44. Test negativo — stale data
 
 ```solidity
 function test_StalePriceReverts()
@@ -1690,7 +1706,7 @@ Non stiamo alterando alcuna blockchain reale.
 
 ---
 
-# 45. Boundary test freshness
+## 45. Boundary test freshness
 
 Il confine è importante.
 
@@ -1732,7 +1748,7 @@ Questo è un esempio di specifica precisa che evita errori `>` vs `>=`.
 
 ---
 
-# 46. Timestamp futuro
+## 46. Timestamp futuro
 
 ```solidity
 function test_FutureTimestampReverts()
@@ -1753,7 +1769,7 @@ function test_FutureTimestampReverts()
 
 ---
 
-# 47. Test dei decimals
+## 47. Test dei decimals
 
 Per:
 
@@ -1795,7 +1811,7 @@ perché verifica effettivamente lo scaling.
 
 ---
 
-# 48. Test property-based sui decimals
+## 48. Test property-based sui decimals
 
 Puoi creare un secondo oracle:
 
@@ -1822,7 +1838,7 @@ stesso prezzo economico
 
 ---
 
-# 49. Test slippage
+## 49. Test slippage
 
 Setup:
 
@@ -1846,7 +1862,7 @@ contract SafeSwapIntentTest is Test {
 
 ---
 
-# 50. Happy path swap
+## 50. Happy path swap
 
 Rate:
 
@@ -1888,7 +1904,7 @@ function test_SwapWithinLimit()
 
 ---
 
-# 51. Test negativo slippage
+## 51. Test negativo slippage
 
 ```solidity
 function test_RevertIfRateFallsTooFar()
@@ -1918,7 +1934,7 @@ actual = 100
 
 ---
 
-# 52. Boundary test slippage
+## 52. Boundary test slippage
 
 ```solidity
 function test_ExactMinOutPasses()
@@ -1956,7 +1972,7 @@ passa.
 
 ---
 
-# 53. Deadline scaduta
+## 53. Deadline scaduta
 
 ```solidity
 function test_ExpiredIntentReverts()
@@ -1981,7 +1997,9 @@ function test_ExpiredIntentReverts()
 
 ---
 
-# 54. Vulnerabilità locale — oracle non validato
+# Vulnerabilità, correzione e difese aggiuntive
+
+## 54. Vulnerabilità locale — oracle non validato
 
 Contratto:
 
@@ -2020,7 +2038,7 @@ Il problema è l'assenza di policy.
 
 ---
 
-# 55. Correzione
+## 55. Correzione
 
 Introduci:
 
@@ -2055,7 +2073,7 @@ sono casi separati.
 
 ---
 
-# 56. Circuit breaker
+## 56. Circuit breaker
 
 Una strategia difensiva possibile è rifiutare valori fuori da un range previsto.
 
@@ -2084,7 +2102,7 @@ Quindi il circuit breaker è una **policy di rischio**, non una formula magica.
 
 ---
 
-# 57. Deviation check
+## 57. Deviation check
 
 Un'altra idea è confrontare:
 
@@ -2117,7 +2135,7 @@ Ancora una volta, la reazione fa parte della specifica.
 
 ---
 
-# 58. Multi-source oracle
+## 58. Multi-source oracle
 
 Un singolo writer:
 
@@ -2144,7 +2162,7 @@ Da auditor devi capire il meccanismo concreto.
 
 ---
 
-# 59. Admin-set price
+## 59. Admin-set price
 
 Questo contratto è una red flag:
 
@@ -2180,9 +2198,11 @@ OWASP evidenzia esplicitamente il rischio di oracle aggiornabili immediatamente 
 
 ---
 
-# 60. Threat model completo
+# Threat model e checklist da auditor
 
-## Asset
+## 60. Threat model completo
+
+### Asset
 
 ```text
 fondi nell'Escrow
@@ -2190,7 +2210,7 @@ token in custodia
 diritto economico buyer/seller
 ```
 
-## Dipendenze
+### Dipendenze
 
 ```text
 ERC20
@@ -2198,7 +2218,7 @@ oracle
 eventuale swap venue
 ```
 
-## Attori
+### Attori
 
 ```text
 buyer
@@ -2209,7 +2229,7 @@ block builders / ordering actors
 external traders
 ```
 
-## Input sensibili
+### Input sensibili
 
 ```text
 price
@@ -2220,7 +2240,7 @@ amountOutMin
 deadline
 ```
 
-## Proprietà economiche
+### Proprietà economiche
 
 ```text
 price must be fresh
@@ -2233,7 +2253,7 @@ oracle failure must not silently become success
 
 ---
 
-# 61. Checklist da auditor — Oracle
+## 61. Checklist da auditor — Oracle
 
 Quando vedi un prezzo, chiediti:
 
@@ -2283,7 +2303,7 @@ Quando vedi un prezzo, chiediti:
 
 ---
 
-# 62. Checklist da auditor — Swap / Slippage / MEV
+## 62. Checklist da auditor — Swap / Slippage / MEV
 
 1. Esiste `amountOutMin`?
 
@@ -2324,9 +2344,11 @@ Questa ultima distinzione è fondamentale.
 
 ---
 
-# 63. Esercizi
+# Esercizi e chiusura
 
-## Esercizio 1 — Unit analysis
+## 63. Esercizi
+
+### Esercizio 1 — Unit analysis
 
 Deriva a mano la formula per:
 
@@ -2340,7 +2362,7 @@ Non scrivere Solidity finché non hai scritto le unità.
 
 ---
 
-## Esercizio 2 — `maxAge`
+### Esercizio 2 — `maxAge`
 
 Modifica il consumer affinché `maxAge == 0` sia vietato nel constructor.
 
@@ -2348,7 +2370,7 @@ Scrivi il test negativo.
 
 ---
 
-## Esercizio 3 — Wrong decimals
+### Esercizio 3 — Wrong decimals
 
 Crea:
 
@@ -2368,7 +2390,7 @@ Poi correggilo leggendo `decimals()`.
 
 ---
 
-## Esercizio 4 — Circuit breaker
+### Esercizio 4 — Circuit breaker
 
 Aggiungi:
 
@@ -2390,7 +2412,7 @@ max + 1 -> revert
 
 ---
 
-## Esercizio 5 — Freshness fuzzing
+### Esercizio 5 — Freshness fuzzing
 
 Scrivi un fuzz test con:
 
@@ -2414,7 +2436,7 @@ Usa `bound()` per evitare timestamp impossibili.
 
 ---
 
-## Esercizio 6 — Slippage
+### Esercizio 6 — Slippage
 
 Con:
 
@@ -2442,7 +2464,7 @@ e stabilisci quali devono passare.
 
 ---
 
-## Esercizio 7 — Deadline boundary
+### Esercizio 7 — Deadline boundary
 
 Testa:
 
@@ -2456,7 +2478,7 @@ Scrivi prima la proprietà in linguaggio naturale.
 
 ---
 
-## Esercizio 8 — Audit challenge
+### Esercizio 8 — Audit challenge
 
 Analizza:
 
@@ -2488,21 +2510,21 @@ prima di proporre una patch.
 
 ---
 
-# 64. Cosa devi ricordare
+## 64. Cosa devi ricordare
 
-## 1. Uno smart contract non conosce autonomamente il prezzo del mondo esterno
+### 1. Uno smart contract non conosce autonomamente il prezzo del mondo esterno
 
 Serve un oracle o una sorgente on-chain.
 
 ---
 
-## 2. L'oracle è una trust boundary
+### 2. L'oracle è una trust boundary
 
 Il protocollo eredita le assunzioni della fonte.
 
 ---
 
-## 3. Un dato può essere autentico ma inutile
+### 3. Un dato può essere autentico ma inutile
 
 Per esempio:
 
@@ -2515,7 +2537,7 @@ economically anomalous
 
 ---
 
-## 4. Le unità fanno parte della sicurezza
+### 4. Le unità fanno parte della sicurezza
 
 Annota sempre:
 
@@ -2529,7 +2551,7 @@ output unit
 
 ---
 
-## 5. Il successo tecnico non implica correttezza economica
+### 5. Il successo tecnico non implica correttezza economica
 
 ```text
 swap succeeded
@@ -2543,7 +2565,7 @@ swap price acceptable
 
 ---
 
-## 6. Slippage protection esprime un limite economico
+### 6. Slippage protection esprime un limite economico
 
 ```text
 actualOut >= minOut
@@ -2551,7 +2573,7 @@ actualOut >= minOut
 
 ---
 
-## 7. Deadline e minOut proteggono proprietà differenti
+### 7. Deadline e minOut proteggono proprietà differenti
 
 ```text
 deadline -> tempo
@@ -2560,19 +2582,19 @@ minOut   -> risultato economico
 
 ---
 
-## 8. MEV rende l'ordering una variabile di threat modeling
+### 8. MEV rende l'ordering una variabile di threat modeling
 
 Non assumere ingenuamente che la tua transazione venga eseguita contro lo stato che hai osservato prima di inviarla.
 
 ---
 
-## 9. Price security è business logic security
+### 9. Price security è business logic security
 
 Puoi avere codice memory-safe, access control corretto e nessuna reentrancy, ma perdere comunque le proprietà economiche a causa di un prezzo sbagliato.
 
 ---
 
-# 65. Collegamento con il percorso
+## 65. Collegamento con il percorso
 
 Le lezioni iniziano ora a comporsi:
 
@@ -2611,7 +2633,7 @@ ma dipende da altri contratti, protocolli e assunzioni che possono cambiare.
 
 ---
 
-# 66. Fonti della lezione
+## 66. Fonti della lezione
 
 Fonti tecniche consultate il **21 settembre 2026**:
 

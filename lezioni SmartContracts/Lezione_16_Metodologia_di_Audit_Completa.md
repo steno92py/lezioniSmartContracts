@@ -6,7 +6,9 @@
 
 ---
 
-## 1. Obiettivi
+## Obiettivi e modello mentale
+
+### 1. Obiettivi
 
 Alla fine della lezione dovresti saper:
 
@@ -26,7 +28,7 @@ Alla fine della lezione dovresti saper:
 
 ---
 
-## 2. Modello mentale
+### 2. Modello mentale
 
 Un audit non è:
 
@@ -84,7 +86,9 @@ La parte più importante viene prima dei detector:
 
 ---
 
-## 3. Scope prima del codice
+## Scope, build e inventari
+
+### 3. Scope prima del codice
 
 Prima di leggere una funzione, devi sapere quale sistema stai auditando.
 
@@ -111,7 +115,7 @@ Un audit senza commit stabile è ambiguo: se il codice cambia, devi almeno revie
 
 ---
 
-## 4. Build riproducibile
+### 4. Build riproducibile
 
 Prima fase:
 
@@ -136,7 +140,7 @@ Non basta sapere quale sorgente hai davanti.
 
 ---
 
-## 5. Dependency inventory
+### 5. Dependency inventory
 
 Elenca:
 
@@ -170,7 +174,7 @@ ma entrambe fanno parte del threat model.
 
 ---
 
-## 6. Architecture pass
+### 6. Architecture pass
 
 Prima passata:
 
@@ -209,7 +213,7 @@ Se non sai disegnare il sistema, la review dettagliata è prematura.
 
 ---
 
-## 7. Asset inventory
+### 7. Asset inventory
 
 Domanda:
 
@@ -237,7 +241,7 @@ Una chiave admin può essere un asset più importante di un saldo.
 
 ---
 
-## 8. Actor inventory
+### 8. Actor inventory
 
 Elenca:
 
@@ -266,7 +270,7 @@ quali dipendenze controlla?
 
 ---
 
-## 9. Trust assumptions
+### 9. Trust assumptions
 
 Esempio:
 
@@ -306,7 +310,9 @@ Se l'assumption è fragile, può diventare un finding di design.
 
 ---
 
-## 10. Threat model
+## Threat model, invarianti e requisiti
+
+### 10. Threat model
 
 Per ogni asset chiedi:
 
@@ -341,7 +347,7 @@ OWASP SCSVS tratta threat modeling, authorization, secure interactions e oracle 
 
 ---
 
-## 11. Invariants first
+### 11. Invariants first
 
 Prima della review dettagliata, scrivi proprietà.
 
@@ -378,7 +384,7 @@ Queste proprietà guidano l'audit.
 
 ---
 
-## 12. Requirement matrix
+### 12. Requirement matrix
 
 | ID | Requirement | Code Path | Test | Status |
 |---|---|---|---|---|
@@ -396,7 +402,7 @@ requirement -> code -> test -> review result
 
 ---
 
-## 13. Entry-point inventory
+### 13. Entry-point inventory
 
 Elenca:
 
@@ -429,7 +435,9 @@ slither . --print entry-points
 
 ---
 
-## 14. Function-by-function review
+## Manual review: i passaggi
+
+### 14. Function-by-function review
 
 Per ogni funzione critica annota:
 
@@ -452,7 +460,7 @@ Questa è la stessa struttura usata nel corso fin dalla Lezione 1, ora applicata
 
 ---
 
-## 15. Storage-centric review
+### 15. Storage-centric review
 
 Non leggere solo per funzione.
 
@@ -480,7 +488,7 @@ Questo è il **write-path analysis**.
 
 ---
 
-## 16. Esempio: `oracle`
+### 16. Esempio: `oracle`
 
 Possibili write path:
 
@@ -501,7 +509,7 @@ Se uno solo bypassa il timelock, la frase:
 
 ---
 
-## 17. Privileged-path review
+### 17. Privileged-path review
 
 Fai una passata dedicata a:
 
@@ -530,7 +538,7 @@ esiste timelock?
 
 ---
 
-## 18. External-call review
+### 18. External-call review
 
 Cerca:
 
@@ -561,7 +569,7 @@ OWASP include secure external interactions, CEI e gestione delle low-level/arbit
 
 ---
 
-## 19. Reentrancy review
+### 19. Reentrancy review
 
 Non cercare soltanto il pattern classico:
 
@@ -583,7 +591,7 @@ L'invariante da proteggere resta la guida.
 
 ---
 
-## 20. Accounting review
+### 20. Accounting review
 
 Per ogni asset:
 
@@ -621,7 +629,7 @@ economically valid price
 
 ---
 
-## 21. State-machine review
+### 21. State-machine review
 
 Disegna:
 
@@ -643,7 +651,7 @@ Molti errori logici sono transizioni inattese.
 
 ---
 
-## 22. Boundary review
+### 22. Boundary review
 
 Ogni constraint:
 
@@ -666,7 +674,7 @@ above
 
 ---
 
-## 23. Zero / max review
+### 23. Zero / max review
 
 Controlla:
 
@@ -701,7 +709,7 @@ price scaling
 
 ---
 
-## 24. Token integration review
+### 24. Token integration review
 
 Per ogni token supportato:
 
@@ -721,7 +729,7 @@ Poi confronta con la policy dichiarata dal protocollo.
 
 ---
 
-## 25. Oracle review
+### 25. Oracle review
 
 Checklist:
 
@@ -741,7 +749,7 @@ OWASP SCSVS richiede validazione dei dati oracle, gestione dei failure e affidab
 
 ---
 
-## 26. Economic review
+### 26. Economic review
 
 Domande:
 
@@ -758,7 +766,7 @@ Questa è una delle aree meno automatizzabili.
 
 ---
 
-## 27. Governance review
+### 27. Governance review
 
 Disegna:
 
@@ -794,7 +802,7 @@ deve valere per tutti i path.
 
 ---
 
-## 28. Upgrade review
+### 28. Upgrade review
 
 Checklist:
 
@@ -820,7 +828,7 @@ più validation OpenZeppelin e review manuale.
 
 ---
 
-## 29. Liveness review
+### 29. Liveness review
 
 Security non significa soltanto prevenire furto.
 
@@ -838,7 +846,9 @@ Una dipendenza può creare permanent lock senza rubare nulla.
 
 ---
 
-## 30. Tool pass
+## Tool pass, ipotesi e severity
+
+### 30. Tool pass
 
 Dopo la comprensione manuale:
 
@@ -861,7 +871,7 @@ Slither documenta printer come `human-summary`, `entry-points`, `call-graph`, `f
 
 ---
 
-## 31. Perché non basta il tool
+### 31. Perché non basta il tool
 
 Se parti solo dai detector, cercherai soprattutto:
 
@@ -882,7 +892,7 @@ Usa il tool per amplificare la review, non per sostituirla.
 
 ---
 
-## 32. Hypothesis-driven audit
+### 32. Hypothesis-driven audit
 
 Quando vedi qualcosa di strano, scrivi una ipotesi.
 
@@ -916,23 +926,23 @@ ipotesi falsificata
 
 ---
 
-## 33. Observation → Hypothesis → Evidence → Finding
+### 33. Observation → Hypothesis → Evidence → Finding
 
 Esempio:
 
-### Observation
+#### Observation
 
 ```text
 deposit accredita requestedAmount
 ```
 
-### Hypothesis
+#### Hypothesis
 
 ```text
 un token con fee può creare liability maggiore degli asset
 ```
 
-### Evidence
+#### Evidence
 
 ```text
 local FeeToken:
@@ -941,7 +951,7 @@ received 90
 credit 100
 ```
 
-### Finding
+#### Finding
 
 ```text
 nominal accounting can create undercollateralized liabilities
@@ -955,7 +965,7 @@ Questa sequenza è più rigorosa di:
 
 ---
 
-## 34. Reproduction criteria
+### 34. Reproduction criteria
 
 Una buona riproduzione deve essere:
 
@@ -976,7 +986,7 @@ quale proprietà viene violata?
 
 ---
 
-## 35. Regression immediately
+### 35. Regression immediately
 
 Quando confermi un bug:
 
@@ -989,7 +999,7 @@ Questo stabilizza il finding e facilita il retest.
 
 ---
 
-## 36. Severity reasoning
+### 36. Severity reasoning
 
 Non copiare la severity di Slither.
 
@@ -1017,7 +1027,7 @@ recoverable?
 
 ---
 
-## 37. Impact examples
+### 37. Impact examples
 
 Possibili impatti:
 
@@ -1036,7 +1046,7 @@ La stessa primitive tecnica può avere gravità molto diverse.
 
 ---
 
-## 38. Preconditions
+### 38. Preconditions
 
 Esempio:
 
@@ -1060,7 +1070,9 @@ any unprivileged caller
 
 ---
 
-## 39. Writing a finding
+## Scrivere un finding e rivedere i test
+
+### 39. Writing a finding
 
 Template:
 
@@ -1086,7 +1098,7 @@ Regression Test
 
 ---
 
-## 40. Titolo
+### 40. Titolo
 
 Debole:
 
@@ -1109,7 +1121,7 @@ causa + effetto
 
 ---
 
-## 41. Summary
+### 41. Summary
 
 Deve essere breve e concreta.
 
@@ -1124,7 +1136,7 @@ paid multiple times.
 
 ---
 
-## 42. Impact
+### 42. Impact
 
 Collega sempre alla property.
 
@@ -1142,7 +1154,7 @@ Meglio di:
 
 ---
 
-## 43. Root Cause
+### 43. Root Cause
 
 Descrivi perché il bug esiste.
 
@@ -1155,7 +1167,7 @@ La root cause è più utile del sintomo.
 
 ---
 
-## 44. Recommendation
+### 44. Recommendation
 
 Non scrivere:
 
@@ -1175,7 +1187,7 @@ La remediation deve proteggere la property.
 
 ---
 
-## 45. Developer questions
+### 45. Developer questions
 
 A volte il codice non basta.
 
@@ -1192,7 +1204,7 @@ OWASP raccomanda un approccio di review con accesso a documentazione e sviluppat
 
 ---
 
-## 46. Documentation mismatch
+### 46. Documentation mismatch
 
 Se docs dicono:
 
@@ -1210,7 +1222,7 @@ esiste un mismatch verificabile tra specification e implementation.
 
 ---
 
-## 47. Test review
+### 47. Test review
 
 Audita anche la suite:
 
@@ -1226,7 +1238,7 @@ Una suite debole aumenta il rischio.
 
 ---
 
-## 48. Fuzz/invariant review
+### 48. Fuzz/invariant review
 
 Per fuzzing:
 
@@ -1249,7 +1261,7 @@ Non basta vedere `testFuzz_` o `invariant_` nel repository.
 
 ---
 
-## 49. Automated tools are insufficient
+### 49. Automated tools are insufficient
 
 OWASP specifica che gli strumenti automatizzati da soli non sono sufficienti per una verifica completa: serve evidenza manualmente validata.
 
@@ -1267,7 +1279,9 @@ audit clean
 
 ---
 
-## 50. Checklist frameworks
+## Passate di audit, retest e report finale
+
+### 50. Checklist frameworks
 
 OWASP SCSVS può essere usato come griglia:
 
@@ -1291,11 +1305,11 @@ checklist != protocol understanding
 
 ---
 
-## 51. Audit passes
+### 51. Audit passes
 
 Una metodologia pratica.
 
-### Pass 1 — Understanding
+#### Pass 1 — Understanding
 
 ```text
 docs
@@ -1306,7 +1320,7 @@ trust
 invariants
 ```
 
-### Pass 2 — Critical flows
+#### Pass 2 — Critical flows
 
 ```text
 deposit
@@ -1318,7 +1332,7 @@ oracle update
 pause
 ```
 
-### Pass 3 — Adversarial
+#### Pass 3 — Adversarial
 
 Per ogni flow:
 
@@ -1333,13 +1347,13 @@ malicious token
 stale oracle
 ```
 
-### Pass 4 — Privileged
+#### Pass 4 — Privileged
 
 ```text
 all admin/governance paths
 ```
 
-### Pass 5 — Tooling
+#### Pass 5 — Tooling
 
 ```text
 Slither
@@ -1349,7 +1363,7 @@ invariant
 storage layout
 ```
 
-### Pass 6 — Checklist cross-check
+#### Pass 6 — Checklist cross-check
 
 ```text
 OWASP
@@ -1357,13 +1371,13 @@ Secureum
 Cyfrin/Solodit
 ```
 
-### Pass 7 — Findings consolidation
+#### Pass 7 — Findings consolidation
 
 Unisci duplicati e ragiona per root cause.
 
 ---
 
-## 52. Root-cause grouping
+### 52. Root-cause grouping
 
 Se:
 
@@ -1385,7 +1399,7 @@ remediation
 
 ---
 
-## 53. False-positive log
+### 53. False-positive log
 
 Per ogni finding non applicabile:
 
@@ -1401,7 +1415,7 @@ Questo è molto utile nei retest.
 
 ---
 
-## 54. Work papers
+### 54. Work papers
 
 Conserva:
 
@@ -1420,7 +1434,7 @@ Un audit serio deve essere riproducibile.
 
 ---
 
-## 55. Retest
+### 55. Retest
 
 Dopo una remediation:
 
@@ -1440,7 +1454,7 @@ Non fermarti a:
 
 ---
 
-## 56. Fix can introduce new bugs
+### 56. Fix can introduce new bugs
 
 Esempio:
 
@@ -1461,7 +1475,7 @@ La remediation è nuovo codice e va auditata.
 
 ---
 
-## 57. Upgrade remediation
+### 57. Upgrade remediation
 
 Se il fix richiede un upgrade:
 
@@ -1476,7 +1490,7 @@ sono parte della sicurezza del fix.
 
 ---
 
-## 58. Final report
+### 58. Final report
 
 Una struttura ragionevole:
 
@@ -1507,7 +1521,7 @@ within the reviewed scope and methodology.
 
 ---
 
-## 59. Limitations
+### 59. Limitations
 
 Esempi:
 
@@ -1523,7 +1537,9 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 60. Checklist — Scope
+## Checklist da auditor
+
+### 60. Checklist — Scope
 
 - [ ] repository
 - [ ] commit
@@ -1538,7 +1554,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 61. Checklist — Architecture
+### 61. Checklist — Architecture
 
 - [ ] architecture diagram
 - [ ] assets
@@ -1550,7 +1566,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 62. Checklist — Invariants
+### 62. Checklist — Invariants
 
 - [ ] accounting
 - [ ] solvency
@@ -1564,7 +1580,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 63. Checklist — Manual Review
+### 63. Checklist — Manual Review
 
 - [ ] entry points
 - [ ] caller control
@@ -1581,7 +1597,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 64. Checklist — Dependencies
+### 64. Checklist — Dependencies
 
 - [ ] tokens
 - [ ] oracle
@@ -1594,7 +1610,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 65. Checklist — Governance
+### 65. Checklist — Governance
 
 - [ ] owner
 - [ ] roles
@@ -1608,7 +1624,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 66. Checklist — Tooling
+### 66. Checklist — Tooling
 
 - [ ] forge build
 - [ ] forge test
@@ -1621,7 +1637,7 @@ Essere chiari sulle limitazioni è parte della qualità.
 
 ---
 
-## 67. Checklist — Findings
+### 67. Checklist — Findings
 
 Per ogni finding:
 
@@ -1636,7 +1652,7 @@ Per ogni finding:
 
 ---
 
-## 68. Checklist — Retest
+### 68. Checklist — Retest
 
 - [ ] fix diff reviewed
 - [ ] PoC no longer succeeds
@@ -1649,7 +1665,9 @@ Per ogni finding:
 
 ---
 
-## 69. Laboratorio — Mini audit dell'Escrow
+## Laboratorio: mini audit dell'Escrow
+
+### 69. Laboratorio — Mini audit dell'Escrow
 
 Crea:
 
@@ -1667,7 +1685,7 @@ Non modificare subito il codice.
 
 ---
 
-## 70. `scope.md`
+### 70. `scope.md`
 
 Scrivi:
 
@@ -1682,7 +1700,7 @@ Assumptions:
 
 ---
 
-## 71. `architecture.md`
+### 71. `architecture.md`
 
 Disegna:
 
@@ -1708,7 +1726,7 @@ admin path
 
 ---
 
-## 72. `invariants.md`
+### 72. `invariants.md`
 
 Scrivi almeno 15 proprietà.
 
@@ -1727,7 +1745,7 @@ I-08 V1 state preserved
 
 ---
 
-## 73. `attack-surface.md`
+### 73. `attack-surface.md`
 
 | Entry Point | Caller | Writes | External Calls | Risk |
 |---|---|---|---|---|
@@ -1738,7 +1756,7 @@ I-08 V1 state preserved
 
 ---
 
-## 74. Tool pass
+### 74. Tool pass
 
 Esegui:
 
@@ -1755,7 +1773,7 @@ Salva le note.
 
 ---
 
-## 75. Hypothesis pass
+### 75. Hypothesis pass
 
 Scrivi almeno dieci ipotesi.
 
@@ -1779,7 +1797,7 @@ Poi prova a falsificarle.
 
 ---
 
-## 76. Finding template
+### 76. Finding template
 
 ```markdown
 # [ID] Titolo
@@ -1805,9 +1823,11 @@ Questa sarà la base della Lezione 17.
 
 ---
 
-## 77. Audit anti-patterns
+## Anti-pattern, esercizi e chiusura
 
-### Anti-pattern 1
+### 77. Audit anti-patterns
+
+#### Anti-pattern 1
 
 ```text
 "Slither non trova niente, siamo sicuri."
@@ -1815,7 +1835,7 @@ Questa sarà la base della Lezione 17.
 
 Falso.
 
-### Anti-pattern 2
+#### Anti-pattern 2
 
 ```text
 "Abbiamo 100% coverage."
@@ -1823,7 +1843,7 @@ Falso.
 
 Non dimostra che le proprietà siano corrette.
 
-### Anti-pattern 3
+#### Anti-pattern 3
 
 ```text
 "Usiamo OpenZeppelin, quindi siamo sicuri."
@@ -1831,7 +1851,7 @@ Non dimostra che le proprietà siano corrette.
 
 La composizione/configurazione può essere sbagliata.
 
-### Anti-pattern 4
+#### Anti-pattern 4
 
 ```text
 "onlyOwner = safe."
@@ -1839,7 +1859,7 @@ La composizione/configurazione può essere sbagliata.
 
 Devi sapere chi controlla owner.
 
-### Anti-pattern 5
+#### Anti-pattern 5
 
 ```text
 "ReentrancyGuard ovunque."
@@ -1847,7 +1867,7 @@ Devi sapere chi controlla owner.
 
 Non sostituisce accounting e state machine corretti.
 
-### Anti-pattern 6
+#### Anti-pattern 6
 
 ```text
 "Checklist completata = audit completo."
@@ -1857,17 +1877,17 @@ Una checklist senza threat model può perdere il bug specifico del protocollo.
 
 ---
 
-## 78. Esercizi
+### 78. Esercizi
 
-### Esercizio 1 — Scope
+#### Esercizio 1 — Scope
 
 Prendi una codebase locale di 3-5 contratti e scrivi uno scope formale.
 
-### Esercizio 2 — Assets
+#### Esercizio 2 — Assets
 
 Trova almeno dieci asset, senza limitarti ai token.
 
-### Esercizio 3 — Trust graph
+#### Esercizio 3 — Trust graph
 
 Disegna:
 
@@ -1880,11 +1900,11 @@ multisig
 oracle admin
 ```
 
-### Esercizio 4 — Invariants
+#### Esercizio 4 — Invariants
 
 Scrivi venti proprietà prima di usare Slither.
 
-### Esercizio 5 — Write-path
+#### Esercizio 5 — Write-path
 
 Scegli:
 
@@ -1896,7 +1916,7 @@ feeBps
 
 e trova ogni write path.
 
-### Esercizio 6 — External-call table
+#### Esercizio 6 — External-call table
 
 Per ogni external call annota:
 
@@ -1908,11 +1928,11 @@ revert policy?
 reentrancy?
 ```
 
-### Esercizio 7 — Tool finding
+#### Esercizio 7 — Tool finding
 
 Prendi un finding Slither, completa il triage e crea una PoC locale.
 
-### Esercizio 8 — False positive
+#### Esercizio 8 — False positive
 
 Documenta:
 
@@ -1924,11 +1944,11 @@ evidence
 future change that invalidates it
 ```
 
-### Esercizio 9 — Finding writing
+#### Esercizio 9 — Finding writing
 
 Scrivi un finding completo su un unchecked external call.
 
-### Esercizio 10 — Retest
+#### Esercizio 10 — Retest
 
 Introduci un fix locale e poi:
 
@@ -1941,49 +1961,49 @@ run Slither
 
 ---
 
-## 79. Cosa devo ricordare
+### 79. Cosa devo ricordare
 
-### 1. Scope prima del codice
+#### 1. Scope prima del codice
 
 Devi sapere esattamente che cosa stai auditando.
 
-### 2. Threat model prima dei detector
+#### 2. Threat model prima dei detector
 
 Asset, attori e trust vengono prima dei tool.
 
-### 3. Invariants guidano la review
+#### 3. Invariants guidano la review
 
 Una vulnerabilità è più chiara quando sai quale proprietà rompe.
 
-### 4. Review per funzione e per write-path
+#### 4. Review per funzione e per write-path
 
 Sono due prospettive complementari.
 
-### 5. Privileged paths meritano una passata dedicata
+#### 5. Privileged paths meritano una passata dedicata
 
 Governance e upgradeability possono dominare il rischio.
 
-### 6. External dependencies ereditano rischio
+#### 6. External dependencies ereditano rischio
 
 Token, oracle, router e proxy sono trust boundaries.
 
-### 7. Static analysis genera ipotesi
+#### 7. Static analysis genera ipotesi
 
 La conferma richiede contesto ed evidenza.
 
-### 8. Ogni bug confermato deve diventare una regressione
+#### 8. Ogni bug confermato deve diventare una regressione
 
-### 9. Severity dipende da impatto e prerequisiti reali
+#### 9. Severity dipende da impatto e prerequisiti reali
 
 Non copiare il rating del detector.
 
-### 10. Un audit è evidence-driven
+#### 10. Un audit è evidence-driven
 
 Scope, note, test, PoC, diff e retest devono essere riproducibili.
 
 ---
 
-## 80. Collegamento con il corso
+### 80. Collegamento con il corso
 
 Ora possiedi tutti i blocchi metodologici:
 
@@ -2036,7 +2056,7 @@ La prossima lezione sarà il progetto conclusivo:
 
 ---
 
-## 81. Fonti della lezione
+### 81. Fonti della lezione
 
 Fonti tecniche consultate il **22 settembre 2026**:
 
