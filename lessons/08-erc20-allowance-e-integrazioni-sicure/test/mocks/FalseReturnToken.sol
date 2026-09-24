@@ -21,6 +21,8 @@ contract FalseReturnToken is IERC20 {
         return true;
     }
 
+    // Il cuore del mock: la call RIESCE (nessun revert) ma risponde `false` e non sposta nulla.
+    // Parametri senza nome perche' non vengono usati; `pure`: non legge ne' scrive lo stato.
     function transfer(address, uint256) external pure returns (bool) {
         return false;
     }
@@ -29,4 +31,3 @@ contract FalseReturnToken is IERC20 {
         return false;
     }
 }
-

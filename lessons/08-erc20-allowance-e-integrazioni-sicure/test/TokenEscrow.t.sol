@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Cheatcode e helper usati in questo file:
+//   makeAddr("nome")              indirizzo deterministico con etichetta nei trace;
+//   vm.prank(a)                   la PROSSIMA call avra' msg.sender = a;
+//   vm.startPrank(a)/stopPrank()  tutte le call nel mezzo avranno msg.sender = a;
+//   vm.expectRevert(e)            la PROSSIMA call deve revertire con l'errore e;
+//   assertGe(a, b)                verifica a >= b (usato per la solvibilita').
 import { Test } from "forge-std/Test.sol";
 import { IERC20 } from "../src/token/IERC20.sol";
 import { TokenEscrow } from "../src/TokenEscrow.sol";
@@ -17,6 +23,7 @@ contract TokenEscrowTest is Test {
     uint256 internal constant INITIAL_BALANCE = 1_000 ether;
     uint256 internal constant AMOUNT = 100 ether;
 
+    // Eseguita prima di OGNI test: Escrow nuovo in stato Created, buyer con 1_000 token.
     function setUp() public {
         buyer = makeAddr("buyer");
         seller = makeAddr("seller");
@@ -36,8 +43,9 @@ contract TokenEscrowTest is Test {
     }
 
     function test_DepositMovesTokensAndConsumesExactAllowance() public {
-        _approveAndDeposit(AMOUNT, AMOUNT);
+        _approveAndDeposit(AMOUNT, AMOUNT); // approve 100, deposit 100
 
+        // Si controllano tutti e tre i numeri: saldo, allowance, passivita' dell'Escrow.
         assertEq(token.balanceOf(buyer), INITIAL_BALANCE - AMOUNT);
         assertEq(token.balanceOf(address(escrow)), AMOUNT);
         assertEq(token.allowance(buyer, address(escrow)), 0);
@@ -45,6 +53,7 @@ contract TokenEscrowTest is Test {
         _assertFundedAndSolvent();
     }
 
+    // Approvati 1_000, spesi 100: i 900 restanti restano spendibili dall'Escrow.
     function test_LargerAllowanceRemainsAfterDeposit() public {
         _approveAndDeposit(1_000 ether, AMOUNT);
 
@@ -76,6 +85,11 @@ contract TokenEscrowTest is Test {
         _assertState(TokenEscrow.State.Refunded);
     }
 
+    // TEST NEGATIVI: ognuno verifica il motivo PRECISO del revert (selettore e parametri)
+    // e poi lo stato, con gli helper _assert... in fondo al file.
+
+    // Nessun approve: fallisce il token, non l'Escrow. SafeERC20Lite rilancia l'errore
+    // originale, per questo ci si aspetta TestToken.InsufficientAllowance(escrow, 0, 100).
     function test_RevertWhen_DepositingWithoutAllowance() public {
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -88,6 +102,7 @@ contract TokenEscrowTest is Test {
         _assertCreatedAndEmpty();
     }
 
+    // CONFINE: allowance di un solo wei sotto il necessario.
     function test_RevertWhen_AllowanceIsInsufficient() public {
         vm.prank(buyer);
         token.approve(address(escrow), AMOUNT - 1);
@@ -101,9 +116,11 @@ contract TokenEscrowTest is Test {
         escrow.deposit(AMOUNT);
 
         _assertCreatedAndEmpty();
+        // Il revert annulla anche le scritture del token: l'allowance non e' stata consumata.
         assertEq(token.allowance(buyer, address(escrow)), AMOUNT - 1);
     }
 
+    // Allowance sufficiente ma saldo no: autorizzazione e disponibilita' sono controlli diversi.
     function test_RevertWhen_BalanceIsInsufficient() public {
         uint256 tooMuch = INITIAL_BALANCE + 1;
         vm.prank(buyer);
@@ -121,6 +138,8 @@ contract TokenEscrowTest is Test {
         assertEq(token.allowance(buyer, address(escrow)), tooMuch);
     }
 
+    // Business authorization: lo stranger ha token E allowance, ma non e' il buyer.
+    // L'autorizzazione ERC-20 non sostituisce il controllo di ruolo del protocollo.
     function test_RevertWhen_StrangerHasTokensAndAllowance() public {
         token.mint(stranger, AMOUNT);
         vm.prank(stranger);
@@ -142,6 +161,7 @@ contract TokenEscrowTest is Test {
         _assertCreatedAndEmpty();
     }
 
+    // Transizioni vietate della macchina a stati: ogni funzione e' ammessa da un solo stato.
     function test_RevertWhen_DepositingTwice() public {
         _deposit(AMOUNT);
 
@@ -198,6 +218,8 @@ contract TokenEscrowTest is Test {
         _assertFundedAndSolvent();
     }
 
+    // Test sul constructor: `new` dentro expectRevert verifica che il deploy fallisca.
+    // stranger e' un EOA, cioe' un indirizzo senza codice: non puo' essere un token.
     function test_RevertWhen_TokenHasNoCode() public {
         vm.expectRevert(abi.encodeWithSelector(TokenEscrow.InvalidToken.selector, stranger));
         new TokenEscrow(IERC20(stranger), buyer, seller);
@@ -218,6 +240,9 @@ contract TokenEscrowTest is Test {
         new TokenEscrow(IERC20(address(token)), buyer, buyer);
     }
 
+    // HELPER: non sono test (non iniziano con test_), li chiamano i test sopra.
+
+    // Due parametri separati per poter provare allowance maggiore del deposito.
     function _approveAndDeposit(uint256 approval, uint256 requested) internal {
         vm.startPrank(buyer);
         token.approve(address(escrow), approval);
@@ -235,6 +260,7 @@ contract TokenEscrowTest is Test {
         escrow.release();
     }
 
+    // L'errore InvalidState porta due parametri: stato richiesto e stato attuale.
     function _expectInvalidState(TokenEscrow.State expected, TokenEscrow.State actual) internal {
         vm.expectRevert(abi.encodeWithSelector(TokenEscrow.InvalidState.selector, expected, actual));
     }
@@ -249,6 +275,7 @@ contract TokenEscrowTest is Test {
         assertEq(token.balanceOf(address(escrow)), 0);
     }
 
+    // Proprieta' di solvibilita': in Funded il saldo reale copre la passivita' registrata.
     function _assertFundedAndSolvent() internal view {
         _assertState(TokenEscrow.State.Funded);
         assertGe(token.balanceOf(address(escrow)), escrow.escrowedAmount());

@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Fuzz test NEGATIVI della state machine: per ogni caller estraneo, ogni istante prima della
+// deadline, ogni importo, l'azione vietata deve revertire con l'errore preciso.
+// Cheatcode: vm.warp(t) imposta block.timestamp; vm.startPrank/stopPrank fissano msg.sender
+// per piu' call di seguito.
 import {Test} from "forge-std/Test.sol";
 import {LifecycleEscrow} from "../../src/invariant/LifecycleEscrow.sol";
 
 contract LifecycleNegativeFuzzTest is Test {
+    // Tempo di partenza lontano da zero: `deadline - secondsBefore` non va mai in underflow.
     uint256 internal constant START = 1_000_000;
     uint256 internal constant DELAY = 7 days;
 
@@ -18,6 +23,7 @@ contract LifecycleNegativeFuzzTest is Test {
     }
 
     function testFuzz_UnauthorizedCallerCannotFund(address caller, uint128 rawAmount) public {
+        // Un solo assume con due condizioni: esclude buyer e indirizzo zero.
         vm.assume(caller != buyer && caller != address(0));
         uint256 amount = bound(rawAmount, 1, type(uint128).max);
 
@@ -29,6 +35,7 @@ contract LifecycleNegativeFuzzTest is Test {
         assertEq(escrow.amount(), 0);
     }
 
+    // Lo stato viene prima portato a Funded: cosi' il revert puo' dipendere solo dal caller.
     function testFuzz_UnauthorizedCallerCannotRelease(address caller) public {
         vm.assume(caller != buyer && caller != address(0));
         vm.prank(buyer);
@@ -42,6 +49,8 @@ contract LifecycleNegativeFuzzTest is Test {
         assertEq(escrow.amount(), 100 ether);
     }
 
+    // Fuzz sul TEMPO: da 1 secondo a 7 giorni prima della deadline il refund reverte sempre.
+    // Il minimo e' 1 perche' alla deadline esatta il refund e' permesso.
     function testFuzz_RefundBeforeDeadlineAlwaysReverts(uint256 rawSecondsBefore) public {
         vm.prank(buyer);
         escrow.fund(100 ether);
@@ -55,6 +64,7 @@ contract LifecycleNegativeFuzzTest is Test {
         escrow.refund();
     }
 
+    // Uno stato terminale non si riapre, qualunque sia l'importo proposto.
     function testFuzz_TerminalStateCannotBeFundedAgain(uint128 rawAmount) public {
         uint256 amount = bound(rawAmount, 1, type(uint128).max);
         vm.startPrank(buyer);
@@ -73,6 +83,7 @@ contract LifecycleNegativeFuzzTest is Test {
         assertEq(escrow.amount(), 0);
     }
 
+    // Casi puntuali tenuti come test deterministici: il fuzzing non li garantisce.
     function test_Regression_ZeroFundingIsRejected() public {
         vm.expectRevert(LifecycleEscrow.ZeroAmount.selector);
         vm.prank(buyer);

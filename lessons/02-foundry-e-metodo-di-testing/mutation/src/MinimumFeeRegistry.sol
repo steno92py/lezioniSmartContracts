@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Mutante: copia di FixedFeeRegistry con UN solo operatore cambiato. Una "mutazione" e' un
+// bug plausibile introdotto apposta: se nessun test diventa rosso, la suite non lo vede.
+// Si compila solo col profilo `mutation` (vedi foundry.toml): la suite normale non lo tocca.
+
 /// @notice Mutante volutamente errato: accetta qualsiasi importo maggiore o uguale alla fee.
 /// @dev Esiste soltanto per mostrare se il regression test distingue `==` da `>=`.
 contract MinimumFeeRegistry {
@@ -17,6 +21,8 @@ contract MinimumFeeRegistry {
         if (registered[msg.sender]) revert AlreadyRegistered(msg.sender);
 
         // MUTAZIONE: il requisito richiede `!=`, non `<`.
+        // 0 e 0.5 ether vengono ancora rifiutati: i test su fee bassa restano verdi.
+        // 2 ether invece passano: solo un test con fee TROPPO ALTA scopre il bug.
         if (msg.value < REGISTRATION_FEE) {
             revert ExactFeeRequired(msg.value, REGISTRATION_FEE);
         }
@@ -26,4 +32,3 @@ contract MinimumFeeRegistry {
         totalReceived += msg.value;
     }
 }
-

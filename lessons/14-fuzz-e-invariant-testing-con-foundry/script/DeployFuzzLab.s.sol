@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Deploy facoltativo dei contratti del laboratorio, per esempio su Anvil in locale.
+// I test NON usano questo script: ognuno fa il proprio deploy nel setUp.
 import {Script} from "forge-std/Script.sol";
 import {FeeCalculator, MutableOracle, FreshPriceConsumer} from "../src/fuzz/FuzzTargets.sol";
 import {CreditVault} from "../src/invariant/CreditVault.sol";
@@ -19,6 +21,7 @@ contract DeployFuzzLab is Script {
             LifecycleEscrow lifecycle
         )
     {
+        // Tra start e stop ogni deploy e call diventa una transazione firmata e inviata.
         vm.startBroadcast();
         calculator = new FeeCalculator();
         oracle = new MutableOracle();

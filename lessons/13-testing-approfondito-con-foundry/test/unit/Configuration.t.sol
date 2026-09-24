@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Test del constructor. Non eredita EscrowTestBase: qui il deploy stesso e' l'azione da
+// osservare, quindi l'escrow non va creato nel setUp.
+// vm.expectRevert funziona anche con `new`: il deploy e' la "prossima call" che deve fallire.
 import {Test} from "forge-std/Test.sol";
 import {TestingEscrow} from "../../src/TestingEscrow.sol";
 import {ConfigurableToken, MockOracle} from "../../src/mocks/TestingMocks.sol";
@@ -18,6 +21,9 @@ contract ConfigurationTest is Test {
         oracle = new MockOracle();
     }
 
+    // Un test per ogni indirizzo: il constructor li controlla con un'unica condizione in OR,
+    // e solo cosi' ci si accorge se uno dei cinque controlli sparisce.
+    // In ogni test tutti gli altri argomenti sono validi.
     function test_ConstructorRejectsZeroToken() public {
         vm.expectRevert(TestingEscrow.ZeroAddress.selector);
         new TestingEscrow(address(0), address(oracle), buyer, seller, owner, block.timestamp + 1 days);

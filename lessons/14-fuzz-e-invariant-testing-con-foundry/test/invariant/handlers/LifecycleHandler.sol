@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Handler della state machine: tre azioni (fund, release, refund) che eseguono la transizione
+// solo quando lo stato la permette, altrimenti sono no-op. Handler e ghost: vedi VaultHandler.
 import {Test} from "forge-std/Test.sol";
 import {LifecycleEscrow} from "../../../src/invariant/LifecycleEscrow.sol";
 
@@ -8,6 +10,8 @@ contract LifecycleHandler is Test {
     LifecycleEscrow public immutable escrow;
     address public immutable buyer;
 
+    // Ghost con memoria STORICA: diventa true la prima volta che si raggiunge uno stato
+    // terminale e non torna piu' false. Lo stato corrente da solo non ricorda il passato.
     bool public ghostTerminalSeen;
     uint256 public callsFund;
     uint256 public callsRelease;
@@ -20,6 +24,7 @@ contract LifecycleHandler is Test {
     }
 
     function fund(uint256 rawAmount) external {
+        // Precondizione non soddisfatta: no-op invece di un revert (fail_on_revert = true).
         if (escrow.state() != LifecycleEscrow.State.Created) {
             noOpCalls += 1;
             return;
@@ -46,6 +51,8 @@ contract LifecycleHandler is Test {
             noOpCalls += 1;
             return;
         }
+        // L'handler porta il tempo alla deadline se serve: senza questo warp il refund
+        // revertirebbe quasi sempre e lo stato Refunded non verrebbe mai esplorato.
         if (block.timestamp < escrow.refundDeadline()) vm.warp(escrow.refundDeadline());
         vm.prank(buyer);
         escrow.refund();

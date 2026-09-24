@@ -18,12 +18,18 @@ contract BoundedIntegrator {
     }
 
     function execute(uint256 amountIn, uint256 minimumOutput) external returns (uint256 output) {
+        // Un minimo zero accetterebbe qualunque output, anche nullo: il bound sarebbe finto.
         if (minimumOutput == 0) revert ZeroMinimumOutput();
 
+        // Call HIGH-LEVEL via interfaccia: se il router reverte, il revert risale da solo e
+        // annulla tutta la transazione (a differenza della low-level call).
         output = router.swap(amountIn, minimumOutput);
+        // Compatibilita' ABI != compatibilita' semantica. La call e' andata a buon fine e il
+        // valore e' un uint256 valido, ma il router potrebbe aver ignorato minimumOutput:
+        // la proprieta' economica si verifica QUI, nel protocollo che ne dipende.
         if (output < minimumOutput) revert InsufficientOutput(minimumOutput, output);
 
+        // Lo stato si aggiorna solo dopo che il risultato e' stato validato.
         lastOutput = output;
     }
 }
-

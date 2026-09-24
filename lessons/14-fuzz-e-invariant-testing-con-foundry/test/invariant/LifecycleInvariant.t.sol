@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Invariant test della state machine. Meccanismo, targetContract e targetSelector: vedi
+// CreditVaultInvariant.t.sol. Qui le azioni sono fund, release e refund del LifecycleHandler.
 import {Test} from "forge-std/Test.sol";
 import {LifecycleEscrow} from "../../src/invariant/LifecycleEscrow.sol";
 import {LifecycleHandler} from "./handlers/LifecycleHandler.sol";
@@ -23,12 +25,16 @@ contract LifecycleInvariantTest is Test {
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
     }
 
+    // "Once terminal, always terminal": serve la ghost variable, perche' l'invariante vede
+    // solo lo stato corrente. Finche' nessuno stato terminale e' stato raggiunto non c'e'
+    // niente da verificare.
     function invariant_OnceTerminalNeverReturnsToNonTerminalState() public view {
         if (!handler.ghostTerminalSeen()) return;
         LifecycleEscrow.State current = escrow.state();
         assertTrue(current == LifecycleEscrow.State.Released || current == LifecycleEscrow.State.Refunded);
     }
 
+    // Terminale -> nessun importo ancora dovuto.
     function invariant_TerminalStateHasNoLiability() public view {
         LifecycleEscrow.State current = escrow.state();
         if (current == LifecycleEscrow.State.Released || current == LifecycleEscrow.State.Refunded) {
@@ -36,6 +42,7 @@ contract LifecycleInvariantTest is Test {
         }
     }
 
+    // Coerenza stato/importo negli stati non terminali: Created -> 0, Funded -> > 0.
     function invariant_NonTerminalStateAndAmountRemainConsistent() public view {
         if (escrow.state() == LifecycleEscrow.State.Created) assertEq(escrow.amount(), 0);
         if (escrow.state() == LifecycleEscrow.State.Funded) assertGt(escrow.amount(), 0);

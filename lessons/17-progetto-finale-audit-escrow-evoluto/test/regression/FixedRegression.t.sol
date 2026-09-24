@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Regression suite della remediation: comportamento atteso, controlli di accesso,
+// transizioni di stato e semantica della pausa.
+// Cheatcode usati in questo file (oltre a quelli di FinalTestBase):
+//   vm.prank(a)             la PROSSIMA call avra' msg.sender = a;
+//   vm.expectRevert(e)      la PROSSIMA call deve revertire con l'errore e;
+//   vm.recordLogs() / vm.getRecordedLogs()  registrano e restituiscono gli eventi emessi.
+// Attenzione all'ordine: prank ed expectRevert valgono per la prossima call esterna,
+// quindi devono stare subito prima della call che si vuole osservare.
 import {Vm} from "forge-std/Vm.sol";
 import {FinalTestBase} from "../helpers/FinalTestBase.sol";
 import {EscrowFinalFixed} from "../../src/fixed/EscrowFinalFixed.sol";
@@ -9,6 +17,7 @@ import {INotifierFinal} from "../../src/interfaces/IFinalDependencies.sol";
 import {TestToken, FeeToken, FalsePayoutToken, MockOracle, RevertingNotifier} from "../../src/mocks/FinalMocks.sol";
 
 contract FixedRegressionTest is FinalTestBase {
+    // Percorso felice: il buyer deposita e l'escrow passa a Funded.
     function test_BuyerCanDeposit() public {
         (TestToken token, EscrowFinalFixed escrow) = _standardEscrow();
         _fundFixed(token, escrow, AMOUNT);
@@ -21,6 +30,7 @@ contract FixedRegressionTest is FinalTestBase {
         token.mint(stranger, AMOUNT);
         vm.startPrank(stranger);
         token.approve(address(escrow), AMOUNT);
+        // stranger ha token e allowance: il revert dipende solo dal ruolo.
         vm.expectRevert(EscrowFinalFixed.OnlyBuyer.selector);
         escrow.deposit(AMOUNT);
         vm.stopPrank();
@@ -33,6 +43,7 @@ contract FixedRegressionTest is FinalTestBase {
         escrow.deposit(0);
     }
 
+    // La macchina a stati non torna indietro: deposit e' ammesso solo da Created.
     function test_DoubleDepositReverts() public {
         (TestToken token, EscrowFinalFixed escrow) = _standardEscrow();
         _fundFixed(token, escrow, AMOUNT);
@@ -41,6 +52,7 @@ contract FixedRegressionTest is FinalTestBase {
         escrow.deposit(1);
     }
 
+    // FeeToken trattiene il 10%: la liability deve coincidere con il saldo ricevuto.
     function test_F01_DepositUsesActualReceived() public {
         FeeToken token = new FeeToken();
         EscrowFinalFixed escrow = _fixed(token, _freshOracle(), INotifierFinal(address(0)));
@@ -49,6 +61,8 @@ contract FixedRegressionTest is FinalTestBase {
         assertEq(escrow.escrowedAmount(), 90 ether);
     }
 
+    // CONFINE della freschezza: 1 ora + 1 secondo e' rifiutata, 1 ora esatta (test successivo)
+    // e' accettata. Scrivere `>=` al posto di `>` farebbe fallire il secondo test.
     function test_F02_StaleOracleRejected() public {
         TestToken token = new TestToken();
         MockOracle oracle = new MockOracle(VALID_PRICE, block.timestamp - 1 hours - 1);
@@ -75,9 +89,11 @@ contract FixedRegressionTest is FinalTestBase {
         _fundFixed(token, escrow, AMOUNT);
 
         vm.prank(buyer);
+        // Errore con parametro: si confrontano selettore E indirizzo del token.
         vm.expectRevert(abi.encodeWithSelector(SafeERC20Lite.SafeTransferFailed.selector, address(token)));
         escrow.release();
 
+        // Dopo il revert, i write di release sono stati annullati: tutto come prima.
         assertEq(uint256(escrow.state()), uint256(EscrowFinalFixed.State.Funded));
         assertEq(escrow.escrowedAmount(), AMOUNT);
     }
@@ -88,6 +104,7 @@ contract FixedRegressionTest is FinalTestBase {
         vm.prank(stranger);
         vm.expectRevert(EscrowFinalFixed.OnlyOwner.selector);
         escrow.setOracle(replacement);
+        // Espressione senza effetti: "usa" la variabile, evitando il warning "unused".
         token; // mantiene esplicito il setup standard.
     }
 
@@ -102,6 +119,7 @@ contract FixedRegressionTest is FinalTestBase {
         escrow.release();
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
+        // Si cerca l'evento per firma: topics[0] = keccak256 della firma dell'evento.
         bytes32 failureTopic = keccak256("NotificationFailed(bytes)");
         bool found;
         for (uint256 i; i < entries.length; ++i) {
@@ -127,6 +145,8 @@ contract FixedRegressionTest is FinalTestBase {
         assertEq(token.balanceOf(buyer), AMOUNT);
     }
 
+    // Stati terminali: dopo Released ne' release ne' refund sono piu' possibili.
+    // startPrank qui serve perche' le call del buyer sono due.
     function test_DoubleReleaseReverts() public {
         (, EscrowFinalFixed escrow) = _fundedStandardEscrow();
         vm.startPrank(buyer);
@@ -167,6 +187,7 @@ contract FixedRegressionTest is FinalTestBase {
         assertFalse(escrow.paused());
     }
 
+    // CONFINE della fee: 1_000 bps accettato, 1_001 rifiutato.
     function test_FeeUpperBound() public {
         (, EscrowFinalFixed escrow) = _standardEscrow();
         vm.prank(owner);
@@ -177,6 +198,7 @@ contract FixedRegressionTest is FinalTestBase {
         escrow.setFee(1_001);
     }
 
+    // Specifica: la pausa blocca nuovo rischio, non l'uscita del buyer.
     function test_RefundRemainsAvailableWhilePaused() public {
         (TestToken token, EscrowFinalFixed escrow) = _fundedStandardEscrow();
         vm.prank(pauser);
@@ -186,6 +208,7 @@ contract FixedRegressionTest is FinalTestBase {
         assertEq(token.balanceOf(buyer), AMOUNT, "pause new risk, allow exit");
     }
 
+    // Helper: token standard, oracle fresco, nessun notifier. Return con nome.
     function _standardEscrow() internal returns (TestToken token, EscrowFinalFixed escrow) {
         token = new TestToken();
         escrow = _fixed(token, _freshOracle(), INotifierFinal(address(0)));

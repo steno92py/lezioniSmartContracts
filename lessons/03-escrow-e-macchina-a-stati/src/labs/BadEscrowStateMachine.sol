@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Versione ridotta di EscrowStateMachine, con i controlli scritti dentro le funzioni
+// invece che nei modifier. Confrontala con quella corretta funzione per funzione.
+
 /// @notice Contratto volutamente vulnerabile per un laboratorio esclusivamente locale.
 contract BadEscrowStateMachine {
     enum State {
@@ -25,6 +28,7 @@ contract BadEscrowStateMachine {
         state = State.Created;
     }
 
+    // Qui i controlli ci sono tutti: CHI, QUANDO e QUANTO.
     function fund() external payable {
         if (msg.sender != buyer) revert Unauthorized(msg.sender);
         if (state != State.Created) revert WrongState();
@@ -33,11 +37,16 @@ contract BadEscrowStateMachine {
         state = State.Funded;
     }
 
+    // Qui c'e' solo il CHI. Il chiamante e' giusto, ma nessuno controlla il QUANDO.
     function approveRelease() external {
         if (msg.sender != buyer) revert Unauthorized(msg.sender);
 
         // BUG INTENZIONALE: manca la guardia state == State.Funded.
+        // Conseguenza: il buyer passa da Created a ReleaseApproved senza aver depositato
+        // nulla. Lo stato racconta una storia ("pagamento approvato") che non e' mai avvenuta.
+        //   Created --approveRelease()--> ReleaseApproved   (freccia che non deve esistere)
+        // Correzione: la guardia `if (state != State.Funded) revert WrongState();`,
+        // come fa onlyState(State.Funded) in EscrowStateMachine.
         state = State.ReleaseApproved;
     }
 }
-

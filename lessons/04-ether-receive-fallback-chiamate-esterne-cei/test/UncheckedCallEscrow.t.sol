@@ -5,6 +5,8 @@ import { Test } from "forge-std/Test.sol";
 import { UncheckedCallEscrow } from "../src/labs/UncheckedCallEscrow.sol";
 import { RejectingSeller } from "./helpers/EtherReceivers.sol";
 
+// Laboratorio: riproduce il difetto di UncheckedCallEscrow con un seller che rifiuta ETH.
+// Per seguire la call nella trace: forge test --match-contract UncheckedCallEscrowTest -vvvv
 contract UncheckedCallEscrowTest is Test {
     address internal buyer;
     uint256 internal constant PRICE = 5 ether;
@@ -15,7 +17,10 @@ contract UncheckedCallEscrowTest is Test {
     }
 
     /// @dev Il test passa dimostrando che una transaction riuscita puo' mentire sul payout.
+    // Il test PASSA: il verde documenta il bug, non la correttezza del contratto.
+    // Il confronto corretto e' test_RejectingSellerMakesReleaseRevertAtomically.
     function test_DemonstratesFalseReleasedStateAfterFailedPayout() public {
+        // Arrange: seller che rifiuta ogni ETH, Escrow finanziato dal buyer.
         RejectingSeller receiver = new RejectingSeller();
 
         vm.prank(buyer);
@@ -24,12 +29,15 @@ contract UncheckedCallEscrowTest is Test {
         vm.prank(buyer);
         broken.fund{ value: PRICE }();
 
+        // Act: nessun expectRevert, e infatti release() NON reverte.
         vm.prank(buyer);
         broken.release();
 
-        assertEq(uint256(broken.state()), uint256(UncheckedCallEscrow.State.Released));
-        assertEq(address(receiver).balance, 0);
-        assertEq(address(broken).balance, PRICE);
+        // Assert: tre fatti incompatibili tra loro in un Escrow corretto.
+
+        assertEq(uint256(broken.state()), uint256(UncheckedCallEscrow.State.Released)); // "pagato"
+        assertEq(address(receiver).balance, 0); // ma il seller non ha ricevuto nulla
+        assertEq(address(broken).balance, PRICE); // e i fondi restano bloccati nel contratto
     }
 }
 

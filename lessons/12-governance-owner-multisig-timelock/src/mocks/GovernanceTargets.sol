@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Target generico per il multisig: setValue lascia una traccia e restituisce un valore,
+// fail() permette di provare cosa succede quando la call eseguita fallisce.
 contract CallTarget {
     error ForcedFailure();
 
@@ -16,5 +18,5 @@ contract CallTarget {
     }
 }
 
+// Contratto vuoto: serve solo un indirizzo con codice da impostare come oracle.
 contract MockOracle { }
-

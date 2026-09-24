@@ -3,6 +3,7 @@ pragma solidity 0.8.37;
 
 import { INotifier } from "../interfaces/INotifier.sol";
 
+// Mock onesto: registra cosa ha ricevuto, cosi' il test puo' verificare gli argomenti.
 contract GoodNotifier is INotifier {
     bool public called;
     address public notifiedSeller;
@@ -14,4 +15,3 @@ contract GoodNotifier is INotifier {
         notifiedAmount = amount;
     }
 }
-

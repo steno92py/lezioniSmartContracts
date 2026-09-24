@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Mock avversariali: ognuno riproduce un comportamento di una dipendenza reale, cosi' che
+// i test possano esercitarlo in modo deterministico. Sono harness, non target (scope.md).
 import {IAuditToken, IPriceOracle, ISettlementNotifier} from "../interfaces/IAuditDependencies.sol";
 
+// Token "onesto" di base. Le funzioni `virtual` possono essere ridefinite dai derivati.
+// mint senza controllo di ruolo: accettabile solo in un mock di test.
 contract MockToken is IAuditToken {
     error InsufficientBalance();
     error InsufficientAllowance();
@@ -41,6 +45,8 @@ contract MockToken is IAuditToken {
     }
 }
 
+// Transfer-tax token: il destinatario riceve `amount - fee`, la fee viene bruciata.
+// feeBps in basis point: 10_000 = 100%, 1_000 = 10%.
 contract FeeToken is MockToken {
     uint256 public immutable feeBps;
 
@@ -48,6 +54,8 @@ contract FeeToken is MockToken {
         feeBps = feeBps_;
     }
 
+    // `override`: sostituisce _transfer di MockToken, quindi vale sia per transfer sia per
+    // transferFrom.
     function _transfer(address from, address to, uint256 amount) internal override {
         if (balanceOf[from] < amount) revert InsufficientBalance();
         uint256 fee = amount * feeBps / 10_000;
@@ -57,10 +65,18 @@ contract FeeToken is MockToken {
     }
 }
 
+// Interfaccia minima per costruire la calldata di release() senza importare l'escrow.
 interface IReleaseTarget {
     function release() external;
 }
 
+// Token con callback: dopo un trasferimento IN USCITA dal `target`, richiama una volta
+// target.release(). Simula un token con hook (per esempio in stile ERC-777).
+//
+//   caller --release()--> target --transfer()--> ReentrantToken
+//                                                   |-- _transfer (saldi aggiornati)
+//                                                   '-- target.release()  (callback)
+//   Nel callback msg.sender per target e' il token, non il caller originale.
 contract ReentrantToken is MockToken {
     address public target;
     bool public armed;
@@ -73,16 +89,20 @@ contract ReentrantToken is MockToken {
     }
 
     function _transfer(address from, address to, uint256 amount) internal override {
-        super._transfer(from, to, amount);
+        super._transfer(from, to, amount); // `super`: esegue prima la versione di MockToken
 
         if (armed && from == target) {
-            armed = false;
+            armed = false; // disarmato PRIMA della call: un solo tentativo, niente ricorsione
             callbackAttempted = true;
+            // Call a basso livello: un revert del target NON fa fallire il transfer, viene
+            // solo registrato in callbackSucceeded (letto poi dai test).
             (callbackSucceeded,) = target.call(abi.encodeCall(IReleaseTarget.release, ()));
         }
     }
 }
 
+// Oracle programmabile: il test decide prezzo e timestamp con set(). Senza controllo di
+// ruolo di proposito: nei test l'oracle e' una variabile da controllare.
 contract MockOracle is IPriceOracle {
     int256 public price;
     uint256 public updatedAt;
@@ -91,6 +111,7 @@ contract MockOracle is IPriceOracle {
         set(price_, updatedAt_);
     }
 
+    // `public` (non external) perche' la chiama anche il constructor dall'interno.
     function set(int256 price_, uint256 updatedAt_) public {
         price = price_;
         updatedAt = updatedAt_;
@@ -101,6 +122,7 @@ contract MockOracle is IPriceOracle {
     }
 }
 
+// Notifier che registra l'ultima chiamata: i test verificano quante volte e con quali dati.
 contract RecordingNotifier is ISettlementNotifier {
     uint256 public calls;
     address public lastBuyer;
@@ -115,6 +137,7 @@ contract RecordingNotifier is ISettlementNotifier {
     }
 }
 
+// Notifier sempre indisponibile: ogni chiamata reverte.
 contract RevertingNotifier is ISettlementNotifier {
     error NotificationUnavailable();
 

@@ -1,12 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Invariant testing (stateful fuzzing): Foundry chiama in sequenza casuale le funzioni
+// dell'handler (128 run x 64 chiamate, vedi [invariant] in foundry.toml) e dopo ogni
+// chiamata verifica tutte le funzioni invariant_*. Una proprieta' deve valere SEMPRE.
+// Cheatcode e helper usati in questo file:
+//   bound(x, min, max)       riporta un input casuale in un intervallo utile;
+//   vm.prank / startPrank    impersonano i ruoli dentro l'handler;
+//   vm.warp(t)               imposta block.timestamp;
+//   targetContract(a)        il fuzzer chiama solo il contratto a (l'handler);
+//   targetSelector(...)      ...e solo le funzioni elencate.
 import {Test} from "forge-std/Test.sol";
 import {StdInvariant} from "forge-std/StdInvariant.sol";
 import {EscrowFinalFixed} from "../../src/fixed/EscrowFinalFixed.sol";
 import {TestToken, MockOracle} from "../../src/mocks/FinalMocks.sol";
 import {INotifierFinal} from "../../src/interfaces/IFinalDependencies.sol";
 
+// HANDLER: fa da intermediario tra il fuzzer e l'escrow. Ogni azione prepara input validi,
+// impersona il ruolo giusto ed evita chiamate destinate a revertire, cosi' le sequenze
+// esplorano stati reali invece di sprecare run in revert.
 contract FinalHandler is Test {
     EscrowFinalFixed public immutable escrow;
     TestToken public immutable token;
@@ -15,6 +27,7 @@ contract FinalHandler is Test {
     address public immutable owner;
     address public immutable pauser;
 
+    // Ghost variable: stato tenuto dal test (non dal contratto) per proprieta' storiche.
     uint256 public credited;
     bool public terminalSeen;
     bool public terminalBroken;
@@ -35,6 +48,7 @@ contract FinalHandler is Test {
         pauser = pauser_;
     }
 
+    // Precondizione: se l'azione non e' ammessa nello stato corrente si esce senza fare nulla.
     function deposit(uint96 rawAmount) external {
         if (escrow.state() != EscrowFinalFixed.State.Created || escrow.paused()) return;
         uint256 amount = bound(uint256(rawAmount), 1, 1_000_000 ether);
@@ -49,6 +63,8 @@ contract FinalHandler is Test {
 
     function release() external {
         if (escrow.state() != EscrowFinalFixed.State.Funded || escrow.paused()) return;
+        // Prezzo sempre fresco: la sequenza esplora il ciclo di vita, non la freschezza
+        // (coperta da regression e fuzz).
         oracle.setPrice(3_000e8, block.timestamp);
         vm.prank(buyer);
         escrow.release();
@@ -77,10 +93,14 @@ contract FinalHandler is Test {
     function setFee(uint16 rawFee) external {
         uint256 fee = bound(uint256(rawFee), 0, 1_100);
         vm.prank(owner);
+        // Fino a 1_100: include valori oltre il tetto. try/catch ignora il revert atteso,
+        // cosi' la sequenza continua e l'invariant sul tetto viene comunque verificata.
         try escrow.setFee(fee) {} catch {}
         _observe();
     }
 
+    // Chiamata dopo ogni azione: ricorda se si e' visto uno stato terminale e segnala
+    // se in seguito lo stato risulta non terminale.
     function _observe() private {
         EscrowFinalFixed.State current = escrow.state();
         bool terminal = current == EscrowFinalFixed.State.Released || current == EscrowFinalFixed.State.Refunded;
@@ -99,6 +119,7 @@ contract FinalInvariantTest is StdInvariant, Test {
     address internal owner;
     address internal pauser;
 
+    // Il setup crea il sistema reale e registra l'handler come unico bersaglio del fuzzer.
     function setUp() public {
         vm.warp(1_000_000);
         buyer = makeAddr("buyer");
@@ -110,6 +131,7 @@ contract FinalInvariantTest is StdInvariant, Test {
         escrow = new EscrowFinalFixed(token, buyer, seller, owner, pauser, oracle, INotifierFinal(address(0)));
         handler = new FinalHandler(escrow, token, oracle, buyer, owner, pauser);
 
+        // Le sei azioni che il fuzzer puo' combinare. bytes4 = selettore di funzione.
         bytes4[] memory selectors = new bytes4[](6);
         selectors[0] = FinalHandler.deposit.selector;
         selectors[1] = FinalHandler.release.selector;
@@ -121,6 +143,8 @@ contract FinalInvariantTest is StdInvariant, Test {
         targetContract(address(handler));
     }
 
+    // Le cinque proprieta'. Sono `view`: leggono lo stato, non lo modificano.
+    // Solvibilita': finche' Funded, il saldo reale copre la liability.
     function invariant_FundedLiabilityIsBacked() public view {
         if (escrow.state() == EscrowFinalFixed.State.Funded) {
             assertGe(token.balanceOf(address(escrow)), escrow.escrowedAmount());
@@ -134,6 +158,7 @@ contract FinalInvariantTest is StdInvariant, Test {
         }
     }
 
+    // Proprieta' storica: non si deduce dallo stato attuale, serve la ghost variable.
     function invariant_TerminalStateNeverReopens() public view {
         assertFalse(handler.terminalBroken());
     }
@@ -142,6 +167,7 @@ contract FinalInvariantTest is StdInvariant, Test {
         assertLe(escrow.feeBps(), 1_000);
     }
 
+    // Il seller non riceve mai piu' di quanto l'escrow ha accreditato (la fee puo' solo ridurre).
     function invariant_SellerNeverReceivesMoreThanCredited() public view {
         assertLe(token.balanceOf(seller), handler.credited());
     }

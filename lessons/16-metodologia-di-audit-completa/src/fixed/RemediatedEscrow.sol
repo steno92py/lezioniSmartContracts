@@ -3,6 +3,8 @@ pragma solidity 0.8.37;
 
 import {IAuditToken, IPriceOracle, ISettlementNotifier} from "../interfaces/IAuditDependencies.sol";
 
+// Patch separata dal target: si studia in fase di retest, confrontandola con
+// src/target/AuditEscrow.sol (README, passo 4). Stessa struttura, stesse funzioni.
 /// @notice Versione separata usata per review della patch e retest.
 contract RemediatedEscrow {
     enum State {
@@ -58,6 +60,8 @@ contract RemediatedEscrow {
             buyer_ == address(0) || seller_ == address(0) || governance_ == address(0) || guardian_ == address(0)
                 || address(token_) == address(0) || address(oracle_) == address(0)
         ) revert ZeroAddress();
+        // Con `>= maxAge` in release, maxAge = 0 renderebbe ogni prezzo scaduto: release
+        // sarebbe impossibile per sempre. Il deploy lo rifiuta subito.
         if (maxAge_ == 0) revert InvalidMaxAge();
 
         buyer = buyer_;
@@ -75,6 +79,7 @@ contract RemediatedEscrow {
         if (msg.sender != buyer) revert WrongCaller();
         if (state != State.Created) revert WrongState();
 
+        // Balance delta: si misura quanto e' arrivato davvero, non quanto era stato chiesto.
         uint256 beforeBalance = token.balanceOf(address(this));
         _safeTransferFrom(msg.sender, address(this), amount);
         uint256 received = token.balanceOf(address(this)) - beforeBalance;
@@ -93,6 +98,8 @@ contract RemediatedEscrow {
 
         (int256 price, uint256 updatedAt) = oracle.latestPrice();
         if (price <= 0 || uint256(price) < minPrice) revert InvalidPrice();
+        // Freshness stretta: prezzo non futuro ed eta' strettamente minore di maxAge.
+        // Il primo controllo evita anche l'underflow della sottrazione successiva.
         if (updatedAt > block.timestamp || block.timestamp - updatedAt >= maxAge) revert StalePrice();
 
         uint256 amount = liability;
@@ -103,6 +110,8 @@ contract RemediatedEscrow {
         _safeTransfer(seller, amount);
 
         // Il notifier e' osservabilita' best-effort, non una condizione di settlement.
+        // try/catch: se notify reverte, il revert viene catturato invece di propagarsi;
+        // si registra l'esito in un evento e il settlement resta valido.
         if (address(notifier) != address(0)) {
             try notifier.notify(buyer, seller, amount) {
                 emit NotificationResult(true);
@@ -114,6 +123,7 @@ contract RemediatedEscrow {
         emit Released(amount);
     }
 
+    // Gia' in ordine CEI: effetti (liability, state) prima del trasferimento.
     function refund() external {
         if (msg.sender != buyer) revert WrongCaller();
         if (state != State.Funded) revert WrongState();
@@ -126,12 +136,14 @@ contract RemediatedEscrow {
     }
 
     function setOracle(IPriceOracle newOracle) external {
+        // Solo governance: il guardian puo' mettere in pausa ma non cambiare l'oracle.
         if (msg.sender != governance) revert WrongCaller();
         if (address(newOracle) == address(0)) revert ZeroAddress();
         emit OracleChanged(address(oracle), address(newOracle));
         oracle = newOracle;
     }
 
+    // Ruoli asimmetrici: pausa da governance o guardian, rimozione della pausa solo governance.
     function pause() external {
         if (msg.sender != governance && msg.sender != guardian) revert WrongCaller();
         paused = true;
@@ -144,6 +156,10 @@ contract RemediatedEscrow {
         emit PauseChanged(false);
     }
 
+    // Call a basso livello al token: restituisce (success, returndata) invece di revertire.
+    // Fallimento se la call reverte oppure se restituisce dati che decodificano a `false`;
+    // nessun dato di ritorno (token legacy) e' accettato come successo.
+    // `private`: visibile solo in questo contratto, neppure nei contratti derivati.
     function _safeTransfer(address to, uint256 amount) private {
         (bool success, bytes memory returndata) =
             address(token).call(abi.encodeCall(IAuditToken.transfer, (to, amount)));

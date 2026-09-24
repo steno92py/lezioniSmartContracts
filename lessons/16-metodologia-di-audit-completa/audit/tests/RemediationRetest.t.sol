@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.37;
 
+// Retest della patch: ogni PoC di AuditEscrowFindings.t.sol ha qui una regression con lo
+// stesso scenario, che sulla versione corretta deve dare l'esito opposto. Se qualcuno
+// reintroducesse il problema, la regression diventerebbe rossa.
+// Cheatcode: gli stessi del file delle PoC, piu' bound() per il fuzz (vedi sotto).
 import {Test} from "forge-std/Test.sol";
 import {RemediatedEscrow} from "../../src/fixed/RemediatedEscrow.sol";
 import {IAuditToken, IPriceOracle, ISettlementNotifier} from "../../src/interfaces/IAuditDependencies.sol";
@@ -34,6 +38,7 @@ contract RemediationRetestTest is Test {
 
         escrow.release();
 
+        // Il callback c'e' stato ma e' fallito: lo stato era gia' Released (WrongState).
         assertTrue(token.callbackAttempted());
         assertFalse(token.callbackSucceeded());
         assertEq(token.balanceOf(seller), AMOUNT);
@@ -46,6 +51,8 @@ contract RemediationRetestTest is Test {
         RemediatedEscrow escrow = _deploy(token, oracle, ISettlementNotifier(address(0)));
         token.mint(buyer, AMOUNT);
 
+        // expectRevert vale per la prossima call anche dentro startPrank: qui e' deposit.
+        // Errore con parametri: si confrontano selettore, importo richiesto e ricevuto.
         vm.startPrank(buyer);
         token.approve(address(escrow), AMOUNT);
         vm.expectRevert(abi.encodeWithSelector(RemediatedEscrow.UnsupportedTransferTax.selector, AMOUNT, 90 ether));
@@ -63,13 +70,16 @@ contract RemediationRetestTest is Test {
         MockOracle replacement = new MockOracle(int256(MIN_PRICE * 2), block.timestamp);
         RemediatedEscrow escrow = _deploy(token, oracle, ISettlementNotifier(address(0)));
 
+        // prank ed expectRevert riguardano entrambi la prossima call: l'ordine tra i due
+        // cheatcode non conta.
         vm.prank(guardian);
         vm.expectRevert(RemediatedEscrow.WrongCaller.selector);
         escrow.setOracle(replacement);
 
-        assertEq(address(escrow.oracle()), address(oracle));
+        assertEq(address(escrow.oracle()), address(oracle)); // oracle invariato
     }
 
+    // Stesso confine della PoC (eta' == MAX_AGE), ora rifiutato.
     function test_Regression_AUD04_ExactStalenessBoundaryRejected() public {
         MockToken token = new MockToken();
         MockOracle oracle = new MockOracle(int256(MIN_PRICE), block.timestamp - MAX_AGE);
@@ -93,6 +103,8 @@ contract RemediationRetestTest is Test {
         assertEq(token.balanceOf(seller), AMOUNT);
     }
 
+    // FUZZ: un parametro nella firma fa generare a Foundry molti input casuali (256 run).
+    // bound(x, min, max) riporta x nell'intervallo [min, max]: qui esclude lo zero.
     function testFuzz_AssetsAlwaysEqualLiabilityImmediatelyAfterDeposit(uint96 rawAmount) public {
         uint256 amount = bound(uint256(rawAmount), 1, type(uint96).max);
         MockToken token = new MockToken();
@@ -120,6 +132,7 @@ contract RemediationRetestTest is Test {
 
         assertEq(token.balanceOf(buyer), AMOUNT);
         assertEq(escrow.liability(), 0);
+        // Refunded e' terminale: una release successiva deve fallire.
         vm.expectRevert(RemediatedEscrow.WrongState.selector);
         escrow.release();
     }
