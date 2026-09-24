@@ -47,13 +47,23 @@ l'ETH perché le uscite arriveranno nelle lezioni successive, mentre `OriginAuth
 intenzionalmente `tx.origin` per rendere riproducibile il difetto. I test non trattano questi
 warning come raccomandazioni di progetto.
 
+Per confrontare, `src/fixed/EscrowLesson1Fixed.sol` è lo stesso contratto con in più `withdraw()`:
+il beneficiario ritira il proprio credito e il warning `locked-ether` non compare più. Le aggiunte
+sono segnate con `NOVITA'`; per vederle tutte insieme:
+
+```bash
+diff src/EscrowLesson1.sol src/fixed/EscrowLesson1Fixed.sol
+```
+
 ## Mappa dei file
 
 ```text
 src/EscrowLesson1.sol       contratto principale: input -> storage
+src/fixed/EscrowLesson1Fixed.sol  stesso contratto con withdraw(): niente ETH bloccato
 src/OriginAuthToy.sol       versione vulnerabile, fix e intermediario
 test/EscrowLesson1.t.sol    happy path, boundary e atomicità dei revert
 test/OriginAuthToy.t.sol    riproduzione locale e test di regressione
+test/EscrowLesson1Fixed.t.sol  prelievo, doppio prelievo e destinatario che rifiuta l'ETH
 script/DeployEscrowLesson1.s.sol  deploy locale facoltativo
 exercises/                  tracce graduate, escluse dalla suite
 ```
