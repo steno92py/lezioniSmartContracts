@@ -30,13 +30,23 @@ implementano il prelievo;
 `LogicBugEscrow` conserva inoltre la validazione incompleta degli indirizzi del caso vulnerabile.
 Il focus è l'integrità della logica.
 
+Per confrontare, `src/fixed/SafeEscrowFixed.sol` è `SafeEscrow` con in più `withdraw()`: buyer o
+seller ritira il proprio credito, la state machine resta identica e il warning `locked-ether` non
+compare più per questo file. Le aggiunte sono segnate con `NOVITA'`; per vederle tutte insieme:
+
+```bash
+diff src/SafeEscrow.sol src/fixed/SafeEscrowFixed.sol
+```
+
 ## Mappa dei file
 
 ```text
 src/LogicBugEscrow.sol          complete() ripetibile e priva di transizione
 src/SafeEscrow.sol              transizioni atomiche e stati terminali
+src/fixed/SafeEscrowFixed.sol   stesso contratto con withdraw(): niente ETH bloccato
 src/BooleanStateTrap.sol        combinazioni impossibili rese rappresentabili dai bool
 test/                           happy path, percorsi proibiti e regressioni
+test/SafeEscrowFixed.t.sol      prelievo, doppio prelievo e destinatario che rifiuta l'ETH
 script/DeploySafeEscrow.s.sol   deploy locale della versione corretta
 exercises/                      percorso con dispute e mutation test
 ```

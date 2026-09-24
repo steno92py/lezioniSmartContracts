@@ -41,11 +41,22 @@ forge test --root lessons/02-foundry-e-metodo-di-testing -vv
 Il warning `locked-ether` è atteso: questa lezione esclude intenzionalmente i prelievi. Le chiamate
 esterne e l'uscita di ETH saranno introdotte nelle lezioni successive.
 
+Per confrontare, `src/fixed/FixedFeeRegistryFixed.sol` è lo stesso contratto con in più una
+tesoreria `immutable`, fissata nel constructor, e `withdrawFees()`: la tesoreria ritira le fee e il
+warning `locked-ether` non compare più. Le aggiunte sono segnate con `NOVITA'`; per vederle tutte
+insieme:
+
+```bash
+diff src/FixedFeeRegistry.sol src/fixed/FixedFeeRegistryFixed.sol
+```
+
 ## Mappa dei file
 
 ```text
 src/FixedFeeRegistry.sol              contratto corretto sotto test
+src/fixed/FixedFeeRegistryFixed.sol   stesso contratto con tesoreria e withdrawFees()
 test/FixedFeeRegistry.t.sol           suite predefinita sempre verde
+test/FixedFeeRegistryFixed.t.sol      prelievo, chiamante non autorizzato, tesoreria che rifiuta
 script/DeployFixedFeeRegistry.s.sol   deploy locale facoltativo
 mutation/                             implementazione errata e test rosso atteso
 exercises/                            attività graduate escluse dalla suite

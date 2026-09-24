@@ -60,13 +60,24 @@ forge test --root lessons/03-escrow-e-macchina-a-stati -vv
 
 I warning `locked-ether` sono intenzionali: il payout verrà introdotto nella Lezione 4.
 
+Per confrontare, `src/fixed/EscrowStateMachineFixed.sol` è lo stesso contratto con in più lo stato
+`Released` e la funzione `release()`: dopo `approveRelease()` il seller incassa il prezzo e il
+warning `locked-ether` non compare più. La Lezione 4 sviluppa il payout per intero. Le aggiunte
+sono segnate con `NOVITA'`; per vederle tutte insieme:
+
+```bash
+diff src/EscrowStateMachine.sol src/fixed/EscrowStateMachineFixed.sol
+```
+
 ## Mappa dei file
 
 ```text
 src/EscrowStateMachine.sol              macchina a stati corretta
+src/fixed/EscrowStateMachineFixed.sol   stesso contratto con release(): niente ETH bloccato
 src/labs/BadEscrowStateMachine.sol      guardia di stato volutamente assente
 test/EscrowStateMachine.t.sol           percorsi validi e negative space
 test/BadEscrowStateMachine.t.sol        riproduzione locale del bug
+test/EscrowStateMachineFixed.t.sol      payout, caller e stato sbagliati, seller che rifiuta l'ETH
 script/DeployEscrowStateMachine.s.sol   deploy facoltativo su Anvil
 exercises/                              attività graduate escluse dalla suite
 ```
