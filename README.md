@@ -7,6 +7,63 @@ di esperienza differenti.
 Il materiale teorico originale è conservato in `lezioni SmartContracts/`. I progetti eseguibili
 sono aggiunti, una lezione alla volta, sotto `lessons/`.
 
+## Come scaricare il corso
+
+### 1. Installa Git e Foundry (solo la prima volta)
+
+Serve [Git](https://git-scm.com/downloads). Poi installa Foundry, lo strumento che compila e testa
+i contratti:
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+Chiudi e riapri il terminale, poi:
+
+```bash
+foundryup
+forge --version
+```
+
+Se `forge --version` stampa un numero di versione, Foundry è installato. Su Windows usa WSL.
+
+### 2. Clona la repository
+
+```bash
+git clone --recurse-submodules https://github.com/steno92py/lezioniSmartContracts.git
+cd lezioniSmartContracts
+```
+
+`--recurse-submodules` scarica anche `lib/forge-std`, la libreria usata dai test. Se hai già
+clonato senza, recuperala con:
+
+```bash
+git submodule update --init --recursive
+```
+
+### 3. Verifica che tutto funzioni
+
+```bash
+cd lessons/01-transazioni-account-calldata-storage-revert
+forge build
+forge test -vv
+```
+
+Tutti i test devono passare. Da qui prosegui con il
+[README della Lezione 1](lessons/01-transazioni-account-calldata-storage-revert/README.md).
+
+### Aggiornare il corso
+
+Quando vengono pubblicate modifiche, dalla radice della repository:
+
+```bash
+git pull
+git submodule update --init --recursive
+```
+
+Se hai modificato dei file per gli esercizi, `git pull` può segnalare un conflitto: salva prima le
+tue modifiche, per esempio con `git stash`, poi riprendile con `git stash pop`.
+
 ## Stato del percorso
 
 | Lezione | Argomento | Stato |
