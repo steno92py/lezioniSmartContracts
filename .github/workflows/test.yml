@@ -17,42 +17,42 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - name: Root Foundry template
-            path: .
+          - name: Esempio Counter
+            path: esempi/counter
           - name: Lesson 01
-            path: lessons/01-transazioni-account-calldata-storage-revert
+            path: lezioni/01-transazioni-account-calldata-storage-revert
           - name: Lesson 02
-            path: lessons/02-foundry-e-metodo-di-testing
+            path: lezioni/02-foundry-e-metodo-di-testing
           - name: Lesson 03
-            path: lessons/03-escrow-e-macchina-a-stati
+            path: lezioni/03-escrow-e-macchina-a-stati
           - name: Lesson 04
-            path: lessons/04-ether-receive-fallback-chiamate-esterne-cei
+            path: lezioni/04-ether-receive-fallback-chiamate-esterne-cei
           - name: Lesson 05
-            path: lessons/05-reentrancy
+            path: lezioni/05-reentrancy
           - name: Lesson 06
-            path: lessons/06-access-control
+            path: lezioni/06-access-control
           - name: Lesson 07
-            path: lessons/07-errori-logici-e-state-machine
+            path: lezioni/07-errori-logici-e-state-machine
           - name: Lesson 08
-            path: lessons/08-erc20-allowance-e-integrazioni-sicure
+            path: lezioni/08-erc20-allowance-e-integrazioni-sicure
           - name: Lesson 09
-            path: lessons/09-oracoli-prezzi-slippage-mev
+            path: lezioni/09-oracoli-prezzi-slippage-mev
           - name: Lesson 10
-            path: lessons/10-composability-e-dipendenze-esterne
+            path: lezioni/10-composability-e-dipendenze-esterne
           - name: Lesson 11
-            path: lessons/11-proxy-delegatecall-upgradeability
+            path: lezioni/11-proxy-delegatecall-upgradeability
           - name: Lesson 12
-            path: lessons/12-governance-owner-multisig-timelock
+            path: lezioni/12-governance-owner-multisig-timelock
           - name: Lesson 13
-            path: lessons/13-testing-approfondito-con-foundry
+            path: lezioni/13-testing-approfondito-con-foundry
           - name: Lesson 14
-            path: lessons/14-fuzz-e-invariant-testing-con-foundry
+            path: lezioni/14-fuzz-e-invariant-testing-con-foundry
           - name: Lesson 15
-            path: lessons/15-analisi-statica-con-slither
+            path: lezioni/15-analisi-statica-con-slither
           - name: Lesson 16
-            path: lessons/16-metodologia-di-audit-completa
+            path: lezioni/16-metodologia-di-audit-completa
           - name: Lesson 17
-            path: lessons/17-progetto-finale-audit-escrow-evoluto
+            path: lezioni/17-progetto-finale-audit-escrow-evoluto
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -97,9 +97,9 @@ jobs:
         run: |
           python3 -m venv /tmp/lesson15-slither
           /tmp/lesson15-slither/bin/python -m pip install \
-            -r lessons/15-analisi-statica-con-slither/requirements-slither.txt
+            -r lezioni/15-analisi-statica-con-slither/requirements-slither.txt
           echo "/tmp/lesson15-slither/bin" >> "$GITHUB_PATH"
 
       - name: Analyze remediated surface
-        working-directory: lessons/15-analisi-statica-con-slither
+        working-directory: lezioni/15-analisi-statica-con-slither
         run: bash scripts/slither-fixed.sh

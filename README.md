@@ -1,11 +1,67 @@
-# Smart Contract Security — laboratori Foundry
+# Smart Contract Security — corso e laboratori Foundry
 
-Questa repository trasforma un programma di 17 lezioni in sottoprogetti Foundry autonomi. Ogni
-lezione contiene codice, test, un laboratorio locale e attività graduate per studenti con livelli
-di esperienza differenti.
+Un percorso di 17 lezioni: ogni cartella riunisce teoria, guida del docente, codice,
+test ed esercizi della stessa lezione.
 
-Il materiale teorico originale è conservato in `lezioni SmartContracts/`. I progetti eseguibili
-sono aggiunti, una lezione alla volta, sotto `lessons/`.
+## Da dove iniziare
+
+- **Studenti:** apri la [Lezione 1](lezioni/01-transazioni-account-calldata-storage-revert/README.md) e segui il laboratorio.
+- **Docenti:** apri la [guida del docente](lezioni/GUIDA-DOCENTE.md), con l'indice dei copioni, i tempi e la preparazione delle demo.
+- **Materiale comune:** trovi la guida PDF per installare Foundry e i prompt di analisi in [risorse](risorse/README.md).
+- **Primo esempio:** il progetto Counter generato da Foundry è in [esempi/counter](esempi/counter/README.md).
+
+## Struttura
+
+```text
+lezioni/
+  GUIDA-DOCENTE.md             indice e preparazione per il docente
+  01-transazioni-account-calldata-storage-revert/
+    README.md                 punto di ingresso e istruzioni del laboratorio
+    teoria.md                 approfondimento teorico
+    copione.md                guida per tenere la lezione
+    dispensa.pdf              PDF originale, dove disponibile (lezioni 1–5)
+    demo.sh                   demo locali
+    foundry.toml              configurazione del sottoprogetto
+    src/                      contratti Solidity
+    test/                     test automatici
+    script/                   script Foundry
+    exercises/                esercizi e tracce
+  ...                         lezioni da 02 a 17, con la stessa organizzazione
+risorse/                      materiale comune al corso
+esempi/counter/               progetto introduttivo Foundry
+lib/forge-std/                dipendenza condivisa dai progetti
+.github/workflows/            verifiche automatiche
+```
+
+Ogni lezione è un progetto Foundry autonomo e usa `../../lib/forge-std`.
+I nomi tecnici `src`, `test`, `script` e `exercises` restano uniformi nei laboratori;
+le cartelle specialistiche (`audit`, `mutation`, `scripts`) sono descritte nei rispettivi README.
+Le cartelle `out` e `cache` sono generate da Foundry e ignorate da Git.
+
+## Indice delle lezioni
+
+Tutti i 17 laboratori sono disponibili. Apri il titolo per le istruzioni operative,
+la teoria per approfondire o il copione per condurre la lezione.
+
+| Lezione | Laboratorio | Approfondimento | Guida docente |
+| --- | --- | --- | --- |
+| 01 | [Transazioni, account, calldata, storage e revert](lezioni/01-transazioni-account-calldata-storage-revert/README.md) | [Teoria](lezioni/01-transazioni-account-calldata-storage-revert/teoria.md) | [Copione](lezioni/01-transazioni-account-calldata-storage-revert/copione.md) |
+| 02 | [Foundry e metodo di testing](lezioni/02-foundry-e-metodo-di-testing/README.md) | [Teoria](lezioni/02-foundry-e-metodo-di-testing/teoria.md) | [Copione](lezioni/02-foundry-e-metodo-di-testing/copione.md) |
+| 03 | [Escrow e macchina a stati](lezioni/03-escrow-e-macchina-a-stati/README.md) | [Teoria](lezioni/03-escrow-e-macchina-a-stati/teoria.md) | [Copione](lezioni/03-escrow-e-macchina-a-stati/copione.md) |
+| 04 | [Ether, receive, fallback, chiamate esterne e CEI](lezioni/04-ether-receive-fallback-chiamate-esterne-cei/README.md) | [Teoria](lezioni/04-ether-receive-fallback-chiamate-esterne-cei/teoria.md) | [Copione](lezioni/04-ether-receive-fallback-chiamate-esterne-cei/copione.md) |
+| 05 | [Reentrancy, CEI e guard](lezioni/05-reentrancy/README.md) | [Teoria](lezioni/05-reentrancy/teoria.md) | [Copione](lezioni/05-reentrancy/copione.md) |
+| 06 | [Access control](lezioni/06-access-control/README.md) | [Teoria](lezioni/06-access-control/teoria.md) | [Copione](lezioni/06-access-control/copione.md) |
+| 07 | [Errori logici e state machine](lezioni/07-errori-logici-e-state-machine/README.md) | [Teoria](lezioni/07-errori-logici-e-state-machine/teoria.md) | [Copione](lezioni/07-errori-logici-e-state-machine/copione.md) |
+| 08 | [ERC-20, allowance e integrazioni sicure](lezioni/08-erc20-allowance-e-integrazioni-sicure/README.md) | [Teoria](lezioni/08-erc20-allowance-e-integrazioni-sicure/teoria.md) | [Copione](lezioni/08-erc20-allowance-e-integrazioni-sicure/copione.md) |
+| 09 | [Oracoli, prezzi, slippage e MEV](lezioni/09-oracoli-prezzi-slippage-mev/README.md) | [Teoria](lezioni/09-oracoli-prezzi-slippage-mev/teoria.md) | [Copione](lezioni/09-oracoli-prezzi-slippage-mev/copione.md) |
+| 10 | [Composability e dipendenze esterne](lezioni/10-composability-e-dipendenze-esterne/README.md) | [Teoria](lezioni/10-composability-e-dipendenze-esterne/teoria.md) | [Copione](lezioni/10-composability-e-dipendenze-esterne/copione.md) |
+| 11 | [Proxy, delegatecall e upgradeability](lezioni/11-proxy-delegatecall-upgradeability/README.md) | [Teoria](lezioni/11-proxy-delegatecall-upgradeability/teoria.md) | [Copione](lezioni/11-proxy-delegatecall-upgradeability/copione.md) |
+| 12 | [Governance, owner, multisig e timelock](lezioni/12-governance-owner-multisig-timelock/README.md) | [Teoria](lezioni/12-governance-owner-multisig-timelock/teoria.md) | [Copione](lezioni/12-governance-owner-multisig-timelock/copione.md) |
+| 13 | [Testing approfondito con Foundry](lezioni/13-testing-approfondito-con-foundry/README.md) | [Teoria](lezioni/13-testing-approfondito-con-foundry/teoria.md) | [Copione](lezioni/13-testing-approfondito-con-foundry/copione.md) |
+| 14 | [Fuzz testing e invariant testing con Foundry](lezioni/14-fuzz-e-invariant-testing-con-foundry/README.md) | [Teoria](lezioni/14-fuzz-e-invariant-testing-con-foundry/teoria.md) | [Copione](lezioni/14-fuzz-e-invariant-testing-con-foundry/copione.md) |
+| 15 | [Analisi statica con Slither](lezioni/15-analisi-statica-con-slither/README.md) | [Teoria](lezioni/15-analisi-statica-con-slither/teoria.md) | [Copione](lezioni/15-analisi-statica-con-slither/copione.md) |
+| 16 | [Metodologia di audit completa](lezioni/16-metodologia-di-audit-completa/README.md) | [Teoria](lezioni/16-metodologia-di-audit-completa/teoria.md) | [Copione](lezioni/16-metodologia-di-audit-completa/copione.md) |
+| 17 | [Progetto finale: audit dell’Escrow evoluto](lezioni/17-progetto-finale-audit-escrow-evoluto/README.md) | [Teoria](lezioni/17-progetto-finale-audit-escrow-evoluto/teoria.md) | [Copione](lezioni/17-progetto-finale-audit-escrow-evoluto/copione.md) |
 
 ## Come scaricare il corso
 
@@ -44,13 +100,13 @@ git submodule update --init --recursive
 ### 3. Verifica che tutto funzioni
 
 ```bash
-cd lessons/01-transazioni-account-calldata-storage-revert
+cd lezioni/01-transazioni-account-calldata-storage-revert
 forge build
 forge test -vv
 ```
 
 Tutti i test devono passare. Da qui prosegui con il
-[README della Lezione 1](lessons/01-transazioni-account-calldata-storage-revert/README.md).
+[README della Lezione 1](lezioni/01-transazioni-account-calldata-storage-revert/README.md).
 
 ### Aggiornare il corso
 
@@ -64,102 +120,27 @@ git submodule update --init --recursive
 Se hai modificato dei file per gli esercizi, `git pull` può segnalare un conflitto: salva prima le
 tue modifiche, per esempio con `git stash`, poi riprendile con `git stash pop`.
 
-## Stato del percorso
+## Eseguire i laboratori
 
-| Lezione | Argomento | Stato |
-| --- | --- | --- |
-| 01 | Transazioni, account, calldata, storage e revert | pronta |
-| 02 | Foundry e metodo di testing | pronta |
-| 03 | Escrow e macchina a stati | pronta |
-| 04 | Ether, receive, fallback, chiamate esterne e CEI | pronta |
-| 05 | Reentrancy, CEI e guard | pronta |
-| 06 | Access control | pronta |
-| 07 | Errori logici e state machine | pronta |
-| 08 | ERC-20, allowance e integrazioni sicure | pronta |
-| 09 | Oracoli, prezzi, slippage e MEV | pronta |
-| 10 | Composability e dipendenze esterne | pronta |
-| 11 | Proxy, delegatecall e upgradeability | pronta |
-| 12 | Governance, owner, multisig e timelock | pronta |
-| 13 | Testing approfondito con Foundry | pronta |
-| 14 | Fuzz testing e invariant testing con Foundry | pronta |
-| 15 | Analisi statica con Slither | pronta |
-| 16 | Metodologia di audit completa | pronta |
-| 17 | Progetto finale di audit | pronta |
-
-## Lezioni disponibili
-
-- [Lezione 1 — progetto e istruzioni](lessons/01-transazioni-account-calldata-storage-revert/README.md)
-- [Lezione 2 — progetto e istruzioni](lessons/02-foundry-e-metodo-di-testing/README.md)
-- [Lezione 3 — progetto e istruzioni](lessons/03-escrow-e-macchina-a-stati/README.md)
-- [Lezione 4 — progetto e istruzioni](lessons/04-ether-receive-fallback-chiamate-esterne-cei/README.md)
-- [Lezione 5 — progetto e istruzioni](lessons/05-reentrancy/README.md)
-- [Lezione 6 — progetto e istruzioni](lessons/06-access-control/README.md)
-- [Lezione 7 — progetto e istruzioni](lessons/07-errori-logici-e-state-machine/README.md)
-- [Lezione 8 — progetto e istruzioni](lessons/08-erc20-allowance-e-integrazioni-sicure/README.md)
-- [Lezione 9 — progetto e istruzioni](lessons/09-oracoli-prezzi-slippage-mev/README.md)
-- [Lezione 10 — progetto e istruzioni](lessons/10-composability-e-dipendenze-esterne/README.md)
-- [Lezione 11 — progetto e istruzioni](lessons/11-proxy-delegatecall-upgradeability/README.md)
-- [Lezione 12 — progetto e istruzioni](lessons/12-governance-owner-multisig-timelock/README.md)
-- [Lezione 13 — progetto e istruzioni](lessons/13-testing-approfondito-con-foundry/README.md)
-- [Lezione 14 — progetto e istruzioni](lessons/14-fuzz-e-invariant-testing-con-foundry/README.md)
-- [Lezione 15 — progetto e istruzioni](lessons/15-analisi-statica-con-slither/README.md)
-- [Lezione 16 — progetto e istruzioni](lessons/16-metodologia-di-audit-completa/README.md)
-- [Lezione 17 — progetto finale e istruzioni](lessons/17-progetto-finale-audit-escrow-evoluto/README.md)
-
-Per eseguire una lezione dalla radice:
+Dalla radice del repository, indica la cartella della lezione:
 
 ```bash
-forge build --root lessons/01-transazioni-account-calldata-storage-revert
-forge test --root lessons/01-transazioni-account-calldata-storage-revert -vv
-
-forge build --root lessons/02-foundry-e-metodo-di-testing
-forge test --root lessons/02-foundry-e-metodo-di-testing -vv
-
-forge build --root lessons/03-escrow-e-macchina-a-stati
-forge test --root lessons/03-escrow-e-macchina-a-stati -vv
-
-forge build --root lessons/04-ether-receive-fallback-chiamate-esterne-cei
-forge test --root lessons/04-ether-receive-fallback-chiamate-esterne-cei -vv
-
-forge build --root lessons/05-reentrancy
-forge test --root lessons/05-reentrancy -vv
-
-forge build --root lessons/06-access-control
-forge test --root lessons/06-access-control -vv
-
-forge build --root lessons/07-errori-logici-e-state-machine
-forge test --root lessons/07-errori-logici-e-state-machine -vv
-
-forge build --root lessons/08-erc20-allowance-e-integrazioni-sicure
-forge test --root lessons/08-erc20-allowance-e-integrazioni-sicure -vv
-
-forge build --root lessons/09-oracoli-prezzi-slippage-mev
-forge test --root lessons/09-oracoli-prezzi-slippage-mev -vv
-
-forge build --root lessons/10-composability-e-dipendenze-esterne
-forge test --root lessons/10-composability-e-dipendenze-esterne -vv
-
-forge build --root lessons/11-proxy-delegatecall-upgradeability
-forge test --root lessons/11-proxy-delegatecall-upgradeability -vv
-
-forge build --root lessons/12-governance-owner-multisig-timelock
-forge test --root lessons/12-governance-owner-multisig-timelock -vv
-
-forge build --root lessons/13-testing-approfondito-con-foundry
-forge test --root lessons/13-testing-approfondito-con-foundry -vv
-
-forge build --root lessons/14-fuzz-e-invariant-testing-con-foundry
-forge test --root lessons/14-fuzz-e-invariant-testing-con-foundry -vv
-
-forge build --root lessons/15-analisi-statica-con-slither
-forge test --root lessons/15-analisi-statica-con-slither -vv
-
-forge build --root lessons/16-metodologia-di-audit-completa
-forge test --root lessons/16-metodologia-di-audit-completa -vv
-
-forge build --root lessons/17-progetto-finale-audit-escrow-evoluto
-forge test --root lessons/17-progetto-finale-audit-escrow-evoluto -vv
+forge build --root lezioni/01-transazioni-account-calldata-storage-revert
+forge test --root lezioni/01-transazioni-account-calldata-storage-revert -vv
+bash lezioni/01-transazioni-account-calldata-storage-revert/demo.sh help
 ```
 
-Il progetto Foundry creato inizialmente da `forge init` resta per ora alla radice come riferimento.
-Ogni sottoprogetto usa la dipendenza condivisa `lib/forge-std` e pinna autonomamente il compilatore.
+Oppure entra nella cartella e usa `forge build`, `forge test` e `bash demo.sh check`.
+Le demo operano offline: prepara prima compilatore e dipendenze con `forge build`.
+
+Per controllare tutte le suite ordinarie, incluso Counter:
+
+```bash
+for progetto in esempi/counter lezioni/[0-9]*/; do
+  forge test --root "$progetto" || break
+done
+```
+
+La CI controlla formattazione, compilazione e test di tutti i progetti e l'analisi Slither
+della lezione 15. I profili didattici che devono fallire, come `mutation` nella lezione 2,
+si eseguono separatamente seguendo il relativo README.
