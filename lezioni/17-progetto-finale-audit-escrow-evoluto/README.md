@@ -4,8 +4,12 @@
 
 ## Per tenere la lezione
 
-Apri la [guida del docente](copione.md): scalette da 60 e 90 minuti,
-discorso, demo, risultati attesi e percorso senza terminale.
+Apri il [copione esteso del docente](copione.md): percorso completo da 180 minuti
+(anche due incontri da 90), selezioni da 60/90 minuti, discorso pronto da leggere,
+lettura guidata del codice, esercizi svolti e percorso senza terminale.
+Il caso F-03 collega requisito, PoC, finding, rollback e retest. Gli esempi distinguono
+fee del token, commissione dell'escrow e pagamento effettivo; la consegna finale include
+criteri di valutazione e limiti delle prove disponibili.
 Dalla cartella di questa lezione usa `bash demo.sh check` per la suite completa (31 test)
 e `bash demo.sh help` per le demo selezionate. Prepara compilatore e dipendenze con
 `forge build` prima dell'aula; lo script delle demo opera offline.

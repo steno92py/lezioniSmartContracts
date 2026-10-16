@@ -4,8 +4,11 @@
 
 ## Per tenere la lezione
 
-Apri la [guida del docente](copione.md): scalette da 60 e 90 minuti,
-discorso, demo, risultati attesi e percorso senza terminale.
+Apri il [copione esteso del docente](copione.md): percorso completo da 180 minuti
+(anche due incontri da 90), selezioni da 60/90 minuti, discorso pronto da leggere,
+lettura guidata del codice, esempi numerici, domande con soluzioni e percorso senza terminale.
+Il caso AUD-02 accompagna la classe dal requisito al finding e al retest; la reentrancy
+viene ricostruita attraverso caller, saldi e chiamate annidate.
 Dalla cartella di questa lezione usa `bash demo.sh check` per la suite completa (14 test)
 e `bash demo.sh help` per le demo selezionate. Prepara compilatore e dipendenze con
 `forge build` prima dell'aula; lo script delle demo opera offline.

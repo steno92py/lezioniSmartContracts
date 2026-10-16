@@ -8,6 +8,8 @@ Tutti i **17 copioni sono stati riscritti** con discorso da dire ad alta voce, e
 
 Ogni guida raccoglie scaletta, testo da dire, raccordi fra argomenti, file da mostrare, comandi e risultati attesi. Sono previsti un percorso da 90 minuti e uno da 60, domande con risposta, precisazioni tecniche e un percorso alternativo se la demo si interrompe. Gli appunti teorici e gli esercizi restano raggiungibili dalla guida.
 
+Le **lezioni 16 e 17 hanno inoltre un copione esteso da 180 minuti ciascuna**, divisibile in due incontri da 90. Accompagnano l'intera catena requisito → ipotesi → prova → finding → patch → retest → report, con letture per funzioni e scritture, conti svolti, previsioni prima delle demo e restituzioni degli studenti. I percorsi da 60/90 minuti selezionano i passaggi indicati nei copioni: non richiedono di leggere tutto più velocemente.
+
 ## Scegli la lezione
 
 | Lezione | Guida da tenere aperta | Codice ed esercizi | Test nella suite ordinaria |
@@ -41,7 +43,7 @@ Le demo Foundry sono locali e usano la modalità offline; non richiedono wallet,
 
 Un test verde può dimostrare un difetto intenzionale: guarda sempre che cosa afferma il test. Nella lezione 2 il profilo separato `mutation` deve invece fallire sul controllo della fee: è il risultato previsto dell’esercizio. Le campagne invariant possono stampare più proprietà ma essere contate come un unico test nel riepilogo Foundry; i numeri della tabella seguono quel riepilogo.
 
-Per la **lezione 15**, il controllo Foundry verifica le prove eseguibili, non l’esecuzione di Slither. La guida separa la preparazione dello strumento dal percorso su inventario e triage già disponibili. Per le lezioni 16–17, le sessioni da 60/90 minuti sono una conduzione guidata: il lavoro completo di audit richiede anche attività autonoma.
+Per la **lezione 15**, il controllo Foundry verifica le prove eseguibili, non l’esecuzione di Slither. La guida separa la preparazione dello strumento dal percorso su inventario e triage già disponibili. Per le lezioni 16–17, anche il percorso esteso è un laboratorio guidato: la consegna autonoma richiede di produrre il proprio ragionamento. I copioni distinguono esecuzione delle prove, lettura del codice ed esempi su carta; Slither può essere discusso sul dossier se l'ambiente non è preparato.
 
 ## Differenze da esplicitare durante il corso
 
